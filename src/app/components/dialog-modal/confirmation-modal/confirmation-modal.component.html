@@ -1,0 +1,20 @@
+<h2 mat-dialog-title>ChatGPT Action Preview</h2>
+<mat-dialog-content class="mat-typography">
+  <h3>Make sure you are satisfied with the new sentence provided by ChatGPT.</h3>
+  <div style="display: flex;">
+    <mat-form-field>
+        <mat-label>Current Text</mat-label>
+        <input matInput readonly [value]="data.current_text">
+      </mat-form-field>
+  </div>
+<div style="display: flex;"> 
+    <mat-form-field>
+        <mat-label>ChatGPT Generated Text</mat-label>
+        <input matInput readonly [value]="data.new_text">
+      </mat-form-field>
+</div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button [mat-dialog-close]="false">Cancel</button>
+  <button color="primary" mat-button [mat-dialog-close]="true">CONFIRM</button>
+</mat-dialog-actions>

@@ -1,0 +1,97 @@
+.dashboard-wrapper {
+    display:flex;
+    flex-direction: column;
+    padding-top:40px;
+    padding-left:100px;
+    padding-right:50px;
+}
+
+.dashboard-header{
+    display:flex;
+    gap:30px;
+    padding-right:80px;
+    align-items: baseline;
+}
+
+.dashboard-header h1{
+    font-size:32px;
+}
+
+.community-videos-header h1{
+    padding-top:30px;
+    font-size:32px;
+}
+
+.video-container {
+    display:flex;
+    flex-wrap: wrap;
+    gap:30px;
+    padding-bottom:20px;
+}
+
+.view-switch {
+    margin-left: auto;
+    display:flex;
+    align-items: center;
+}
+
+.view-switch span{
+   font-size: 18px;
+   font-weight: 500;
+}
+
+.list-view {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    max-height:600px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    max-width: 40%;
+    padding-bottom: 20px
+}
+
+.grid-view {
+    flex-direction: row;
+}
+
+.view-wrapper {
+    display:flex;
+    gap:10px;
+    padding-bottom: 10px;
+}
+
+.view-wrapper .video-player-card {
+    flex-grow: 1;
+}
+
+.view-wrapper .mat-mdc-card {
+    height:100%;
+    justify-content: center;
+}
+
+.view-wrapper .mat-mdc-card-content {
+    flex-grow:1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.view-wrapper .video-icon {
+    transform: scale(3);
+    margin-bottom:20px;
+}
+
+.iframe-container{
+    height:100%;
+    width: 100%;
+}
+
+::ng-deep youtube-player iframe {
+    height:100%;
+    width: 100%;
+}
+
+.my-videos{
+    font-size:32px;
+}

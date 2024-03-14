@@ -1,0 +1,21 @@
+.card-content{
+    height:66vh;
+}
+
+.captions-preview-emulation {
+    position:absolute;
+    display: flex;
+    bottom: 100px;
+    display: flex;
+    width: 95%;
+    color: white;
+    font-size:18px;
+    justify-content: center;
+    padding:10px;
+    background-color:transparent
+}
+
+::ng-deep youtube-player iframe {
+    height:100%;
+    width: 100%;
+}

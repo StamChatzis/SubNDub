@@ -1,0 +1,22 @@
+.dialog-wrapper {
+    display:flex;
+    flex-direction: column;
+}
+
+.main-content_wrapper {
+    overflow-y: auto;
+    height: 65vh;
+    overflow-x: visible;
+}
+
+.button-wrapper  {
+    display: flex;
+    flex-direction: row;
+    gap:20px;
+    padding-bottom:20px;
+    justify-content: center;
+}
+
+.button-wrapper > input {
+    display: none;
+}

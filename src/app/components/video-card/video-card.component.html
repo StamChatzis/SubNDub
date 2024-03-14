@@ -1,0 +1,22 @@
+<div class="yt-card">
+	<div class="thumb" (click)="emitVideoId(videoDetails.id)">
+		<img [src]="videoDetails?.snippet?.thumbnails?.medium.url">
+	</div>
+	<div class="details">
+		<div class="info">
+			<div class="title" (click)="emitVideoId(videoDetails.id)" > 
+				{{ (videoDetails?.snippet?.title?.length > 50) ? (videoDetails?.snippet?.title | slice:0:50) + '...' : (videoDetails?.snippet?.title) }}
+			</div>
+			<div class="channel-name">{{videoDetails?.snippet?.channelTitle}}</div>
+			<div class="views">
+				<span id="views">{{videoDetails?.statistics?.viewCount | number }} views</span> · 
+				<span>{{publishDate}} ago</span>
+        	</div>
+		</div>
+	</div>
+	<div class="actions">
+		<mat-icon (click)="editVideo(videoDetails.id)" matTooltip="Go to Video Details">edit</mat-icon>
+		<mat-icon (click)="deleteVideo(videoDetails.id)" matTooltip="Delete Video from your collection">delete</mat-icon>
+	</div>
+</div>
+

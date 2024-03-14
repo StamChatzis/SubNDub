@@ -1,0 +1,9 @@
+<mat-card class="card">
+    <mat-card-content class="card-content">
+        <youtube-player (ready)="playerLoaded($event)" (stateChange)="handleState($event)" [videoId]="videoId" [playerVars]="{'rel': 0, 'fs' : 0}">
+        </youtube-player>
+        <span class="captions-preview-emulation">{{captionsPreview}}</span>
+    </mat-card-content>
+</mat-card>
+<fullscreen-loader *ngIf="!playerReady"></fullscreen-loader>
+

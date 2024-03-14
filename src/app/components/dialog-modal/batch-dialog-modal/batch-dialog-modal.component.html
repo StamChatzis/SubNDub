@@ -1,0 +1,14 @@
+<h2 mat-dialog-title>Batch Creation Configuration</h2>
+<mat-dialog-content class="mat-typography">
+  <h3>Set an interval in seconds for dialog box creation.</h3>
+</mat-dialog-content>
+<div class="input-container">
+    <mat-form-field>
+        <mat-label>Set Interval</mat-label>
+        <input matInput type="number" [min]="1" #interval>
+    </mat-form-field>
+</div>
+<mat-dialog-actions align="end">
+  <button mat-button [mat-dialog-close]="null">Cancel</button>
+  <button mat-raised-button [mat-dialog-close]="interval.value" color="primary">Create</button>
+</mat-dialog-actions>

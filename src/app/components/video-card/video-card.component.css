@@ -1,0 +1,81 @@
+.yt-card {
+    max-width: 400px;
+    max-height: 350px;
+    width: 420px;
+    height: 350px;
+    font-family: sans-serif;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    margin: 10px 10px 10px 0;
+    box-shadow: rgb(113, 113, 114) 0px 10px 35px -10px;
+    border-radius:4px;
+  }
+
+  .yt-card .thumb{
+    height: 56%;
+    overflow: hidden;
+    margin-bottom: 10px;
+  }
+
+  .yt-card .thumb img {
+    width: 100%;
+    cursor: pointer;
+  }
+
+  .yt-card .details {
+    display: flex;
+    padding: 10px;
+    gap: 10px;
+  }
+
+  .yt-card .channel {
+    flex: 1;
+  }
+
+  .yt-card .channel img {
+    width: 100%;
+    border-radius: 50%;
+  }
+
+  .yt-card .info {
+    flex: 6;
+    font-size: 16px;
+    color: grey;
+  }
+
+  .yt-card .title {
+    font-size: 18px;
+    color: black;
+    font-weight: bold;
+    text-decoration: none;
+  }
+
+  .yt-card .title {
+    margin-bottom: 10px;
+    cursor: pointer;
+  }
+  
+  .yt-card a {
+    color: grey;
+    text-decoration: none;
+  }
+
+  .actions {
+    height:30px;
+    display:flex;
+    padding-left:15px;
+    padding-bottom:15px;
+    flex-grow: 1;
+    align-items: flex-end;
+    gap:20px;
+  }
+
+  .actions:hover {
+    cursor: pointer;
+  }
+
+  .yt-card:hover {
+    border-radius:0px;
+    transition: 0.3s;
+  }

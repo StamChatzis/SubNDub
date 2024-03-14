@@ -1,0 +1,40 @@
+/* You can add global styles to this file, and also import other style files */
+
+/* html, body { 
+    min-height: 100%; 
+    height: 100%;
+}
+body { 
+    margin: 0; 
+    font-family: Roboto, "Helvetica Neue",sans-serif;
+    overflow-x: hidden;
+    background: #f7f7f7;
+} */
+
+.mat-mdc-form-field-hint {
+    font-size:10px;
+    color:rgb(132, 131, 131);
+}
+
+.main-header{
+    height:8px;
+    background-color: #3f51b5;
+}
+
+::-webkit-scrollbar
+{
+	width: 5px;
+	background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar-thumb
+{
+	background-color: #3f51b5;
+}
+
+@font-face {
+    font-family: 'MartianMono';
+    src: url('assets/fonts/Martian_Mono/MartianMono-VariableFont_wdth,wght.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}

@@ -1,0 +1,36 @@
+<h2 mat-dialog-title>Create Person (Character/Voice Actor)</h2>
+<mat-dialog-content class="mat-typography">
+  <h3>Assign a person to a subtitle to help you recognize who it is voiced by.</h3>
+</mat-dialog-content>
+<div class="input-container">
+    <mat-form-field>
+        <mat-label>Enter a name</mat-label>
+        <input #personName matInput type="text">
+    </mat-form-field>
+    <label>Color:</label>
+    <input [(colorPicker)]="color" [style.width]="'20px'" [style.height]="'20px'" [style.border-radius]="'5px'" [style.background]="color" 
+    [cpPresetColors]="['#2889e9', '#e920e9','#b3eda0','#fff500', 'rgb(236,64,64)']"/>
+    <button (click)="addPerson()" mat-icon-button>
+        <mat-icon>add</mat-icon>
+    </button>
+</div>
+<mat-dialog-content class="mat-typography">
+    <h3>Your characters/voice actors:</h3>
+    <ng-container *ngIf="persons.length === 0">
+        <h5>None created yet.</h5>
+    </ng-container>
+</mat-dialog-content>
+<div class="input-container" *ngFor="let person of persons; let i = index">
+    <mat-form-field>
+        <input matInput [(ngModel)]="person.name">
+    </mat-form-field>
+    <input [(colorPicker)]="person.color" [style.width]="'20px'" [style.height]="'20px'" [style.border-radius]="'5px'" [style.background]="person.color"
+    [cpOutputFormat]="'hex'" [cpPresetColors]="['#2889e9','#7fe1df', '#e920e9','#b3eda0','#fff500','#ec4040']"/>
+    <button (click)="deletePerson(i)" mat-icon-button>
+        <mat-icon>delete</mat-icon>
+    </button>
+</div>
+<mat-dialog-actions align="end">
+  <button mat-button [mat-dialog-close]="null">Cancel</button>
+  <button mat-button [disabled]="!data" [mat-dialog-close]="data">SAVE</button>
+</mat-dialog-actions>

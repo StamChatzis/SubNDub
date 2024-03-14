@@ -1,0 +1,45 @@
+.wrapper {
+    bottom: 0;
+    position: fixed;
+    width: 100%;
+    flex-direction: column;
+    display: flex;
+}
+
+.header-duration-container {
+    margin-left: 86px;
+}
+
+.timeline {
+    flex-grow: 1;
+    display: flex;
+    background: white;
+    height: 100px;
+    border: 1px solid rgb(213 213 213 / 53%);
+}
+
+.subs-container{
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+}
+
+.icon {
+    display: flex;
+    height: 100%;
+    padding-left: 30px;
+    padding-right: 30px;
+    align-items: center;
+    border: 1px solid rgb(213 213 213 / 53%);
+}
+
+.sub-tiles {
+    padding-left: 20px;
+    display: flex;
+    flex:none;
+}
+
+.header-duration-container {
+    display: flex;
+    gap:300px;
+}

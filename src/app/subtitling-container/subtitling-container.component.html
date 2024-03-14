@@ -1,0 +1,21 @@
+<div class="container">
+    <div class="dashboard-navigation">
+        <button class="back-button" (click)="navigateToDetails()" mat-mini-fab color="primary"
+        matTooltip="Back to Details"><mat-icon>arrow_back</mat-icon>
+    </button>
+    </div>
+    <div class="wrapper">
+        <video-player [videoId]="videoId" [captionsPreview]="(youtube.getCurrentCaption() | async)"></video-player>
+        <dialog-component
+            [isoCode]="currentLanguage"
+            [videoId]="videoId"
+            [subtitleName]="fileName"
+            [videoDuration]="videoDuration | async"
+            (subtitleUploadEmitter)="uploadToFirestorage($event)"
+            (navigateTTS)="navigateTTS()"
+            (formStatusChange)="setFormDirtyStatus($event)"> 
+        </dialog-component>
+    </div>
+<!-- <sub-timeline [videoDurationISO]="videoDuration"></sub-timeline> -->
+</div>
+
