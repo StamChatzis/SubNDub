@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { openAIConfig } from 'src/environments/enviroment';
+import { openAIConfig } from 'src/environments/environment';
 import { ChatGPTACtion } from '../subtitling-container/dialog-component/dialog-content/dialog-content.component';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, map } from 'rxjs';

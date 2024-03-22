@@ -43,4 +43,4 @@ Thumbs.db
 
 #Config file
 src/config.ts
-src/environments/enviroment.ts
+src/environments/environment.ts

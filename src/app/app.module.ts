@@ -27,7 +27,7 @@ import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { AngularFireStorageModule } from '@angular/fire/compat/storage';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { AngularFireDatabaseModule } from '@angular/fire/compat/database';
-import { firebaseConfig } from 'src/environments/enviroment';
+import { firebaseConfig } from 'src/environments/environment';
 import { LoginButtonComponent } from './shared/components/login-button/login-button.component';
 import { MatToolbarModule} from '@angular/material/toolbar';
 import { VideoInitFormComponent } from './components/video-add-form/video-init-form.component';
