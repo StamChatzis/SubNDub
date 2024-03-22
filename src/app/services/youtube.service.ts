@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, OnDestroy } from '@angular/core';
-import { GOOGLE_API_KEY } from 'src/environments/environment';
+import { environment } from 'src/environments/environment';
 import { Video } from '../models/firestore-schema/user.model';
 import { YoutubeResponse, YoutubeVideoDetails } from '../models/youtube/youtube-response.model';
 import { BehaviorSubject, Observable, map } from 'rxjs';
@@ -22,7 +22,7 @@ export class YoutubeService implements OnDestroy {
 
   getVideoDetails(videoIdsPayload: string): Observable<YoutubeVideoDetails[]> {
     const videoIds = videoIdsPayload;
-    const url = `https://www.googleapis.com/youtube/v3/videos?part=snippet&part=statistics&part=contentDetails&id=${videoIds}&key=${GOOGLE_API_KEY}`
+    const url = `https://www.googleapis.com/youtube/v3/videos?part=snippet&part=statistics&part=contentDetails&id=${videoIds}&key=${environment.GOOGLE_API_KEY}`
     return this.http.get<YoutubeResponse>(url).pipe(
       map((res) => {
         if (res)
@@ -34,7 +34,7 @@ export class YoutubeService implements OnDestroy {
 
   getCaptionDetails(videoIdsPayload: string): Observable<YoutubeVideoDetails[]> {
     const videoIds = videoIdsPayload;
-    const url = `https://www.googleapis.com/youtube/v3/captions?part=snippet&videoId=${videoIds}&key=${GOOGLE_API_KEY}`
+    const url = `https://www.googleapis.com/youtube/v3/captions?part=snippet&videoId=${videoIds}&key=${environment.GOOGLE_API_KEY}`
     return this.http.get<YoutubeResponse>(url).pipe(
       map((res) => {
         if (res)

@@ -27,7 +27,7 @@ import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { AngularFireStorageModule } from '@angular/fire/compat/storage';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { AngularFireDatabaseModule } from '@angular/fire/compat/database';
-import { firebaseConfig } from 'src/environments/environment';
+import { environment } from 'src/environments/environment';
 import { LoginButtonComponent } from './shared/components/login-button/login-button.component';
 import { MatToolbarModule} from '@angular/material/toolbar';
 import { VideoInitFormComponent } from './components/video-add-form/video-init-form.component';
@@ -59,6 +59,7 @@ import { CommunitySubtitlingContainerComponent } from './community-subtitling-co
 import { ConfirmationModalComponent } from './components/dialog-modal/confirmation-modal/confirmation-modal.component';
 import { BatchDialogModalComponent } from './components/dialog-modal/batch-dialog-modal/batch-dialog-modal.component';
 
+console.log(environment.firebaseConfig.apiKey);
 @NgModule({
   declarations: [
     AppComponent,
@@ -108,7 +109,7 @@ import { BatchDialogModalComponent } from './components/dialog-modal/batch-dialo
     HttpClientModule,
     MatMenuModule,
     MatProgressSpinnerModule,
-    AngularFireModule.initializeApp(firebaseConfig),
+    AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireAuthModule,
     AngularFirestoreModule,
     AngularFireStorageModule,
