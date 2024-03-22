@@ -24,6 +24,7 @@
     "@angular/router": "^16.2.12",
     "@angular/youtube-player": "^15.2.9",
     "firebase": "^9.23.0",
+    "firebase-tools": "^12.9.1",
     "ngx-color-picker": "^14.0.0",
     "openai": "^4.24.1",
     "rxjs": "~7.5.0",
