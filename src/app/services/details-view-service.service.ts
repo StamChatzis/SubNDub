@@ -20,7 +20,7 @@ export class DetailsViewServiceService {
     return videoRef.collection('subtitleLanguages').snapshotChanges().pipe(
       switchMap(languages => {
         return languages.length ? combineLatest(
-          languages.map(language => 
+          languages.map(language =>
             videoRef.collection('subtitleLanguages').doc(language.payload.doc.id)
               .collection('subtitles').snapshotChanges().pipe(
                 map(subtitles => subtitles.map(sub => sub.payload.doc.data()))
@@ -54,7 +54,7 @@ export class DetailsViewServiceService {
 
   addSubtitle(videoId: string, language: Language, userUid: string, name: string, format: SubtitleFormat): void {
     const docRef: AngularFirestoreDocument = this.firestore.doc(`users/${userUid}/videos/${videoId}/subtitleLanguages/${language.language}`);
-    
+
     const docData = {
       humanReadable: language.name,
       ISOcode: language.language,
@@ -62,7 +62,7 @@ export class DetailsViewServiceService {
 
     docRef.set(docData).then(()=> {
       const subtitleRef: AngularFirestoreDocument = docRef.collection(`/subtitles`).doc(name);
-      
+
       const data = {
         lastUpdated: Date.now(),
         fileName: name,

@@ -59,7 +59,6 @@ import { CommunitySubtitlingContainerComponent } from './community-subtitling-co
 import { ConfirmationModalComponent } from './components/dialog-modal/confirmation-modal/confirmation-modal.component';
 import { BatchDialogModalComponent } from './components/dialog-modal/batch-dialog-modal/batch-dialog-modal.component';
 
-console.log(environment.firebaseConfig.apiKey);
 @NgModule({
   declarations: [
     AppComponent,
