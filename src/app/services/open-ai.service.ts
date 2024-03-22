@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { environment } from 'src/environments/environment';
+import { openAIConfig } from 'src/environments/enviroment';
 import { ChatGPTACtion } from '../subtitling-container/dialog-component/dialog-content/dialog-content.component';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
@@ -22,7 +22,7 @@ export class OpenAIService {
 
    getDataFromOpenAI(GPTaction: ChatGPTACtion): Observable<any> {
     const url = "https://api.openai.com/v1/chat/completions";
-    const  httpHeaders = new HttpHeaders().set("Authorization",`Bearer ${environment.openAIConfig.OPENAI_API_KEY}`);
+    const  httpHeaders = new HttpHeaders().set("Authorization",`Bearer ${openAIConfig.apiKey}`);
 
     let payload = {
       model: 'gpt-3.5-turbo',
