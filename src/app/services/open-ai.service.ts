@@ -22,7 +22,7 @@ export class OpenAIService {
 
    getDataFromOpenAI(GPTaction: ChatGPTACtion): Observable<any> {
     const url = "https://api.openai.com/v1/chat/completions";
-    const  httpHeaders = new HttpHeaders().set("Authorization",`Bearer ${openAIConfig.apiKey}`);
+    const  httpHeaders = new HttpHeaders().set("Authorization",`Bearer ${openAIConfig.OPENAI_API_KEY}`);
 
     let payload = {
       model: 'gpt-3.5-turbo',
