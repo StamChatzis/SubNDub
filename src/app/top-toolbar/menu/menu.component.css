@@ -1,21 +1,22 @@
 .spacer {
-    flex: 1 1 auto;
-  }
+  flex: 1 1 auto;
+}
 
-  .user-wrapper {
-    display:flex;
-    gap:10px;
-  }
+.user-wrapper {
+  display:flex;
+  gap:10px;
+}
 
-  .user-name {
-    margin: 0 10px 0 0;
-  }
+.user-name {
+  margin: 0 10px 0 0;
+}
 
-  .user-icon {
-    border-radius:50%;
-    width:32px;
-    height:32px;
-  }
+.user-icon {
+  border-radius:50%;
+  width:45px;
+  height:45px;
+  cursor: pointer;
+}
 
 .mat-toolbar-single-row {
   background: white;

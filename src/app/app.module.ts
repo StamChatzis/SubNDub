@@ -58,6 +58,8 @@ import { SaveSubtitleDialogComponent } from './components/dialog-modal/save-subt
 import { CommunitySubtitlingContainerComponent } from './community-subtitling-container/community-subtitling-container.component';
 import { ConfirmationModalComponent } from './components/dialog-modal/confirmation-modal/confirmation-modal.component';
 import { BatchDialogModalComponent } from './components/dialog-modal/batch-dialog-modal/batch-dialog-modal.component';
+import {NgOptimizedImage} from "@angular/common";
+import { ProfileDropdownComponent } from './shared/components/profile-dropdown/profile-dropdown.component';
 
 @NgModule({
   declarations: [
@@ -89,41 +91,43 @@ import { BatchDialogModalComponent } from './components/dialog-modal/batch-dialo
     SaveSubtitleDialogComponent,
     CommunitySubtitlingContainerComponent,
     ConfirmationModalComponent,
-    BatchDialogModalComponent
+    BatchDialogModalComponent,
+    ProfileDropdownComponent
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    BrowserAnimationsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    ReactiveFormsModule,
-    MatButtonModule,
-    YouTubePlayerModule,
-    MatIconModule,
-    FormsModule,
-    MatTooltipModule,
-    FlexLayoutModule,
-    MatCardModule,
-    HttpClientModule,
-    MatMenuModule,
-    MatProgressSpinnerModule,
-    AngularFireModule.initializeApp(firebaseConfig),
-    AngularFireAuthModule,
-    AngularFirestoreModule,
-    AngularFireStorageModule,
-    AngularFireDatabaseModule,
-    MatToolbarModule,
-    MatDividerModule,
-    MatDialogModule,
-    MatSnackBarModule,
-    MatTableModule,
-    DragDropModule,
-    MatDialogModule,
-    ColorPickerModule,
-    MatStepperModule,
-    MatSelectModule
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        ReactiveFormsModule,
+        MatButtonModule,
+        YouTubePlayerModule,
+        MatIconModule,
+        FormsModule,
+        MatTooltipModule,
+        FlexLayoutModule,
+        MatCardModule,
+        HttpClientModule,
+        MatMenuModule,
+        MatProgressSpinnerModule,
+        AngularFireModule.initializeApp(firebaseConfig),
+        AngularFireAuthModule,
+        AngularFirestoreModule,
+        AngularFireStorageModule,
+        AngularFireDatabaseModule,
+        MatToolbarModule,
+        MatDividerModule,
+        MatDialogModule,
+        MatSnackBarModule,
+        MatTableModule,
+        DragDropModule,
+        MatDialogModule,
+        ColorPickerModule,
+        MatStepperModule,
+        MatSelectModule,
+        NgOptimizedImage
+    ],
   providers: [],
   bootstrap: [AppComponent]
 })
