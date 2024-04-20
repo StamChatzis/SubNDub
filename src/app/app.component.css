@@ -26,3 +26,23 @@
     flex-wrap: wrap;
     justify-content: center;
 }
+
+.profile-drop-down{
+  font-family: 'MartianMono';
+  position: absolute;
+  z-index: 20;
+  top: 100px;
+  right: 20px;
+  opacity: 1;
+  animation-name: show-dd;
+  animation-duration: 0.3s;
+}
+
+@keyframes show-dd {
+  from{
+    opacity: 0;
+  }
+  to{
+    opacity: 1;
+  }
+}

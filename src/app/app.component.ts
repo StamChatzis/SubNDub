@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from './services/auth.service';
 
 @Component({
@@ -8,7 +7,23 @@ import { AuthService } from './services/auth.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+  showMenuDD = false;
 
   constructor(public auth: AuthService) { }
 
+  toggleDropDown(event: any) {
+    if(event.target.classList != undefined) {
+      if(event.target.classList.contains('user-icon')) {
+        this.showMenuDD = !this.showMenuDD
+        return this.showMenuDD;
+      }
+      else{
+        this.showMenuDD = false;
+        return this.showMenuDD;
+      }
+    }else{
+      this.showMenuDD = false
+      return this.showMenuDD;
+    }
+  }
 }

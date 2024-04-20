@@ -1,0 +1,15 @@
+nav{
+  border: 0 solid;
+  border-radius: 20px;
+  padding: 30px;
+  background-color: #fafafa;
+  box-shadow: 0 0 7px rgba(0, 0, 0, 0.3);
+}
+
+.hello-txt{
+
+}
+
+.logout-btn{
+  text-align: center;
+}

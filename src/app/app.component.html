@@ -1,2 +1,7 @@
-<app-menu></app-menu>
-<router-outlet></router-outlet>
+<div (click)="toggleDropDown($event)">
+  <div class="profile-drop-down" *ngIf="showMenuDD" [class.dd-activated]="showMenuDD">
+    <profile-dropdown></profile-dropdown>
+  </div>
+  <app-menu></app-menu>
+  <router-outlet></router-outlet>
+</div>

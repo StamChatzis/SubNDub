@@ -1,20 +1,18 @@
 <mat-toolbar>
-    <span [routerLink]="''"><div class="logo">S & D</div></span>
+    <span [routerLink]="''">
+      <div class="logo">S & D</div>
+    </span>
     <div class="menu-items">
         <span [routerLink]="''">Home</span>
         <span [routerLink]="'dashboard'" [matTooltip]="'Login to view your Dashboard'" [matTooltipDisabled]="auth.isLoggedIn">Dashboard</span>
     </div>
     <span class="spacer"></span>
-    <div class="user-wrapper" *ngIf="(auth.user | async) as user" (click)="showMenuDD = !showMenuDD">
+    <div class="user-wrapper" *ngIf="(auth.user | async) as user" id="user-photo">
       <img alt="user-img"  class="user-icon" [src]="user.photoURL">
-<!--        <h3 class="user-name" >-->
-<!--            Hello, {{user.displayName}}-->
-<!--        </h3>-->
-      <div class="profile-drop-down" *ngIf="showMenuDD">
-        <profile-dropdown></profile-dropdown>
-      </div>
     </div>
-<!--  <div *ngIf="!(auth.user | async)">-->
-    <login-button></login-button>
-<!--  </div>-->
+    <div *ngIf="!(auth.user | async)">
+      <login-button></login-button>
+    </div>
 </mat-toolbar>
+
+

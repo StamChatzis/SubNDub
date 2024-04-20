@@ -2,8 +2,6 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
 
-let showMenuDD: boolean;
-
 @Component({
   selector: 'app-menu',
   templateUrl: './menu.component.html',
@@ -12,5 +10,4 @@ let showMenuDD: boolean;
 
 export class MenuComponent {
   constructor(public auth: AuthService, public router: Router) {}
-  showMenuDD = false;
 }
