@@ -8,7 +8,7 @@
     </div>
     <span class="spacer"></span>
     <div class="user-wrapper" *ngIf="(auth.user | async) as user" id="user-photo">
-      <img alt="user-img"  class="user-icon" [src]="user.photoURL">
+      <img alt="user-img" referrerpolicy="no-referrer" class="user-icon" [src]="user.photoURL">
     </div>
     <div *ngIf="!(auth.user | async)">
       <login-button></login-button>
