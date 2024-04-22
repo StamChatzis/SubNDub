@@ -1,10 +1,18 @@
-<nav>
-  <div *ngIf="(auth.user | async) as user" class="hello-txt">
-    <h2 class="user-name" >
+<nav class="no-hide-dd">
+
+  <div *ngIf="(auth.user | async) as user" class="hello-txt no-hide-dd">
+    <h2 class="user-name no-hide-dd">
       Hello, {{user.displayName}}!
     </h2>
   </div>
-  <div *ngIf="(auth.user | async)" class="logout-btn" >
+
+  <div class="border no-hide-dd"></div>
+
+  <div [routerLink]="'profile'" class="go-to-settings">
+    <mat-icon>settings</mat-icon><p>Profile settings</p>
+  </div>
+
+  <div *ngIf="(auth.user | async)" class="logout-btn">
     <login-button></login-button>
   </div>
 </nav>

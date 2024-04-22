@@ -3,13 +3,42 @@ nav{
   border-radius: 20px;
   padding: 30px;
   background-color: #fafafa;
-  box-shadow: 0 0 7px rgba(0, 0, 0, 0.3);
-}
-
-.hello-txt{
-
+  box-shadow: 0 0 7px rgba(0, 0, 0, 0.5);
 }
 
 .logout-btn{
+  margin-top: 20px;
   text-align: center;
+}
+
+.border{
+  height: 1px;
+  background-image: linear-gradient(to right, transparent, black, transparent);
+  background-position: left bottom, right bottom;
+  background-repeat: no-repeat;
+}
+
+.go-to-settings{
+  margin-top: 20px;
+  border-radius: 15px;
+  padding: 4px;
+  display: flex;
+  cursor: pointer;
+  transition: background-color 0.1s, height 0.1s;
+}
+
+.go-to-settings:hover{
+  background-color: #c7c7c7;
+  border-radius: 15px;
+}
+
+.go-to-settings p{
+  text-align: center;
+  margin-top: 3px;
+  padding-left: 10px;
+  padding-top: 10px;
+}
+
+.go-to-settings mat-icon{
+  padding-top: 10px;
 }

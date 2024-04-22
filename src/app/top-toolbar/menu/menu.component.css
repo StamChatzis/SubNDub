@@ -16,6 +16,19 @@
   width:45px;
   height:45px;
   cursor: pointer;
+  transition: width 0.1s, height 0.1s;
+}
+
+.user-icon:hover{
+  box-shadow: 0 0 7px rgba(0, 0, 0, 0.5);
+  width:47px;
+  height:47px;
+}
+
+.user-icon:active{
+  box-shadow: 0 0 7px rgba(0, 0, 0, 0.5);
+  width:45px;
+  height:45px;
 }
 
 .mat-toolbar-single-row {

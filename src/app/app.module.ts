@@ -58,8 +58,9 @@ import { SaveSubtitleDialogComponent } from './components/dialog-modal/save-subt
 import { CommunitySubtitlingContainerComponent } from './community-subtitling-container/community-subtitling-container.component';
 import { ConfirmationModalComponent } from './components/dialog-modal/confirmation-modal/confirmation-modal.component';
 import { BatchDialogModalComponent } from './components/dialog-modal/batch-dialog-modal/batch-dialog-modal.component';
-import {NgOptimizedImage} from "@angular/common";
+import { NgOptimizedImage } from "@angular/common";
 import { ProfileDropdownComponent } from './shared/components/profile-dropdown/profile-dropdown.component';
+import { ProfileComponent } from './components/profile/profile.component';
 
 @NgModule({
   declarations: [
@@ -92,7 +93,8 @@ import { ProfileDropdownComponent } from './shared/components/profile-dropdown/p
     CommunitySubtitlingContainerComponent,
     ConfirmationModalComponent,
     BatchDialogModalComponent,
-    ProfileDropdownComponent
+    ProfileDropdownComponent,
+    ProfileComponent
   ],
     imports: [
         BrowserModule,

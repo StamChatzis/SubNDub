@@ -59,7 +59,24 @@ export class AuthService  {
       displayName: user.displayName,
       photoURL: user.photoURL,
     }
-    
+
+    //Checking if user img is available or get 403 error in order to put a custom img in profile
+    const checkIfUsersImgIsAvailable = async (imageUrl: string) => {
+      try {
+        const response = await fetch(imageUrl, { method: 'HEAD' });
+        return response.status !== 403;
+      } catch (error) {
+        return false;
+      }
+    };
+
+    checkIfUsersImgIsAvailable(data.photoURL)
+      .then((isAvailable) => {
+        if (!isAvailable) {
+          user.photoURL = "assets/images/user_without_img.png";
+        }
+      });
+
     return userRef.set(data, {merge: true});
   }
 }
