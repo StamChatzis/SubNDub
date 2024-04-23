@@ -1,5 +1,25 @@
 <main>
-  <div class="under-const">
-    <p>Under Construction!</p>
+  <div class="profile-wrapper" *ngIf="(auth.user | async) as user">
+    <div class="profile-details">
+      <div class="profile-details-header">
+        <p></p>
+      </div>
+      <div class="profile-img">
+        <img alt="user-img" referrerpolicy="no-referrer" class="user-icon" [src]="user.photoURL">
+      </div>
+      <div class="profile-bio">
+        <p>{{user.displayName}}</p>
+      </div>
+    </div>
+    <div class="profile-edit">
+      <div class="profile-edit-head">
+        <h3>Edit Profile</h3>
+      </div>
+      <div class="profile-edit-control">
+        <p>something gonna happen here</p>
+      </div>
+    </div>
   </div>
+
+  <fullscreen-loader *ngIf="(loading$ | async)"></fullscreen-loader>
 </main>

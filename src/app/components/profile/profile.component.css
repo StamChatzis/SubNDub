@@ -1,3 +1,37 @@
 main{
-  margin: auto;
+  height: 90vh;
+}
+
+.profile-wrapper{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  margin-top: 40px;
+}
+
+.profile-details, .profile-edit{
+  width: auto;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 0 4px rgba(126, 126, 126, 0.5);
+  background-color: #f6f6f6;
+}
+
+.profile-img{
+  text-align: center;
+}
+
+.profile-img img {
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+}
+
+.profile-bio p{
+  margin-top: 15px;
+  font-size: 1.57em;
+}
+
+.profile-edit-head h3{
+  font-size: 1.57em;
 }
