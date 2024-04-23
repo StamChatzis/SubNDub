@@ -15,6 +15,7 @@ export class ProfileComponent implements OnInit{
   user$: Observable<GmailUser>;
   loading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
   userInfoForm: FormGroup;
+  editedProfileDetails: boolean = false;
 
   constructor(private router: Router, public auth: AuthService) {
     this.userInfoForm = new FormGroup({
@@ -26,8 +27,14 @@ export class ProfileComponent implements OnInit{
   ngOnInit() {
     this.user$ = this.auth.user;
     this.user$.subscribe({
-      next: data => {},
+      next: data => {
+
+      },
       error: error => {console.log(error)}
     })
+  }
+
+  isEdited(){
+    this.editedProfileDetails = true;
   }
 }
