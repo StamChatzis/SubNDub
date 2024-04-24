@@ -7,37 +7,56 @@
       <div class="profile-img">
         <img alt="profile-user-img" referrerpolicy="no-referrer" [src]="user.photoURL">
       </div>
-      <div class="profile-bio">
+      <div class="profile-display-name">
         <p>{{user.displayName}}</p>
+      </div>
+      <div class="prof-user-email">
+        <p>{{user.email}}</p>
       </div>
     </div>
     <div class="profile-edit">
       <div class="profile-edit-head">
-        <h3>Edit Profile</h3>
+        <h3>Edit your Profile</h3>
       </div>
       <div class="profile-edit-control">
         <form [formGroup]="userInfoForm">
           <div class="profile-edit-details">
-            <mat-card-header>
-              <mat-card-title>Display Name</mat-card-title>
-            </mat-card-header>
-            <mat-form-field>
-              <input matInput formControlName="displayName" placeholder="Your Name to Display" (keydown)="isEdited()">
-            </mat-form-field>
+            <div class="profile-edit-display-name">
+              <mat-card-header>
+                <mat-card-title>Display Name</mat-card-title>
+              </mat-card-header>
+              <mat-form-field>
+                <input matInput formControlName="displayName" placeholder="Your Name to Display" (keydown)="isEdited()">
+              </mat-form-field>
+            </div>
+            <div class="profile-edit-email-ethnicity">
+              <mat-card-header>
+                <mat-card-title>E-Mail</mat-card-title>
+              </mat-card-header>
+              <mat-form-field>
+                <input matInput formControlName="email" placeholder="Your email" (keydown)="isEdited()">
+              </mat-form-field>
 
-            <mat-card-header>
-              <mat-card-title></mat-card-title>
-            </mat-card-header>
-            <mat-form-field>
-              <input matInput formControlName="email" placeholder="Your email" (keydown)="isEdited()">
-            </mat-form-field>
+              <mat-card-header>
+                <mat-card-title>Ethnicity</mat-card-title>
+              </mat-card-header>
+              <mat-form-field>
+                <mat-select (selectionChange)="isEdited()">
+                  <mat-option value="0">[NO COUNTRIES]</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
 
+            <div class="profile-edit-bio"></div>
             <mat-card-header>
-              <mat-card-title>Ethnicity</mat-card-title>
+              <mat-card-title>Biography</mat-card-title>
             </mat-card-header>
             <mat-form-field>
-              <input matInput placeholder="Your ethnicity" (keydown)="isEdited()">
+              <textarea matInput placeholder="Tell something about yourself"></textarea>
             </mat-form-field>
+          </div>
+          <div class="profile-lang">
+
           </div>
           <div class="save-profile-changes">
             <button mat-raised-button color="primary" [disabled] = "!editedProfileDetails">Save changes</button>

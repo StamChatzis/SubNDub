@@ -14,7 +14,7 @@ export class SignInComponent {
     if (this.auth.isLoggedIn) {
       this.router.navigate(['dashboard']);
     } else {
-      this.auth.googleSignin();
+      this.auth.googleSignIn();
     }
   }
 }
