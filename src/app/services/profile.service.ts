@@ -1,6 +1,8 @@
 import {Injectable} from "@angular/core";
-import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
+import {AngularFireAuth} from "@angular/fire/compat/auth";
+import {AngularFirestore} from "@angular/fire/compat/firestore";
+import {User} from "../models/firestore-schema/user.model";
 
 @Injectable({
   providedIn: 'root'
@@ -8,6 +10,11 @@ import {Observable} from "rxjs";
 
 export class ProfileService {
 
-  constructor(private http: HttpClient) {}
+  constructor(private fireAuth: AngularFireAuth, private firestore: AngularFirestore) {
+  }
+
+  updateProfile(user: User) {
+
+  }
 
 }

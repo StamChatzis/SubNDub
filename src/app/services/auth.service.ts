@@ -4,7 +4,7 @@ import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/compat
 import { Router } from '@angular/router';
 import { GoogleAuthProvider } from '@angular/fire/auth';
 import { BehaviorSubject, Observable, of, switchMap } from 'rxjs';
-import { GmailUser, Video } from 'src/app/models/firestore-schema/user.model';
+import { GmailUser, LanguageSkills, Video } from 'src/app/models/firestore-schema/user.model';
 
 @Injectable({
   providedIn: 'root'
@@ -40,8 +40,19 @@ export class AuthService  {
   async googleSignIn() {
     const provider = new GoogleAuthProvider();
     const credential = await this.fireAuth.signInWithPopup(provider);
-    if (credential.user) this.router.navigate(['dashboard']);
-    this.updateUserData(credential.user);
+    if (credential.user) {
+      const ifUserExist: AngularFirestoreDocument = this.firestore.doc(`users/${credential.user.uid}`);
+      ifUserExist.get().subscribe(docSnapshot => {
+        if(docSnapshot.exists){
+          this.updateUserData(credential.user);
+          this.router.navigate(['dashboard']);
+        }else{
+          this.createNewUserData(credential.user);
+          this.router.navigate(['profile']);
+        }
+      })
+
+    }
   }
 
   async signOut() {
@@ -49,15 +60,29 @@ export class AuthService  {
     this.router.navigate(['']);
   }
 
-  private updateUserData(user: GmailUser) {
-    //add user to firestore database on login
-    const userRef: AngularFirestoreDocument<GmailUser> = this.firestore.doc(`users/${user.uid}`);
+  private createNewUserData(user: GmailUser){
+    //add new user data to firestore with default settings
+    const userDataRef: AngularFirestoreDocument<GmailUser> = this.firestore.doc(`users/${user.uid}`);
 
-    const data = {
+    const newUserData = {
       uid: user.uid,
       email: user.email,
       displayName: user.displayName,
       photoURL: user.photoURL,
+      bio: '',
+      ethnicity: ''
+    }
+
+    return userDataRef.set(newUserData);
+  }
+
+  private updateUserData(user: GmailUser) {
+    //update user data to firestore database on login
+    const userRef: AngularFirestoreDocument<GmailUser> = this.firestore.doc(`users/${user.uid}`);
+    const data = {
+      uid: user.uid,
+      email: user.email,
+      photoURL: user.photoURL
     }
 
     return userRef.set(data, {merge: true});

@@ -1,12 +1,20 @@
 export interface User {
     uid: string;
     displayName?: string;
+    bio?: string;
+    ethnicity?: string;
     videos?: Video[];
 }
 
 export interface GmailUser extends User {
     email: string;
     photoURL?: string;
+}
+
+export interface LanguageSkills{
+  uid: string;
+  language: string;
+  level: string;
 }
 
 export interface Video {
