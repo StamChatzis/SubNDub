@@ -18,9 +18,12 @@
       <div class="profile-edit-head">
         <h3>Edit your Profile</h3>
       </div>
-      <div class="profile-edit-control">
-        <form [formGroup]="userInfoForm">
-          <div class="profile-edit-details">
+      <div class="prof-lang-controls">
+        <div class="profile-edit-control">
+          <form [formGroup]="userInfoForm">
+            <div class="profile-details-header">
+              <h3>Profile details:</h3>
+            </div>
             <div class="profile-edit-display-name">
               <mat-card-header>
                 <mat-card-title>Display Name</mat-card-title>
@@ -29,42 +32,69 @@
                 <input matInput formControlName="displayName" placeholder="Your Name to Display" (keydown)="isEdited()">
               </mat-form-field>
             </div>
-            <div class="profile-edit-email-ethnicity">
+            <div class="profile-edit-email">
               <mat-card-header>
                 <mat-card-title>E-Mail</mat-card-title>
               </mat-card-header>
               <mat-form-field>
                 <input matInput formControlName="email" placeholder="Your email" (keydown)="isEdited()">
               </mat-form-field>
-
+            </div>
+            <div class="profile-edit-ethnicity" >
               <mat-card-header>
                 <mat-card-title>Ethnicity</mat-card-title>
               </mat-card-header>
               <mat-form-field>
-                <mat-select (selectionChange)="isEdited()">
-                  <mat-option value="0">[NO COUNTRIES]</mat-option>
+                <mat-select (selectionChange)="isEdited()" formControlName="ethnicity">
+                  <mat-option value="0">Select your country</mat-option>
+                  <mat-option *ngFor="let lang of (availableLanguages$ | async)?.data?.languages" value="{{lang.name}}">{{lang.name}}</mat-option>
                 </mat-select>
               </mat-form-field>
             </div>
-
             <div class="profile-edit-bio"></div>
             <mat-card-header>
               <mat-card-title>Biography</mat-card-title>
             </mat-card-header>
             <mat-form-field>
-              <textarea matInput placeholder="Tell something about yourself"></textarea>
+              <textarea matInput placeholder="Tell something about yourself" (keydown)="isEdited()"></textarea>
             </mat-form-field>
-          </div>
-          <div class="profile-lang">
-
-          </div>
-          <div class="save-profile-changes">
-            <button mat-raised-button color="primary" [disabled] = "!editedProfileDetails">Save changes</button>
-          </div>
-        </form>
+          </form>
+        </div>
+        <div class="profile-lang-control">
+          <form [formGroup]="langSkillsForm">
+            <div class="lang-details-header">
+              <h3>Language Skills:</h3>
+            </div>
+            <div class="edit-prof-lang-details">
+              <div class="lang-selection-edit">
+                <mat-card-header>
+                  <mat-card-title>Language</mat-card-title>
+                </mat-card-header>
+                <mat-form-field>
+                  <mat-select (selectionChange)="isEdited()">
+                    <mat-option value="0">[NO LANGUAGES YET]</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="lang-skill-select">
+                <mat-card-header>
+                  <mat-card-title>Skill Level</mat-card-title>
+                </mat-card-header>
+                <mat-form-field>
+                  <mat-select (selectionChange)="isEdited()">
+                    <mat-option value="0">[NO SKILLS YET]</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+          </form>
+        </div>
       </div>
+      <div class="save-profile-changes">
+        <button mat-raised-button color="primary" [disabled] = "!editedProfileDetails" (click)="saveChanges()">Save changes</button>
+      </div>
+
     </div>
   </div>
-
   <fullscreen-loader *ngIf="(loading$ | async)"></fullscreen-loader>
 </main>

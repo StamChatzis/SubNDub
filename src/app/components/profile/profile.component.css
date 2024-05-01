@@ -22,8 +22,8 @@ main{
   height: fit-content;
 }
 
-.profile-edit-details mat-form-field{
-  width: 30vw;
+.profile-edit-control mat-form-field, .profile-lang-control mat-form-field{
+  width: 25vw;
 }
 
 .profile-img img {
@@ -48,8 +48,8 @@ main{
 }
 
 .profile-edit-head h3{
-  font-size: 1.57em;
-  margin-bottom: 50px;
+  font-size: 1.90em;
+  margin-bottom: 40px;
 }
 
 mat-card-title{
@@ -59,4 +59,23 @@ mat-card-title{
 .save-profile-changes{
   margin-top: 50px;
   float: right;
+}
+
+.profile-details-header  h3, .lang-details-header h3{
+  font-size: 20px
+}
+
+.prof-lang-controls{
+  display: flex;
+  flex-flow: wrap;
+}
+
+.profile-lang-control{
+  margin-left: 20px;
+  padding-left: 20px;
+  border-left: 1px #b4b4b4 solid;
+}
+
+.profile-edit-bio textarea{
+  min-height: 40px;
 }
