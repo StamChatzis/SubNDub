@@ -3,6 +3,7 @@ import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument 
 import { Language } from '../models/google/google-supported-languages';
 import { Observable, combineLatest, map, of, switchMap } from 'rxjs';
 import { GmailUser } from '../models/firestore-schema/user.model';
+import { NotifierService } from './notifier.service';
 
 @Injectable()
 
@@ -10,7 +11,7 @@ export class DetailsViewServiceService {
 
   subtitleLanguages$: Observable<Language[]>;
 
-  constructor(private firestore: AngularFirestore) {}
+  constructor(private firestore: AngularFirestore, private notifier: NotifierService) {}
 
 
   getSubtitleLanguages(userUid: string, videoId: string): Observable<Language[]> {
@@ -48,8 +49,20 @@ export class DetailsViewServiceService {
       format: format
     }
 
-    helpRequestRef.add(data);
-
+    this.firestore.collection(`helpRequests`, ref => ref.where('filename', '==', filename).where('status', '==','open'))
+    .get()
+    .subscribe(subRequest => {
+      if (!subRequest.empty) {
+        // Perform actions if filename exists
+        this.notifier.showNotification("Subtitle has been already requested for a bid.","DIMISS");
+        return;
+      } else {
+        // Perform actions if filename does not exist
+        helpRequestRef.add(data);
+        this.notifier.showNotification("Subtitle has been successfully requested for a bid.","OK");
+        
+      }
+    });
   }
 
   addSubtitle(videoId: string, language: Language, userUid: string, name: string, format: SubtitleFormat): void {
@@ -75,6 +88,12 @@ export class DetailsViewServiceService {
       subtitleRef.set(data);
     })
   }
+
+  shareSubtitle(videoId: string, ISOcode: string, language: string, userUid: string, name: string, format: string, email: string, right: string): void{
+    console.log("Email " + email);
+    console.log("Right " + right);
+  }
+     
 }
 
 export enum SubtitleFormat{

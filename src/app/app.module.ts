@@ -61,6 +61,8 @@ import { BatchDialogModalComponent } from './components/dialog-modal/batch-dialo
 import { NgOptimizedImage } from "@angular/common";
 import { ProfileDropdownComponent } from './shared/components/profile-dropdown/profile-dropdown.component';
 import { ProfileComponent } from './components/profile/profile.component';
+import { ShareSubtitleDialogComponent } from './components/dialog-modal/share-subtitle-dialog/share-subtitle-dialog.component';
+import { MatGridListModule } from '@angular/material/grid-list';
 
 @NgModule({
   declarations: [
@@ -94,7 +96,8 @@ import { ProfileComponent } from './components/profile/profile.component';
     ConfirmationModalComponent,
     BatchDialogModalComponent,
     ProfileDropdownComponent,
-    ProfileComponent
+    ProfileComponent,
+    ShareSubtitleDialogComponent
   ],
     imports: [
         BrowserModule,
@@ -128,7 +131,8 @@ import { ProfileComponent } from './components/profile/profile.component';
         ColorPickerModule,
         MatStepperModule,
         MatSelectModule,
-        NgOptimizedImage
+        NgOptimizedImage,
+        MatGridListModule
     ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,0 +1,40 @@
+<h2 mat-dialog-title>Share subtitle</h2>
+<mat-dialog-content class="mat-typography">
+  <h3 class="mat-typography">Filename: <b>{{data}}</b></h3>
+</mat-dialog-content>
+<div class="input-container">
+    <mat-form-field class="emailInput">
+        <mat-label>Add email</mat-label>
+        <input matInput type="email" #email required>
+        
+    </mat-form-field>
+    <mat-form-field class="format-selector">
+        <mat-label>Rights</mat-label>
+        <mat-select #right required>
+          <mat-option [value]="'Editor'">
+            Editor
+          </mat-option>
+          <mat-option [value]="'Viewer'">
+            Viewer
+          </mat-option>
+          <mat-option [value]="'Commenter'">
+            Commenter
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+</div>
+<div class="accessGridList">
+    <mat-dialog-content>
+        <h3>People with access</h3>
+        <mat-grid-list cols="2" rowHeight="40px">
+            <!--<mat-grid-tile>1</mat-grid-tile>
+            <mat-grid-tile>2</mat-grid-tile> -->          
+        </mat-grid-list>
+    </mat-dialog-content>
+</div>
+<div class="buttons-div-container">
+    <mat-dialog-actions class="dialog-buttons" >
+        <button mat-button [mat-dialog-close]="null">Cancel</button>
+        <button mat-raised-button [mat-dialog-close]="{email: email.value , right: right.value}" color="primary">Save</button>
+    </mat-dialog-actions>
+</div>

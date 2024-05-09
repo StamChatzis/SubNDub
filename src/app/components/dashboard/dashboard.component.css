@@ -17,9 +17,20 @@
     font-size:32px;
 }
 
+.myshared-videos-header h1{
+    padding-top:30px;
+    font-size:32px;
+}
+
 .community-videos-header h1{
     padding-top:30px;
     font-size:32px;
+    display: table;
+}
+
+.community-videos-header h1 span{
+    display: inline-table;
+    margin-left: 10px;
 }
 
 .video-container {

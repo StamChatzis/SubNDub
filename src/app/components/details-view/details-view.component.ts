@@ -12,6 +12,7 @@ import { YoutubeService } from 'src/app/services/youtube.service';
 import { SaveSubtitleDialogComponent } from '../dialog-modal/save-subtitle-dialog/save-subtitle-dialog.component';
 import { GmailUser } from 'src/app/models/firestore-schema/user.model';
 import { timeSince } from '../video-card/video-card.component';
+import { ShareSubtitleDialogComponent } from '../dialog-modal/share-subtitle-dialog/share-subtitle-dialog.component';
 
 @Component({
   selector: 'details-view',
@@ -112,6 +113,16 @@ export class DetailsViewComponent implements OnInit {
 
   requestCommunityHelp(language:string ,iso: string, filename: string, format: string): void {
     this.detailsViewService.requestCommunityHelp(this.user$.value, this.videoId,language, iso, filename, format)
+  }
+
+  shareSubtitle(language:string, ISOcode:string ,filename: string, format: string) : void { 
+    this.dialog.open(ShareSubtitleDialogComponent,{width:'600px', height:'400px', data: filename}).afterClosed().pipe(take(1)).subscribe(dialog => {
+      if (dialog?.email && dialog?.right) {
+        this.detailsViewService.shareSubtitle(this.videoId, ISOcode, language, this.user$.value.uid, filename, format, dialog.email, dialog.right);
+      }else{
+        this.snackbar.open('No changes have been made', 'DISMISS', {duration:3000});
+      }
+    })
   }
 
   navigateToDashboard(): void {

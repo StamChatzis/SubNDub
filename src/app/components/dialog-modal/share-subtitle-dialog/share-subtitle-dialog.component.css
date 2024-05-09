@@ -1,0 +1,33 @@
+.emailInput {
+    width: 60%;
+    margin-left: 10px;
+}
+
+.dialog-buttons{
+    display: flex;
+    flex-grow: 1;
+    gap: normal 16px;
+    justify-content: flex-end;
+}
+
+.buttons-div-container {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 8px 0;
+    row-gap: 8px;
+}
+
+
+mat-grid-tile {
+    background: lightblue;
+}
+
+
+
+.accessGridList{
+    overflow-y: auto;
+    display: block;
+    unicode-bidi: isolate;
+}
