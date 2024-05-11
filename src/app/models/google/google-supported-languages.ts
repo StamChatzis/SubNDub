@@ -1,12 +1,12 @@
 export interface SupportedLanguages {
-    data: Languages;
+  data: Languages;
 }
 
 export interface Languages {
-    languages: Language[];
+  languages: Language[];
 }
 
 export interface Language {
-    language: string;
-    name: string;
+  language: string;
+  name: string;
 }

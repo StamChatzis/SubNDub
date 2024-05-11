@@ -3,9 +3,10 @@ import { Router } from "@angular/router";
 import { BehaviorSubject, Observable, tap } from "rxjs";
 import { GmailUser } from "../../models/firestore-schema/user.model";
 import { AuthService } from "../../services/auth.service";
-import { FormControl, FormGroup, Validators} from "@angular/forms";
+import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { ProfileService } from "../../services/profile.service";
 import { SupportedLanguages } from "../../models/google/google-supported-languages";
+import { Country } from "../../models/google/google-supported-countries";
 import { GoogleTranslateService } from "../../services/googletranslate.service";
 
 @Component({
@@ -19,10 +20,10 @@ export class ProfileComponent implements OnInit{
   user$: Observable<GmailUser>;
   loading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
   availableLanguages$: BehaviorSubject<SupportedLanguages> = new BehaviorSubject<SupportedLanguages>(null);
+  countries?: Country[];
   userInfoForm: FormGroup;
   langSkillsForm: FormGroup;
-  editedProfileDetails: boolean = false;
-  langData: any[];
+  editedProfileDetails: boolean;
 
   constructor(private router: Router, public auth: AuthService, public proService: ProfileService, private googleLangService: GoogleTranslateService) {
     this.userInfoForm = new FormGroup({
@@ -35,6 +36,7 @@ export class ProfileComponent implements OnInit{
       lang: new FormControl(''),
       skill: new FormControl('')
     })
+    this.editedProfileDetails = false;
   }
 
   ngOnInit() {
@@ -42,10 +44,15 @@ export class ProfileComponent implements OnInit{
     this.user$.subscribe({
       next: data => {
         this.loadUser(data);
-      },
-      error: error => {}
+      }
+    })
+    this.proService.getCountries().subscribe({
+      next: data => {
+        this.loadCountries(data);
+      }
     })
     this.getAvailableLanguages();
+
   }
 
   isEdited(){
@@ -72,6 +79,10 @@ export class ProfileComponent implements OnInit{
         this.availableLanguages$.next(response);
         this.loading$.next(false)
       });
+  }
+
+  loadCountries(data: any): void {
+    this.countries = data;
   }
 
   saveChanges(): void{

@@ -65,7 +65,7 @@ mat-card-title{
   font-size: 20px
 }
 
-.prof-lang-controls{
+.controls-container{
   display: flex;
   flex-flow: wrap;
 }

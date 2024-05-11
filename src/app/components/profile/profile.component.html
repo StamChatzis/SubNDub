@@ -18,7 +18,7 @@
       <div class="profile-edit-head">
         <h3>Edit your Profile</h3>
       </div>
-      <div class="prof-lang-controls">
+      <div class="controls-container">
         <div class="profile-edit-control">
           <form [formGroup]="userInfoForm">
             <div class="profile-details-header">
@@ -42,22 +42,23 @@
             </div>
             <div class="profile-edit-ethnicity" >
               <mat-card-header>
-                <mat-card-title>Ethnicity</mat-card-title>
+                <mat-card-title>Country</mat-card-title>
               </mat-card-header>
               <mat-form-field>
                 <mat-select (selectionChange)="isEdited()" formControlName="ethnicity">
                   <mat-option value="0">Select your country</mat-option>
-                  <mat-option *ngFor="let lang of (availableLanguages$ | async)?.data?.languages" value="{{lang.name}}">{{lang.name}}</mat-option>
+                  <mat-option *ngFor="let country of countries" value="{{country.code}}">{{country.name}}</mat-option>
                 </mat-select>
               </mat-form-field>
             </div>
-            <div class="profile-edit-bio"></div>
-            <mat-card-header>
-              <mat-card-title>Biography</mat-card-title>
-            </mat-card-header>
-            <mat-form-field>
-              <textarea matInput placeholder="Tell something about yourself" (keydown)="isEdited()"></textarea>
-            </mat-form-field>
+            <div class="profile-edit-bio">
+              <mat-card-header>
+                <mat-card-title>Biography</mat-card-title>
+              </mat-card-header>
+              <mat-form-field>
+                <textarea matInput placeholder="Tell something about yourself" (keydown)="isEdited()"></textarea>
+              </mat-form-field>
+            </div>
           </form>
         </div>
         <div class="profile-lang-control">
@@ -68,17 +69,18 @@
             <div class="edit-prof-lang-details">
               <div class="lang-selection-edit">
                 <mat-card-header>
-                  <mat-card-title>Language</mat-card-title>
+                  <mat-card-title>Mother Language</mat-card-title>
                 </mat-card-header>
                 <mat-form-field>
                   <mat-select (selectionChange)="isEdited()">
-                    <mat-option value="0">[NO LANGUAGES YET]</mat-option>
+                    <mat-option value="0">Select your language</mat-option>
+                    <mat-option *ngFor="let lang of (availableLanguages$ | async)?.data?.languages" value="{{lang.name}}">{{lang.name}}</mat-option>
                   </mat-select>
                 </mat-form-field>
               </div>
               <div class="lang-skill-select">
                 <mat-card-header>
-                  <mat-card-title>Skill Level</mat-card-title>
+                  <mat-card-title>Other Languages</mat-card-title>
                 </mat-card-header>
                 <mat-form-field>
                   <mat-select (selectionChange)="isEdited()">

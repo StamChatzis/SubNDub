@@ -12,9 +12,9 @@ export interface GmailUser extends User {
 }
 
 export interface LanguageSkills{
-  uid: string;
-  language: string;
-  level: string;
+    uid: string;
+    language: string;
+    level: string;
 }
 
 export interface Video {
