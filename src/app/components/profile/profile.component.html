@@ -72,7 +72,7 @@
                   <mat-card-title>Mother Language</mat-card-title>
                 </mat-card-header>
                 <mat-form-field>
-                  <mat-select (selectionChange)="isEdited()">
+                  <mat-select (selectionChange)="isEdited()" formControlName="motherLanguage">
                     <mat-option value="0">Select your language</mat-option>
                     <mat-option *ngFor="let lang of (availableLanguages$ | async)?.data?.languages" value="{{lang.name}}">{{lang.name}}</mat-option>
                   </mat-select>

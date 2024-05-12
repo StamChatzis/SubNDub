@@ -11,12 +11,6 @@ export interface GmailUser extends User {
     photoURL?: string;
 }
 
-export interface LanguageSkills{
-    uid: string;
-    language: string;
-    level: string;
-}
-
 export interface Video {
     videoId: string;
     title: string;

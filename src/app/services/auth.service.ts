@@ -4,14 +4,14 @@ import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/compat
 import { Router } from '@angular/router';
 import { GoogleAuthProvider } from '@angular/fire/auth';
 import { BehaviorSubject, Observable, of, switchMap } from 'rxjs';
-import { GmailUser, LanguageSkills, Video } from 'src/app/models/firestore-schema/user.model';
+import { GmailUser, Video } from 'src/app/models/firestore-schema/user.model';
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class AuthService  {
-  private user$: Observable<GmailUser>;
+  private readonly user$: Observable<GmailUser>;
   private loggedIn$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
 
   get user(): Observable<GmailUser> {

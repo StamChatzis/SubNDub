@@ -18,6 +18,7 @@ import { GoogleTranslateService } from "../../services/googletranslate.service";
 
 export class ProfileComponent implements OnInit{
   user$: Observable<GmailUser>;
+  uid: string;
   loading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
   availableLanguages$: BehaviorSubject<SupportedLanguages> = new BehaviorSubject<SupportedLanguages>(null);
   countries?: Country[];
@@ -30,11 +31,12 @@ export class ProfileComponent implements OnInit{
       displayName: new FormControl( '', [Validators.required, Validators.pattern(/^[A-Za-zΑ-Ωα-ωΆ-Ώά-ώ\s]*$/)]),
       email: new FormControl( '', [Validators.required, Validators.email]),
       ethnicity: new FormControl(''),
-      bio: new FormControl('')
+      bio: new FormControl(''),
     })
     this.langSkillsForm = new FormGroup({
       lang: new FormControl(''),
-      skill: new FormControl('')
+      skill: new FormControl(''),
+      motherLanguage: new FormControl('')
     })
     this.editedProfileDetails = false;
   }
@@ -44,15 +46,13 @@ export class ProfileComponent implements OnInit{
     this.user$.subscribe({
       next: data => {
         this.loadUser(data);
+        this.uid = data.uid;
       }
     })
     this.proService.getCountries().subscribe({
-      next: data => {
-        this.loadCountries(data);
-      }
+      next: data => {this.loadCountries(data);}
     })
     this.getAvailableLanguages();
-
   }
 
   isEdited(){
@@ -82,11 +82,13 @@ export class ProfileComponent implements OnInit{
   }
 
   loadCountries(data: any): void {
+
     this.countries = data;
   }
 
   saveChanges(): void{
-   this.editedProfileDetails = false;
+    // todo
+    // this.proService.addLanguage(this.uid , "test")
+    this.editedProfileDetails = false;
   }
-
 }
