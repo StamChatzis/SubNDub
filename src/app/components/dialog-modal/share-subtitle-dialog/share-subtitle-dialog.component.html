@@ -1,6 +1,6 @@
 <h2 mat-dialog-title>Share subtitle</h2>
 <mat-dialog-content class="mat-typography">
-  <h3 class="mat-typography">Filename: <b>{{data}}</b></h3>
+  <h3 class="mat-typography">Filename: <b>{{data.filename}}</b></h3>
 </mat-dialog-content>
 <div class="input-container">
     <mat-form-field class="emailInput">
@@ -23,18 +23,33 @@
         </mat-select>
       </mat-form-field>
 </div>
+
 <div class="accessGridList">
     <mat-dialog-content>
-        <h3>People with access</h3>
-        <mat-grid-list cols="2" rowHeight="40px">
-            <!--<mat-grid-tile>1</mat-grid-tile>
-            <mat-grid-tile>2</mat-grid-tile> -->          
-        </mat-grid-list>
+        <h3 style="font-weight:bold;">People with access</h3>
+        <div class="access-list">
+        <div *ngFor="let right of data.usersRights let i = index">
+          <mat-card class="access-card">
+            <div class="row">
+              <div class="col">
+                <h4>{{right['userEmail']}}</h4>
+              </div>
+              <div class="col">
+                <mat-form-field>
+                  <mat-select [(value)]="right['right']" (selectionChange)="onSelectionChange($event, i)">
+                    <mat-option *ngFor="let option of getOptions(right['right'], i)" [value]="option.value">{{option.label}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+          </mat-card>
+        </div>
+      </div>
     </mat-dialog-content>
 </div>
 <div class="buttons-div-container">
     <mat-dialog-actions class="dialog-buttons" >
         <button mat-button [mat-dialog-close]="null">Cancel</button>
-        <button mat-raised-button [mat-dialog-close]="{email: email.value , right: right.value}" color="primary">Save</button>
+        <button mat-raised-button [mat-dialog-close]="{email: email.value , right: right.value, usersRights: data.usersRights }" color="primary">Save</button>
     </mat-dialog-actions>
 </div>

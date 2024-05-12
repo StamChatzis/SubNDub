@@ -1,33 +1,83 @@
 .emailInput {
-    width: 60%;
-    margin-left: 10px;
+  width: 60%;
+  margin-left: 10px;
 }
 
 .dialog-buttons{
-    display: flex;
-    flex-grow: 1;
-    gap: normal 16px;
-    justify-content: flex-end;
+  display: flex;
+  flex-grow: 1;
+  gap: normal 16px;
+  justify-content: flex-end;
 }
 
 .buttons-div-container {
-    align-items: center;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    padding: 8px 0;
-    row-gap: 8px;
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding: 8px 0;
+  row-gap: 8px;
 }
-
-
-mat-grid-tile {
-    background: lightblue;
-}
-
-
 
 .accessGridList{
-    overflow-y: auto;
-    display: block;
-    unicode-bidi: isolate;
+  overflow-y: auto;
+  display: block;
+  unicode-bidi: isolate;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  height: 50px;
+}
+
+.col {
+  flex: 1;
+  padding: 0 0px;
+}
+
+.col h4 {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding-left: 10px;
+}
+
+.col:first-child {
+  text-align: left;
+}
+
+.col:last-child {
+  text-align: right;
+}
+
+.access-card {
+  margin: 10px;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+}
+
+.access-card mat-card-header {
+  background-color: #e0e0e0;
+  padding: 10px;
+}
+
+.access-card mat-card-title {
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.access-card mat-card-content {
+  padding: 10px;
+}
+
+.access-card mat-form-field {
+  margin-top: 10px;
+  margin-bottom: -10px;
+}
+
+.access-card mat-select {
+  width: 100%;
+}
+
+.access-card mat-option {
+  font-size: 1rem;
 }

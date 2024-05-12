@@ -26,6 +26,7 @@ import { OpenAIService } from 'src/app/services/open-ai.service';
 export class DashboardComponent implements OnInit {
   user$: Observable<GmailUser>;
   userVideos$: Observable<Video[]> = new Observable<Video[]>;
+  userSharedVideos$: Observable<Video[]> = new Observable<Video[]>;
   communityVideos$: Observable<Video[]> = new Observable<Video[]>;
   loading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
   youtubeVideoDetails: YoutubeVideoDetails[];
@@ -57,8 +58,9 @@ export class DashboardComponent implements OnInit {
           if (user) {
             this.userId$.next(user.uid);
             this.userVideos$ = this.dashboardService.getVideos(user.uid);
+            this.userSharedVideos$ = this.dashboardService.getSharedVideos(user.uid);
             this.communityVideos$ = this.dashboardService.getCommunityVideos();
-            return combineLatest([this.userVideos$, this.communityVideos$]);
+            return combineLatest([this.userVideos$, this.userSharedVideos$, this.communityVideos$]);
           } else {
             // If there is no user, return an empty observable
             return of(null);
@@ -67,12 +69,13 @@ export class DashboardComponent implements OnInit {
       )
     ]).pipe(
       distinctUntilChanged(),
-      switchMap(([user, [userVideos, communityVideos]]) => {
+      switchMap(([user, [userVideos, userSharedVideos, communityVideos]]) => {
         const userVideoIds = userVideos.map(item => item.videoId);
+        const userSharedVideoIds = userSharedVideos.map(item => item.videoId);
         const communityVideoIds = communityVideos.map(item => item.videoId);
         
         // Using Set to ensure unique video IDs
-        const uniqueVideoIds = new Set([...userVideoIds, ...communityVideoIds]);
+        const uniqueVideoIds = new Set([...userVideoIds, ...userSharedVideoIds, ...communityVideoIds]);
         
         const allVideoIds = Array.from(uniqueVideoIds).join(',');
         return this.youtubeService.getVideoDetails(allVideoIds);

@@ -11,7 +11,7 @@ export class NotifierService {
 
   showNotification(displayMessage: string, buttonText: string){
     this.snackbar.open(displayMessage, buttonText, {
-      duration:5000,
+      duration:3000,
       horizontalPosition: 'center',
       verticalPosition: 'bottom'
     });

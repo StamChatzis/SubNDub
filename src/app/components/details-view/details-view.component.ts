@@ -102,7 +102,7 @@ export class DetailsViewComponent implements OnInit {
   addSubtitle(language: Language): void {
     this.dialog.open(SaveSubtitleDialogComponent,{width:'500px', data: language.name}).afterClosed().pipe(take(1)).subscribe(dialog => {
       if (dialog?.name) {
-        this.detailsViewService.addSubtitle(this.videoId, language, this.user$.value.uid, dialog.name, dialog.format);
+        this.detailsViewService.addSubtitle(this.videoId, language, this.user$.value.uid, dialog.name, dialog.format, this.user$.value.email);
       }
     })
   }
@@ -115,13 +115,20 @@ export class DetailsViewComponent implements OnInit {
     this.detailsViewService.requestCommunityHelp(this.user$.value, this.videoId,language, iso, filename, format)
   }
 
-  shareSubtitle(language:string, ISOcode:string ,filename: string, format: string) : void { 
-    this.dialog.open(ShareSubtitleDialogComponent,{width:'600px', height:'400px', data: filename}).afterClosed().pipe(take(1)).subscribe(dialog => {
-      if (dialog?.email && dialog?.right) {
-        this.detailsViewService.shareSubtitle(this.videoId, ISOcode, language, this.user$.value.uid, filename, format, dialog.email, dialog.right);
-      }else{
-        this.snackbar.open('No changes have been made', 'DISMISS', {duration:3000});
+  shareSubtitle(language:string, ISOcode:string ,filename: string, format: string, usersRights: string[]) : void { 
+    this.dialog.open(ShareSubtitleDialogComponent,{width:'600px', height:'500px', data: {filename, usersRights}}).afterClosed().pipe(take(1)).subscribe(dialog => {
+      if (dialog == null){
+        this.snackbar.open('No changes have been made', 'DISMISS', {duration:2000});
       }
+      else if (dialog.email && dialog.right) {
+        this.detailsViewService.shareSubtitle(this.videoId, ISOcode, language, this.user$.value.uid, filename, format, dialog.email, dialog.right);
+      }else if((dialog.email == "" && dialog.right) || (dialog.email && dialog.right == undefined)){
+        this.snackbar.open('Both email and right have to be filled', 'DISMISS', {duration:2000});
+      }else {
+        this.detailsViewService.updateSharedSubtitleRights(this.videoId, ISOcode, language, this.user$.value.uid, filename, format, usersRights);
+      }
+      
+
     })
   }
 

@@ -8,10 +8,15 @@ import { YoutubeVideoDetails } from '../models/youtube/youtube-response.model';
 @Injectable()
 export class DashboardService {
   userVideos$: Observable<Video[]>;
+  sharedVideos$: Observable<Video[]>;
   communityVideos$: Observable<Video[]>;
 
   get getUserVideos(): Observable<Video[]> {
     return this.userVideos$;
+  }
+
+  get getUserSharedVideos(): Observable<Video[]> {
+    return this.sharedVideos$;
   }
 
   get communityVideos(): Observable<Video[]> {
@@ -22,6 +27,10 @@ export class DashboardService {
 
   getVideos(userId): Observable<Video[]> {
     return this.userVideos$ = this.firestore.collection<Video>(`users/${userId}/videos/`).valueChanges();
+  }
+
+  getSharedVideos(userId): Observable<Video[]> {
+    return this.userVideos$ = this.firestore.collection<Video>(`users/${userId}/sharedVideos/`).valueChanges();
   }
 
   getCommunityVideos(): Observable<Video[]> {

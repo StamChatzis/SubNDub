@@ -22,4 +22,11 @@ export interface Subtitle {
     language: string;
     created: Date;
     last_updated: Date;
+    usersRights: UserRights[];
+}
+
+export interface UserRights {
+    userId: string;
+    right: string;
+    userEmail: string;
 }
