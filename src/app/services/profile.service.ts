@@ -31,8 +31,10 @@ export class ProfileService {
     // this.userLanguages$ = this.firestore.collection<ForeignLanguage>(`users/${userUid}/languages/`).valueChanges();
   }
 
-  updateProfile(user: User) {
+  updateProfile(user: any) {
+    const userRef: AngularFirestoreDocument<User> = this.firestore.doc(`users/${user.uid}`)
 
+    return userRef.set(user)
   }
 
 }

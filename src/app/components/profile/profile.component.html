@@ -32,12 +32,12 @@
                 <input matInput formControlName="displayName" placeholder="Your Name to Display" (keydown)="isEdited()">
               </mat-form-field>
             </div>
-            <div class="profile-edit-email">
+            <div class="profile-edit-gmail">
               <mat-card-header>
-                <mat-card-title>E-Mail</mat-card-title>
+                <mat-card-title>G-Mail</mat-card-title>
               </mat-card-header>
-              <mat-form-field>
-                <input matInput formControlName="email" placeholder="Your email" (keydown)="isEdited()">
+              <mat-form-field matTooltip="To change your Gmail, go to your Google account settings" matTooltipPosition = above>
+                <input matInput formControlName="email" placeholder="Your google email" (keydown)="isEdited()">
               </mat-form-field>
             </div>
             <div class="profile-edit-ethnicity" >
@@ -55,8 +55,8 @@
               <mat-card-header>
                 <mat-card-title>Biography</mat-card-title>
               </mat-card-header>
-              <mat-form-field>
-                <textarea matInput placeholder="Tell something about yourself" (keydown)="isEdited()"></textarea>
+              <mat-form-field >
+                <textarea (keydown)="isEdited()" formControlName="bio" matInput placeholder="Tell something about yourself"></textarea>
               </mat-form-field>
             </div>
           </form>

@@ -79,3 +79,7 @@ mat-card-title{
 .profile-edit-bio textarea{
   min-height: 40px;
 }
+
+.profile-edit-gmail mat-form-field, .profile-edit-gmail input:hover{
+  cursor: not-allowed;
+}
