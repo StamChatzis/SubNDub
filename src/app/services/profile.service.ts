@@ -4,7 +4,8 @@ import { AngularFireAuth } from "@angular/fire/compat/auth";
 import { AngularFirestore, AngularFirestoreDocument } from "@angular/fire/compat/firestore";
 import { GmailUser, User } from "../models/firestore-schema/user.model";
 import { HttpClient } from "@angular/common/http";
-import { ForeignLanguage } from "../models/general/language-skills";
+import {ForeignLanguage, MotherLanguage} from "../models/general/language-skills";
+import {Language} from "../models/google/google-supported-languages";
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +13,7 @@ import { ForeignLanguage } from "../models/general/language-skills";
 
 export class ProfileService {
   userLanguages$: Observable<ForeignLanguage[]>;
+  motherLanguages$: Observable<MotherLanguage>;
 
   constructor(private fireAuth: AngularFireAuth, private firestore: AngularFirestore, private http: HttpClient) {
   }
@@ -21,8 +23,8 @@ export class ProfileService {
     return this.http.get(countryUrl);
   }
 
-  getLanguageSkills(){
-
+  getMotherLang(uid: any){
+   // return this.motherLanguages$ = this.firestore.collection<MotherLanguage>(`users/${uid}/languages`).valueChanges();
   }
 
   addLanguage(userUid: string, language: string){
@@ -33,7 +35,6 @@ export class ProfileService {
 
   updateProfile(user: any) {
     const userRef: AngularFirestoreDocument<User> = this.firestore.doc(`users/${user.uid}`)
-
     return userRef.set(user)
   }
 

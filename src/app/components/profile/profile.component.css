@@ -83,3 +83,7 @@ mat-card-title{
 .profile-edit-gmail mat-form-field, .profile-edit-gmail input:hover{
   cursor: not-allowed;
 }
+
+mat-header-cell, mat-cell, mat-header-row, mat-header-cell{
+  text-align: center;
+}

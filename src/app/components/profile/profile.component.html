@@ -62,34 +62,63 @@
           </form>
         </div>
         <div class="profile-lang-control">
-          <form [formGroup]="langSkillsForm">
             <div class="lang-details-header">
               <h3>Language Skills:</h3>
             </div>
             <div class="edit-prof-lang-details">
-              <div class="lang-selection-edit">
-                <mat-card-header>
-                  <mat-card-title>Mother Language</mat-card-title>
-                </mat-card-header>
-                <mat-form-field>
-                  <mat-select (selectionChange)="isEdited()" formControlName="motherLanguage">
-                    <mat-option value="0">Select your language</mat-option>
-                    <mat-option *ngFor="let lang of (availableLanguages$ | async)?.data?.languages" value="{{lang.name}}">{{lang.name}}</mat-option>
-                  </mat-select>
-                </mat-form-field>
+              <div class="mother-lang-edit">
+                <form [formGroup]="motherLangForm">
+                  <mat-card-header>
+                    <mat-card-title>Mother Language</mat-card-title>
+                  </mat-card-header>
+                  <mat-form-field>
+                    <mat-select (selectionChange)="isEdited()" formControlName="motherLang">
+                      <mat-option value="0">Select your language</mat-option>
+                      <mat-option *ngFor="let lang of (availableLanguages$ | async)?.data?.languages" value="{{lang.name}}">{{lang.name}}</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </form>
               </div>
-              <div class="lang-skill-select">
+              <div class="lang-skill-sector">
                 <mat-card-header>
                   <mat-card-title>Other Languages</mat-card-title>
                 </mat-card-header>
-                <mat-form-field>
-                  <mat-select (selectionChange)="isEdited()">
-                    <mat-option value="0">[NO SKILLS YET]</mat-option>
-                  </mat-select>
-                </mat-form-field>
+                <form [formGroup]="langSkillsForm">
+                  <div class="lang-skill-table">
+                    <div class="table-container">
+                      <mat-table matSort class="table" #table [dataSource]="langSkillDataSource">
+                        <ng-container matColumnDef="language">
+                          <mat-header-cell *matHeaderCellDef >Language</mat-header-cell>
+                          <mat-cell *matCellDef="let language"> </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="skill">
+                          <mat-header-cell *matHeaderCellDef >Skill</mat-header-cell>
+                          <mat-cell *matCellDef="let skill"> </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="options">
+                          <mat-header-cell *matHeaderCellDef >Options</mat-header-cell>
+                          <mat-cell *matCellDef="let row = index;">
+                            <div class="leave-options">
+                              <mat-icon class="icon material-symbols-outlined" matTooltip="Επεξεργασία" color="primary">edit</mat-icon>
+                              <mat-icon class="icon bin"  matTooltip="Διαγραφή" color="primary">delete_forever</mat-icon>
+                            </div>
+                          </mat-cell>
+                        </ng-container>
+                        <mat-header-row class="header" *matHeaderRowDef="displayedColumns"></mat-header-row>
+                        <mat-row class="header-row" *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                      </mat-table>
+                    </div>
+                  </div>
+                  <div class="add-lang-skill" *ngIf="addingLang">
+                    <mat-form-field>
+                      <mat-select (selectionChange)="isEdited()">
+                        <mat-option value="0">[NO SKILLS YET]</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </form>
               </div>
             </div>
-          </form>
         </div>
       </div>
       <div class="save-profile-changes">

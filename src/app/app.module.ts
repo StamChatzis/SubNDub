@@ -63,6 +63,7 @@ import { ProfileDropdownComponent } from './shared/components/profile-dropdown/p
 import { ProfileComponent } from './components/profile/profile.component';
 import { ShareSubtitleDialogComponent } from './components/dialog-modal/share-subtitle-dialog/share-subtitle-dialog.component';
 import { MatGridListModule } from '@angular/material/grid-list';
+import {MatSortModule} from "@angular/material/sort";
 
 @NgModule({
   declarations: [
@@ -132,7 +133,8 @@ import { MatGridListModule } from '@angular/material/grid-list';
         MatStepperModule,
         MatSelectModule,
         NgOptimizedImage,
-        MatGridListModule
+        MatGridListModule,
+        MatSortModule
     ],
   providers: [],
   bootstrap: [AppComponent]
