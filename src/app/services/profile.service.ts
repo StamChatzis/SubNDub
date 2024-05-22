@@ -35,7 +35,7 @@ export class ProfileService {
 
   updateProfile(user: any) {
     const userRef: AngularFirestoreDocument<User> = this.firestore.doc(`users/${user.uid}`)
-    return userRef.set(user)
+    return userRef.update(user)
   }
 
 }

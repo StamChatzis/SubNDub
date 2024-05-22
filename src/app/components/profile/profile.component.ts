@@ -41,15 +41,15 @@ export class ProfileComponent implements OnInit{
       displayName: new FormControl( '', [Validators.required, Validators.pattern(/^[A-Za-zΑ-Ωα-ωΆ-Ώά-ώ\s]*$/)]),
       email: new FormControl( {value: '', disabled: true}, [Validators.required, Validators.email]),
       ethnicity: new FormControl(''),
-      bio: new FormControl(''),
-    })
+      bio: new FormControl('')
+    });
     this.motherLangForm = new FormGroup({
-      motherLang: new FormControl( '')
+      motherLang: new FormControl('')
     });
     this.langSkillsForm = new FormGroup({
       lang: new FormControl(''),
       skill: new FormControl(''),
-    })
+    });
     this.editedProfileDetails = false;
     this.addingLang = false;
   }
@@ -62,7 +62,6 @@ export class ProfileComponent implements OnInit{
         this.uid = data.uid;
         this.photoUrl = data.photoURL;
         this.email = data.email;
-        //this.proService.getMotherLang(data.uid);
       }
     });
     this.proService.getCountries().subscribe({
@@ -84,18 +83,15 @@ export class ProfileComponent implements OnInit{
     }else{
       this.userInfoForm.controls['ethnicity'].setValue(data.ethnicity);
     }
+    if(data.mother_language == null || data.mother_language == ''){
+      this.motherLangForm.controls['motherLang'].setValue('0');
+    }else{
+      this.motherLangForm.controls['motherLang'].setValue(data.mother_language);
+    }
   }
 
   loadCountries(data: any): void {
     this.countries = data;
-  }
-
-  loadMotherLang(data: any): void {
-    if(data.mother_language == null || data.mother_language == ''){
-      this.motherLangForm.controls['motherLang'].setValue('0');
-    }else{
-      this.motherLangForm.controls['motherLanguage'].setValue(data.mother_language);
-    }
   }
 
   getAvailableLanguages(): void {
@@ -109,29 +105,24 @@ export class ProfileComponent implements OnInit{
       });
   }
 
+  addNewLanguage(){
+
+  }
+
   saveChanges(): void{
     const updatedUser = {
       uid: this.uid,
       displayName: this.userInfoForm.value.displayName,
-      ethnicity: this.userInfoForm.controls['ethnicity'].value,
-      bio: this.userInfoForm.value.bio,
+      ethnicity: ((this.userInfoForm.controls['ethnicity'].value == 0) ? '' : this.userInfoForm.controls['ethnicity'].value),
+      bio: ((this.userInfoForm.value.bio == undefined) ? '' : this.userInfoForm.value.bio),
       photoURL: this.photoUrl,
-      email: this.email
-    }
-    updatedUser.displayName = this.userInfoForm.value.displayName;
-    if (this.userInfoForm.controls['ethnicity'].value == 0) {
-      updatedUser.ethnicity = ''
-    }else {
-      updatedUser.ethnicity = this.userInfoForm.controls['ethnicity'].value;
-    }
-    if (this.userInfoForm.value.bio == undefined){
-      updatedUser.bio = ''
-    }else{
-      updatedUser.bio = this.userInfoForm.value.bio;
+      email: this.email,
+      mother_language: ((this.motherLangForm.controls['motherLang'].value == 0) ? '' : this.motherLangForm.value.motherLang)
     }
 
-    this.proService.updateProfile(updatedUser).then(rtn => {
-      this.snackbar.open('Profile has been updated successfully!','DISMISS', {duration:5000});
+    this.proService.updateProfile(updatedUser)
+      .then(rtn => {
+      this.snackbar.open('Profile has been updated successfully!','OK', {duration:5000});
     })
 
     this.editedProfileDetails = false;

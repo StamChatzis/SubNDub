@@ -84,6 +84,35 @@ mat-card-title{
   cursor: not-allowed;
 }
 
-mat-header-cell, mat-cell, mat-header-row, mat-header-cell{
+.table-container{
   text-align: center;
+}
+
+mat-table .no-data-row{
+  font-style: italic;
+  font-size: 12px;
+  color: #323e48;
+}
+
+.no-data-row td{
+  padding-left: 6.5vw !important;
+}
+
+.lang-skill-sector mat-card-header{
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 10px;
+}
+
+.add-new-lang button {
+  border-radius: 25px;
+}
+
+.add-lang-btn{
+  display: flex;
+}
+
+.add-lang-btn span{
+  padding-top: 3px;
+  padding-left: 2px;
 }

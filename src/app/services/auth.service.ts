@@ -70,7 +70,8 @@ export class AuthService  {
       displayName: user.displayName,
       photoURL: user.photoURL,
       bio: '',
-      ethnicity: ''
+      ethnicity: '',
+      mother_language: ''
     }
 
     return userDataRef.set(newUserData);
