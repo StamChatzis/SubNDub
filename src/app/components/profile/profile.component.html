@@ -81,7 +81,7 @@
               </form>
               <div class="lang-skill-sector">
                 <mat-card-header>
-                  <mat-card-title>Other Languages</mat-card-title>
+                  <mat-card-title>{{((addingLang) ? "Add New Language" : "Other Languages") }}</mat-card-title>
                   <div class="add-new-lang">
                     <button mat-raised-button color="primary" (click)="addNewLanguage()">
                       <div class="add-lang-btn">
@@ -91,8 +91,7 @@
                     </button>
                   </div>
                 </mat-card-header>
-                <form [formGroup]="langSkillsForm">
-                  <div class="lang-skill-table">
+                  <div class="lang-skill-table" *ngIf="!addingLang">
                     <div class="table-container">
                       <mat-table matSort class="table" #table [dataSource]="langSkillDataSource">
                         <ng-container matColumnDef="language">
@@ -120,14 +119,31 @@
                       </mat-table>
                     </div>
                   </div>
-                  <div class="add-lang-skill" *ngIf="addingLang">
-                    <mat-form-field>
-                      <mat-select (selectionChange)="isEdited()">
-                        <mat-option value="0">[NO SKILLS YET]</mat-option>
-                      </mat-select>
-                    </mat-form-field>
+                  <div class="add-lang-skill" *ngIf="addingLang" [formGroup]="langSkillsForm">
+                    <form [formGroup]="langSkillsForm">
+                      <div class="foreign-lang-select">
+                        <mat-card-header>
+                          <mat-card-title>Language</mat-card-title>
+                        </mat-card-header>
+                        <mat-form-field>
+                          <mat-select (selectionChange)="isEdited()">
+                            <mat-option value="0">Select your language</mat-option>
+                            <mat-option *ngFor="let lang of (availableLanguages$ | async)?.data?.languages" value="{{lang.name}}">{{lang.name}}</mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
+                      <div class="skill-level-select">
+                        <mat-card-header>
+                          <mat-card-title>Skill Level</mat-card-title>
+                        </mat-card-header>
+                        <mat-form-field>
+                          <mat-select (selectionChange)="isEdited()">
+                            <mat-option value="0">[NO SKILLS YET]</mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
+                    </form>
                   </div>
-                </form>
               </div>
             </div>
         </div>

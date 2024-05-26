@@ -11,6 +11,7 @@ import { GoogleTranslateService } from "../../services/googletranslate.service";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { MatTableDataSource } from "@angular/material/table";
 import {ForeignLanguage} from "../../models/general/language-skills";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
   selector: 'app-profile',
@@ -36,7 +37,12 @@ export class ProfileComponent implements OnInit{
   editedProfileDetails: boolean;
   addingLang: boolean;
 
-  constructor(private router: Router, public auth: AuthService, public proService: ProfileService, private googleLangService: GoogleTranslateService, private snackbar: MatSnackBar) {
+  constructor(private router: Router,
+              public auth: AuthService,
+              public proService: ProfileService,
+              private googleLangService: GoogleTranslateService,
+              private snackbar: MatSnackBar,
+              public dialog: MatDialog) {
     this.userInfoForm = new FormGroup({
       displayName: new FormControl( '', [Validators.required, Validators.pattern(/^[A-Za-zΑ-Ωα-ωΆ-Ώά-ώ\s]*$/)]),
       email: new FormControl( {value: '', disabled: true}, [Validators.required, Validators.email]),
@@ -106,7 +112,7 @@ export class ProfileComponent implements OnInit{
   }
 
   addNewLanguage(){
-
+    this.addingLang = !this.addingLang;
   }
 
   saveChanges(): void{
