@@ -83,8 +83,8 @@
                 <mat-card-header>
                   <mat-card-title>{{((addingLang) ? "Add New Language" : "Other Languages") }}</mat-card-title>
                   <div class="add-new-lang">
-                    <button mat-raised-button color="primary" (click)="addNewLanguage()">
-                      <div class="add-lang-btn">
+                    <button mat-raised-button color="primary" *ngIf="!addingLang" (click)="addNewLanguage()">
+                      <div class="add-lang-btn" >
                         <mat-icon class="add-icon">add</mat-icon>
                         <span>Add</span>
                       </div>
@@ -120,29 +120,45 @@
                     </div>
                   </div>
                   <div class="add-lang-skill" *ngIf="addingLang" [formGroup]="langSkillsForm">
-                    <form [formGroup]="langSkillsForm">
-                      <div class="foreign-lang-select">
-                        <mat-card-header>
-                          <mat-card-title>Language</mat-card-title>
-                        </mat-card-header>
-                        <mat-form-field>
-                          <mat-select (selectionChange)="isEdited()">
-                            <mat-option value="0">Select your language</mat-option>
-                            <mat-option *ngFor="let lang of (availableLanguages$ | async)?.data?.languages" value="{{lang.name}}">{{lang.name}}</mat-option>
-                          </mat-select>
-                        </mat-form-field>
+                    <div class="foreign-lang-select">
+                      <mat-card-header>
+                        <mat-card-title>Language</mat-card-title>
+                      </mat-card-header>
+                      <mat-form-field appearance="fill">
+                        <mat-select (selectionChange)="isEdited()" formControlName="lang">
+                          <mat-option value="0">Select your language</mat-option>
+                          <mat-option *ngFor="let lang of (availableLanguages$ | async)?.data?.languages" value="{{lang.name}}">{{lang.name}}</mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="langSkillsForm!.get('lang')?.hasError('required')">You must select a language</mat-error>
+                      </mat-form-field>
+                    </div>
+                    <div class="skill-level-select">
+                      <mat-card-header>
+                        <mat-card-title>Skill Level</mat-card-title>
+                      </mat-card-header>
+                      <mat-form-field>
+                        <mat-select (selectionChange)="isEdited()"  formControlName="skill">
+                          <mat-option value="0">Select skill</mat-option>
+                          <mat-option value="A1">A1: Beginner</mat-option>
+                          <mat-option value="A2">A2: Pre-Intermediate</mat-option>
+                          <mat-option value="B1">B1: Intermediate</mat-option>
+                          <mat-option value="B2">B2: Upper-Intermediate</mat-option>
+                          <mat-option value="C1">C1: Advanced</mat-option>
+                          <mat-option value="C2">C2: Mastery</mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="langSkillsForm!.get('skill')?.hasError('required')">You must select a skill level</mat-error>
+                      </mat-form-field>
+                      <div class="lang-skills-btns">
+                        <div class="save-lang-btn">
+                          <button mat-raised-button color="primary" (click)="saveNewLang()" [disabled]="langSkillsForm!.get('lang')?.hasError('required') || langSkillsForm!.get('skill')?.hasError('required') || langSkillsForm!.get('lang')?.value == 0 || langSkillsForm!.get('skill')?.value == 0">
+                            Save
+                          </button>
+                        </div>
+                        <div class="cancel-lang-btn">
+                          <button mat-raised-button color="warn" (click)="cancelAdd()">Cancel</button>
+                        </div>
                       </div>
-                      <div class="skill-level-select">
-                        <mat-card-header>
-                          <mat-card-title>Skill Level</mat-card-title>
-                        </mat-card-header>
-                        <mat-form-field>
-                          <mat-select (selectionChange)="isEdited()">
-                            <mat-option value="0">[NO SKILLS YET]</mat-option>
-                          </mat-select>
-                        </mat-form-field>
-                      </div>
-                    </form>
+                    </div>
                   </div>
               </div>
             </div>

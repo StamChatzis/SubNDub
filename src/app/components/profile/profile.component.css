@@ -116,3 +116,12 @@ mat-table .no-data-row{
   padding-top: 3px;
   padding-left: 2px;
 }
+
+.lang-skills-btns {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.save-lang-btn{
+  margin-right: 10px;
+}

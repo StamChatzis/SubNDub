@@ -10,7 +10,7 @@ import { Country } from "../../models/google/google-supported-countries";
 import { GoogleTranslateService } from "../../services/googletranslate.service";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { MatTableDataSource } from "@angular/material/table";
-import {ForeignLanguage} from "../../models/general/language-skills";
+import {ForeignLanguage, SkillLevel} from "../../models/general/language-skills";
 import {MatDialog} from "@angular/material/dialog";
 
 @Component({
@@ -28,7 +28,8 @@ export class ProfileComponent implements OnInit{
   loading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
   availableLanguages$: BehaviorSubject<SupportedLanguages> = new BehaviorSubject<SupportedLanguages>(null);
   countries?: Country[];
-  otherLanguages: ForeignLanguage[];
+  otherLanguages: ForeignLanguage[] = [];
+  skills: SkillLevel;
   userInfoForm: FormGroup;
   langSkillsForm: FormGroup;
   motherLangForm: FormGroup;
@@ -53,8 +54,8 @@ export class ProfileComponent implements OnInit{
       motherLang: new FormControl('')
     });
     this.langSkillsForm = new FormGroup({
-      lang: new FormControl(''),
-      skill: new FormControl(''),
+      lang: new FormControl('', [Validators.required]),
+      skill: new FormControl('', [Validators.required]),
     });
     this.editedProfileDetails = false;
     this.addingLang = false;
@@ -70,9 +71,11 @@ export class ProfileComponent implements OnInit{
         this.email = data.email;
       }
     });
+
     this.proService.getCountries().subscribe({
       next: data => {this.loadCountries(data);}
     });
+
     this.getAvailableLanguages();
   }
 
@@ -112,7 +115,20 @@ export class ProfileComponent implements OnInit{
   }
 
   addNewLanguage(){
-    this.addingLang = !this.addingLang;
+    this.addingLang = true;
+  }
+
+  saveNewLang(){
+    const newLang = {
+      language: this.langSkillsForm.value.lang,
+      level: this.langSkillsForm.value.skill
+    };
+    this.otherLanguages.push(newLang);
+    this.addingLang = false;
+  }
+
+  cancelAdd(){
+    this.addingLang = false;
   }
 
   saveChanges(): void{

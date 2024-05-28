@@ -23,8 +23,8 @@ export class ProfileService {
     return this.http.get(countryUrl);
   }
 
-  getMotherLang(uid: any){
-   // return this.motherLanguages$ = this.firestore.collection<MotherLanguage>(`users/${uid}/languages`).valueChanges();
+  getLangSkills(user: any){
+    const userRef: AngularFirestoreDocument<User> = this.firestore.doc(`users/${user.uid}`);
   }
 
   addLanguage(userUid: string, language: string){
