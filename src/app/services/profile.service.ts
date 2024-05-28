@@ -1,21 +1,19 @@
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { AngularFireAuth } from "@angular/fire/compat/auth";
 import { AngularFirestore, AngularFirestoreDocument } from "@angular/fire/compat/firestore";
-import { GmailUser, User } from "../models/firestore-schema/user.model";
+import {GmailUser, User, Video} from "../models/firestore-schema/user.model";
 import { HttpClient } from "@angular/common/http";
-import {ForeignLanguage, MotherLanguage} from "../models/general/language-skills";
-import {Language} from "../models/google/google-supported-languages";
+import { ForeignLanguage, MotherLanguage } from "../models/general/language-skills";
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class ProfileService {
-  userLanguages$: Observable<ForeignLanguage[]>;
+  otherLanguages$: Observable<ForeignLanguage[]>;
   motherLanguages$: Observable<MotherLanguage>;
 
-  constructor(private fireAuth: AngularFireAuth, private firestore: AngularFirestore, private http: HttpClient) {
+  constructor(private firestore: AngularFirestore, private http: HttpClient) {
   }
 
   getCountries(){
@@ -23,8 +21,19 @@ export class ProfileService {
     return this.http.get(countryUrl);
   }
 
-  getLangSkills(user: any){
-    const userRef: AngularFirestoreDocument<User> = this.firestore.doc(`users/${user.uid}`);
+  getSkillLevels(){
+    const skillsUrl = "../../assets/data/lang-skill-levels.json";
+    return this.http.get(skillsUrl);
+  }
+
+  addOtherLanguage(uid: any, lang: any){
+    const language = lang.language;
+    const langRef: AngularFirestoreDocument<GmailUser> = this.firestore.doc(`users/${uid}/languages/${language}`);
+    langRef.set(lang, {merge: true});
+  }
+
+  getAllLanguages(uid: any): Observable<ForeignLanguage[]> {
+    return this.otherLanguages$ = this.firestore.collection<ForeignLanguage>(`users/${uid}/languages/`).valueChanges();
   }
 
   addLanguage(userUid: string, language: string){
@@ -34,7 +43,7 @@ export class ProfileService {
   }
 
   updateProfile(user: any) {
-    const userRef: AngularFirestoreDocument<User> = this.firestore.doc(`users/${user.uid}`)
+    const userRef: AngularFirestoreDocument<GmailUser> = this.firestore.doc(`users/${user.uid}`)
     return userRef.update(user)
   }
 

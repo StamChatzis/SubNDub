@@ -1,0 +1,26 @@
+[
+  {
+    "level": "A1",
+    "description": "A1: Beginner"
+  },
+  {
+    "level": "A2",
+    "description": "A2: Pre-Intermediate"
+  },
+  {
+    "level": "B1",
+    "description": "B1: Intermediate"
+  },
+  {
+    "level": "B2",
+    "description": "B2: Upper-Intermediate"
+  },
+  {
+    "level": "C1",
+    "description": "C1: Advanced"
+  },
+  {
+    "level": "C2",
+    "description": "C2: Mastery"
+  }
+]

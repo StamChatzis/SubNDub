@@ -93,30 +93,30 @@
                 </mat-card-header>
                   <div class="lang-skill-table" *ngIf="!addingLang">
                     <div class="table-container">
-                      <mat-table matSort class="table" #table [dataSource]="langSkillDataSource">
-                        <ng-container matColumnDef="language">
-                          <mat-header-cell *matHeaderCellDef >Language</mat-header-cell>
-                          <mat-cell *matCellDef="let language"> </mat-cell>
+                      <table mat-table matSort class="mat-elevation-z8 table" #table [dataSource]="langSkillDataSource" >
+                        <ng-container matColumnDef="language" >
+                          <th mat-header-cell *matHeaderCellDef>Language</th >
+                          <td mat-cell *matCellDef="let otherLang" style="text-align: center">{{otherLang.language}}</td>
                         </ng-container>
                         <ng-container matColumnDef="skill">
-                          <mat-header-cell *matHeaderCellDef >Skill</mat-header-cell>
-                          <mat-cell *matCellDef="let skill"> </mat-cell>
+                          <th mat-header-cell *matHeaderCellDef>Level</th>
+                          <td mat-cell *matCellDef="let otherLang" style="width: 19px">{{otherLang.level}}</td>
                         </ng-container>
                         <ng-container matColumnDef="options">
-                          <mat-header-cell *matHeaderCellDef >Options</mat-header-cell>
-                          <mat-cell *matCellDef="let row = index;">
+                          <th mat-header-cell *matHeaderCellDef >Options</th>
+                          <td mat-cell *matCellDef="let row = index;">
                             <div class="leave-options">
-                              <mat-icon class="icon material-symbols-outlined" matTooltip="Edit" color="primary">edit</mat-icon>
-                              <mat-icon class="icon bin"  matTooltip="Delete!" color="primary">delete_forever</mat-icon>
+                              <mat-icon class="icon material-symbols-outlined edit-lang-icon" matTooltip="Edit" color="primary">edit</mat-icon>
+                              <mat-icon class="icon bin del-lang-icon"  matTooltip="Delete!" color="primary">delete_forever</mat-icon>
                             </div>
-                          </mat-cell>
+                          </td>
                         </ng-container>
-                        <mat-header-row class="header" *matHeaderRowDef="displayedColumns"></mat-header-row>
-                        <mat-row class="header-row" *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                        <tr mat-header-row class="header" *matHeaderRowDef="displayedColumns"></tr>
+                        <tr mat-row class="header-row" *matRowDef="let row; columns: displayedColumns;"></tr>
                         <tr class="mat-row no-data-row" *matNoDataRow>
-                          <td class="mat-cell" colspan="3"><span >No languages have been added!</span></td>
+                          <td class="mat-cell empty-table" colspan="3"><span >No languages have been added!</span></td>
                         </tr>
-                      </mat-table>
+                      </table>
                     </div>
                   </div>
                   <div class="add-lang-skill" *ngIf="addingLang" [formGroup]="langSkillsForm">
@@ -139,12 +139,7 @@
                       <mat-form-field>
                         <mat-select (selectionChange)="isEdited()"  formControlName="skill">
                           <mat-option value="0">Select skill</mat-option>
-                          <mat-option value="A1">A1: Beginner</mat-option>
-                          <mat-option value="A2">A2: Pre-Intermediate</mat-option>
-                          <mat-option value="B1">B1: Intermediate</mat-option>
-                          <mat-option value="B2">B2: Upper-Intermediate</mat-option>
-                          <mat-option value="C1">C1: Advanced</mat-option>
-                          <mat-option value="C2">C2: Mastery</mat-option>
+                          <mat-option *ngFor="let skill of skillLevels" value="{{skill.level}}">{{skill.description}}</mat-option>
                         </mat-select>
                         <mat-error *ngIf="langSkillsForm!.get('skill')?.hasError('required')">You must select a skill level</mat-error>
                       </mat-form-field>

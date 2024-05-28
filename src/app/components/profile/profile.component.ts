@@ -1,15 +1,15 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from "@angular/router";
-import { BehaviorSubject, Observable, tap } from "rxjs";
-import { GmailUser, User } from "../../models/firestore-schema/user.model";
-import { AuthService } from "../../services/auth.service";
-import { FormControl, FormGroup, Validators } from "@angular/forms";
-import { ProfileService } from "../../services/profile.service";
-import { SupportedLanguages } from "../../models/google/google-supported-languages";
-import { Country } from "../../models/google/google-supported-countries";
-import { GoogleTranslateService } from "../../services/googletranslate.service";
-import { MatSnackBar } from "@angular/material/snack-bar";
-import { MatTableDataSource } from "@angular/material/table";
+import {Component, OnInit} from '@angular/core';
+import {Router} from "@angular/router";
+import {BehaviorSubject, Observable, tap} from "rxjs";
+import {GmailUser} from "../../models/firestore-schema/user.model";
+import {AuthService} from "../../services/auth.service";
+import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {ProfileService} from "../../services/profile.service";
+import {SupportedLanguages} from "../../models/google/google-supported-languages";
+import {Country} from "../../models/google/google-supported-countries";
+import {GoogleTranslateService} from "../../services/googletranslate.service";
+import {MatSnackBar} from "@angular/material/snack-bar";
+import {MatTableDataSource} from "@angular/material/table";
 import {ForeignLanguage, SkillLevel} from "../../models/general/language-skills";
 import {MatDialog} from "@angular/material/dialog";
 
@@ -28,8 +28,9 @@ export class ProfileComponent implements OnInit{
   loading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
   availableLanguages$: BehaviorSubject<SupportedLanguages> = new BehaviorSubject<SupportedLanguages>(null);
   countries?: Country[];
+  skillLevels?: SkillLevel[];
   otherLanguages: ForeignLanguage[] = [];
-  skills: SkillLevel;
+  allLanguages$: Observable<ForeignLanguage[]> = new Observable<ForeignLanguage[]>();
   userInfoForm: FormGroup;
   langSkillsForm: FormGroup;
   motherLangForm: FormGroup;
@@ -65,7 +66,7 @@ export class ProfileComponent implements OnInit{
     this.user$ = this.auth.user;
     this.user$.subscribe({
       next: data => {
-        this.loadUser(data);
+        this.loadUserDetails(data);
         this.uid = data.uid;
         this.photoUrl = data.photoURL;
         this.email = data.email;
@@ -76,14 +77,21 @@ export class ProfileComponent implements OnInit{
       next: data => {this.loadCountries(data);}
     });
 
+    this.proService.getSkillLevels().subscribe({
+      next: data => {this.loadSkillLevels(data)}
+    });
+  //todo
+    this.allLanguages$ = this.proService.getAllLanguages(this.uid)
+    this.allLanguages$.subscribe({next: data => {console.log(data)}})
     this.getAvailableLanguages();
+    this.loadForeignLanguages();
   }
 
   isEdited(){
     this.editedProfileDetails = true;
   }
 
-  loadUser(data: any){
+  loadUserDetails(data: any){
     this.userInfoForm.controls['displayName'].setValue(data.displayName);
     this.userInfoForm.controls['email'].setValue(data.email);
     this.userInfoForm.controls['bio'].setValue(data.bio);
@@ -103,6 +111,10 @@ export class ProfileComponent implements OnInit{
     this.countries = data;
   }
 
+  loadSkillLevels(data: any): void {
+    this.skillLevels = data;
+  }
+
   getAvailableLanguages(): void {
     this.googleLangService.getSupportedLanguages()
       .pipe(tap(() => {
@@ -112,6 +124,10 @@ export class ProfileComponent implements OnInit{
         this.availableLanguages$.next(response);
         this.loading$.next(false)
       });
+  }
+
+  loadForeignLanguages(): void {
+    this.langSkillDataSource.data = [...this.otherLanguages];
   }
 
   addNewLanguage(){
@@ -125,10 +141,18 @@ export class ProfileComponent implements OnInit{
     };
     this.otherLanguages.push(newLang);
     this.addingLang = false;
+
+    this.langSkillsForm.controls['lang'].setValue('0');
+    this.langSkillsForm.controls['skill'].setValue('0');
+    this.loadForeignLanguages();
+
+    this.proService.addOtherLanguage(this.uid, newLang);
   }
 
   cancelAdd(){
     this.addingLang = false;
+    this.langSkillsForm.controls['lang'].setValue('0');
+    this.langSkillsForm.controls['skill'].setValue('0');
   }
 
   saveChanges(): void{

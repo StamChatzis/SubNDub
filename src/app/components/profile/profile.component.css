@@ -88,15 +88,15 @@ mat-card-title{
   text-align: center;
 }
 
-mat-table .no-data-row{
+.empty-table{
   font-style: italic;
   font-size: 12px;
   color: #323e48;
 }
 
-.no-data-row td{
-  padding-left: 6.5vw !important;
-}
+/*.no-data-row td{*/
+/*  padding-left: 6.5vw !important;*/
+/*}*/
 
 .lang-skill-sector mat-card-header{
   display: flex;
@@ -124,4 +124,47 @@ mat-table .no-data-row{
 
 .save-lang-btn{
   margin-right: 10px;
+}
+
+.table-container mat-table{
+  margin-top: 10px;
+}
+
+.table{
+  width: 100%;
+}
+
+.mat-column-language {
+  width: 40%;
+  text-align: center;
+}
+
+.mat-column-skill{
+  width: 40%;
+  text-align: center;
+}
+
+.mat-column-options {
+  width: 20%;
+  text-align: right;
+}
+
+.leave-options .icon{
+  scale: 107%;
+  opacity: 90%;
+  transition: scale 0.14s ease
+}
+
+.leave-options .icon:hover{
+  cursor: pointer;
+  scale: 118%;
+  transform: rotate(3deg);
+}
+
+.leave-options .edit-lang-icon:hover{
+  color: rgb(67, 108, 33);
+}
+
+.leave-options .del-lang-icon:hover{
+  color: rgb(107, 11, 11);
 }
