@@ -60,9 +60,6 @@ export class ProfileComponent implements OnInit{
     });
     this.editedProfileDetails = false;
     this.addingLang = false;
-  }
-
-  ngOnInit() {
     this.user$ = this.auth.user;
     this.user$.subscribe({
       next: data => {
@@ -70,9 +67,17 @@ export class ProfileComponent implements OnInit{
         this.uid = data.uid;
         this.photoUrl = data.photoURL;
         this.email = data.email;
+        this.proService.getAllLanguages(data.uid).subscribe({
+          next: data => {
+            this.otherLanguages = data;
+            console.log(this.otherLanguages);
+          }
+        })
       }
     });
+  }
 
+  ngOnInit() {
     this.proService.getCountries().subscribe({
       next: data => {this.loadCountries(data);}
     });
@@ -80,15 +85,18 @@ export class ProfileComponent implements OnInit{
     this.proService.getSkillLevels().subscribe({
       next: data => {this.loadSkillLevels(data)}
     });
-  //todo
-    this.allLanguages$ = this.proService.getAllLanguages(this.uid)
-    this.allLanguages$.subscribe({next: data => {console.log(data)}})
+
+    this.loadAllLanguages();
     this.getAvailableLanguages();
     this.loadForeignLanguages();
   }
 
   isEdited(){
     this.editedProfileDetails = true;
+  }
+
+  loadAllLanguages(){
+
   }
 
   loadUserDetails(data: any){
@@ -132,6 +140,8 @@ export class ProfileComponent implements OnInit{
 
   addNewLanguage(){
     this.addingLang = true;
+    this.langSkillsForm.controls['lang'].setValue('0');
+    this.langSkillsForm.controls['skill'].setValue('0');
   }
 
   saveNewLang(){

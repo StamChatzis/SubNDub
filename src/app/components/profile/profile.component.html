@@ -81,9 +81,9 @@
               </form>
               <div class="lang-skill-sector">
                 <mat-card-header>
-                  <mat-card-title>{{((addingLang) ? "Add New Language" : "Other Languages") }}</mat-card-title>
+                  <mat-card-title>{{((addingLang) ? "Add New Language" : "Foreign Languages") }}</mat-card-title>
                   <div class="add-new-lang">
-                    <button mat-raised-button color="primary" *ngIf="!addingLang" (click)="addNewLanguage()">
+                    <button mat-raised-button color="primary" *ngIf="!addingLang" (click)="addNewLanguage()" matTooltip="Click to add new foreign language" matTooltipPosition = above>
                       <div class="add-lang-btn" >
                         <mat-icon class="add-icon">add</mat-icon>
                         <span>Add</span>

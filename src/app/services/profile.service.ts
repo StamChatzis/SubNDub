@@ -28,11 +28,12 @@ export class ProfileService {
 
   addOtherLanguage(uid: any, lang: any){
     const language = lang.language;
-    const langRef: AngularFirestoreDocument<GmailUser> = this.firestore.doc(`users/${uid}/languages/${language}`);
+    const langRef: AngularFirestoreDocument<ForeignLanguage> = this.firestore.doc(`users/${uid}/languages/${language}`);
     langRef.set(lang, {merge: true});
   }
 
-  getAllLanguages(uid: any): Observable<ForeignLanguage[]> {
+  getAllLanguages(uid: string): Observable<ForeignLanguage[]> {
+    console.log(uid)
     return this.otherLanguages$ = this.firestore.collection<ForeignLanguage>(`users/${uid}/languages/`).valueChanges();
   }
 
