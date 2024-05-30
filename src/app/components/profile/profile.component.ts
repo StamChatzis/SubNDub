@@ -5,7 +5,7 @@ import {GmailUser} from "../../models/firestore-schema/user.model";
 import {AuthService} from "../../services/auth.service";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {ProfileService} from "../../services/profile.service";
-import {SupportedLanguages} from "../../models/google/google-supported-languages";
+import {Language, SupportedLanguages} from "../../models/google/google-supported-languages";
 import {Country} from "../../models/google/google-supported-countries";
 import {GoogleTranslateService} from "../../services/googletranslate.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
@@ -51,16 +51,22 @@ export class ProfileComponent implements OnInit{
       ethnicity: new FormControl(''),
       bio: new FormControl('')
     });
+
     this.motherLangForm = new FormGroup({
       motherLang: new FormControl('')
     });
+
     this.langSkillsForm = new FormGroup({
       lang: new FormControl('', [Validators.required]),
       skill: new FormControl('', [Validators.required]),
     });
+
     this.editedProfileDetails = false;
     this.addingLang = false;
     this.user$ = this.auth.user;
+  }
+
+  ngOnInit() {
     this.user$.subscribe({
       next: data => {
         this.loadUserDetails(data);
@@ -69,15 +75,12 @@ export class ProfileComponent implements OnInit{
         this.email = data.email;
         this.proService.getAllLanguages(data.uid).subscribe({
           next: data => {
-            this.otherLanguages = data;
-            console.log(this.otherLanguages);
+            this.loadForeignLanguages(data)
           }
-        })
+        });
       }
     });
-  }
 
-  ngOnInit() {
     this.proService.getCountries().subscribe({
       next: data => {this.loadCountries(data);}
     });
@@ -86,17 +89,12 @@ export class ProfileComponent implements OnInit{
       next: data => {this.loadSkillLevels(data)}
     });
 
-    this.loadAllLanguages();
     this.getAvailableLanguages();
-    this.loadForeignLanguages();
+    this.updateForeignLangData();
   }
 
   isEdited(){
     this.editedProfileDetails = true;
-  }
-
-  loadAllLanguages(){
-
   }
 
   loadUserDetails(data: any){
@@ -123,6 +121,11 @@ export class ProfileComponent implements OnInit{
     this.skillLevels = data;
   }
 
+  loadForeignLanguages(data: any): void {
+    this.otherLanguages = data;
+    this.updateForeignLangData()
+  }
+
   getAvailableLanguages(): void {
     this.googleLangService.getSupportedLanguages()
       .pipe(tap(() => {
@@ -134,7 +137,7 @@ export class ProfileComponent implements OnInit{
       });
   }
 
-  loadForeignLanguages(): void {
+  updateForeignLangData(): void {
     this.langSkillDataSource.data = [...this.otherLanguages];
   }
 
@@ -154,7 +157,7 @@ export class ProfileComponent implements OnInit{
 
     this.langSkillsForm.controls['lang'].setValue('0');
     this.langSkillsForm.controls['skill'].setValue('0');
-    this.loadForeignLanguages();
+    this.updateForeignLangData();
 
     this.proService.addOtherLanguage(this.uid, newLang);
   }

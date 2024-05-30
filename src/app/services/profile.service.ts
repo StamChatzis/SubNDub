@@ -33,7 +33,6 @@ export class ProfileService {
   }
 
   getAllLanguages(uid: string): Observable<ForeignLanguage[]> {
-    console.log(uid)
     return this.otherLanguages$ = this.firestore.collection<ForeignLanguage>(`users/${uid}/languages/`).valueChanges();
   }
 
