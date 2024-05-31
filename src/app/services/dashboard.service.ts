@@ -4,18 +4,19 @@ import { Observable, combineLatest, map, of, switchMap, take } from 'rxjs';
 import { GmailUser, Video } from '../models/firestore-schema/user.model';
 import { AuthService } from './auth.service';
 import { YoutubeVideoDetails } from '../models/youtube/youtube-response.model';
+import {SharedVideo} from 'src/app/models/firestore-schema/shared-video.model';
 
 @Injectable()
 export class DashboardService {
   userVideos$: Observable<Video[]>;
-  sharedVideos$: Observable<Video[]>;
+  sharedVideos$: Observable<SharedVideo[]>;
   communityVideos$: Observable<Video[]>;
 
   get getUserVideos(): Observable<Video[]> {
     return this.userVideos$;
   }
 
-  get getUserSharedVideos(): Observable<Video[]> {
+  get getUserSharedVideos(): Observable<SharedVideo[]> {
     return this.sharedVideos$;
   }
 
@@ -29,8 +30,20 @@ export class DashboardService {
     return this.userVideos$ = this.firestore.collection<Video>(`users/${userId}/videos/`).valueChanges();
   }
 
-  getSharedVideos(userId): Observable<Video[]> {
-    return this.userVideos$ = this.firestore.collection<Video>(`users/${userId}/sharedVideos/`).valueChanges();
+  getSharedVideos(email): Observable<SharedVideo[]> {
+    this.sharedVideos$  = this.firestore.collection<SharedVideo>('sharedVideos').snapshotChanges().pipe(
+      map(actions => {
+        return actions.map(a => {
+          const data = a.payload.doc.data() as SharedVideo;
+          const id = a.payload.doc.id;
+          const owner = data.usersRights.find(right => right.right === 'Owner')?.userEmail;
+          return { id, ...data, owner };
+        }).filter(video => {
+          return video.usersRights.some(right => right.userEmail === email);
+        });
+      })
+    );
+    return this.sharedVideos$;
   }
 
   getCommunityVideos(): Observable<Video[]> {

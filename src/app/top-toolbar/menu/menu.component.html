@@ -5,6 +5,7 @@
     <div class="menu-items">
         <span [routerLink]="''">Home</span>
         <span [routerLink]="'dashboard'" [matTooltip]="'Login to view your Dashboard'" [matTooltipDisabled]="auth.isLoggedIn">Dashboard</span>
+        <span [routerLink]="'messages'" [matTooltip]="'Login to view your Messages'" [matTooltipDisabled]="auth.isLoggedIn">Messages</span>
     </div>
     <span class="spacer"></span>
     <div class="user-wrapper" *ngIf="(auth.user | async) as user" id="user-photo">

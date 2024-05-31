@@ -64,6 +64,8 @@ import { ProfileComponent } from './components/profile/profile.component';
 import { ShareSubtitleDialogComponent } from './components/dialog-modal/share-subtitle-dialog/share-subtitle-dialog.component';
 import { MatGridListModule } from '@angular/material/grid-list';
 import {MatSortModule} from "@angular/material/sort";
+import { TransferOwnershipDialogComponent } from './components/dialog-modal/transfer-ownership-dialog/transfer-ownership-dialog.component';
+import { MessagesComponent } from './components/messages/messages.component';
 
 @NgModule({
   declarations: [
@@ -98,7 +100,9 @@ import {MatSortModule} from "@angular/material/sort";
     BatchDialogModalComponent,
     ProfileDropdownComponent,
     ProfileComponent,
-    ShareSubtitleDialogComponent
+    ShareSubtitleDialogComponent,
+    TransferOwnershipDialogComponent,
+    MessagesComponent
   ],
     imports: [
         BrowserModule,

@@ -13,6 +13,7 @@ import { SaveSubtitleDialogComponent } from '../dialog-modal/save-subtitle-dialo
 import { GmailUser } from 'src/app/models/firestore-schema/user.model';
 import { timeSince } from '../video-card/video-card.component';
 import { ShareSubtitleDialogComponent } from '../dialog-modal/share-subtitle-dialog/share-subtitle-dialog.component';
+import { ShareService } from 'src/app/services/share.service';
 
 @Component({
   selector: 'details-view',
@@ -42,7 +43,8 @@ export class DetailsViewComponent implements OnInit {
     private snackbar: MatSnackBar,
     private authService: AuthService,
     private translateService: GoogleTranslateService,
-    private detailsViewService: DetailsViewServiceService) { }
+    private detailsViewService: DetailsViewServiceService,
+    private shareService: ShareService) { }
 
   ngOnInit(): void {
     this.videoId = this.route.snapshot.paramMap.get('id');
@@ -116,20 +118,31 @@ export class DetailsViewComponent implements OnInit {
   }
 
   shareSubtitle(language:string, ISOcode:string ,filename: string, format: string, usersRights: string[]) : void { 
-    this.dialog.open(ShareSubtitleDialogComponent,{width:'600px', height:'500px', data: {filename, usersRights}}).afterClosed().pipe(take(1)).subscribe(dialog => {
-      if (dialog == null){
-        this.snackbar.open('No changes have been made', 'DISMISS', {duration:2000});
-      }
-      else if (dialog.email && dialog.right) {
-        this.detailsViewService.shareSubtitle(this.videoId, ISOcode, language, this.user$.value.uid, filename, format, dialog.email, dialog.right);
-      }else if((dialog.email == "" && dialog.right) || (dialog.email && dialog.right == undefined)){
-        this.snackbar.open('Both email and right have to be filled', 'DISMISS', {duration:2000});
-      }else {
-        this.detailsViewService.updateSharedSubtitleRights(this.videoId, ISOcode, language, this.user$.value.uid, filename, format, usersRights);
-      }
-      
-
-    })
+    let owner_text = "";
+    this.detailsViewService.getUsersRightsFromSub(this.user$.value.uid, this.videoId, ISOcode, filename).then((currentRights) => {
+      usersRights = currentRights;
+      this.shareService.getRequestOwnerEmail(this.videoId, ISOcode, language, filename).then((requestOwnerEmail) => {
+        if (requestOwnerEmail){
+           owner_text = requestOwnerEmail;
+        } 
+          this.dialog.open(ShareSubtitleDialogComponent,{width:'600px', id: 'shared-dialog',data: {filename, usersRights, videoId:this.videoId, ISOcode, language, owner_text, format}}).afterClosed().pipe(take(1)).subscribe(dialog => {
+            if (dialog === (null || undefined )){
+              this.dialog.closeAll();
+            }else if(dialog){
+              if (dialog.email && dialog.right) {
+                this.detailsViewService.shareSubtitle(this.videoId, ISOcode, language, this.user$.value.uid, filename, format, dialog.email, dialog.right);
+              }else if((dialog.email == "" && dialog.right) || (dialog.email && dialog.right == undefined)){
+                this.snackbar.open('Both email and right have to be filled', 'DISMISS', {duration:3000});
+              }else {     
+                this.detailsViewService.updateSharedSubtitleRights(this.videoId, ISOcode, language, this.user$.value.uid, filename, format, usersRights);
+              } 
+            }
+            
+          });
+        
+      })
+    });
+    
   }
 
   navigateToDashboard(): void {

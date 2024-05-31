@@ -15,6 +15,7 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { CommunityHelpService } from 'src/app/services/community-help.service';
 import { CommunityHelpRequest } from 'src/app/models/firestore-schema/help-request.model';
 import { OpenAIService } from 'src/app/services/open-ai.service';
+import {SharedVideo} from 'src/app/models/firestore-schema/shared-video.model';
 
 @Component({
   selector: 'app-dashboard',
@@ -26,7 +27,7 @@ import { OpenAIService } from 'src/app/services/open-ai.service';
 export class DashboardComponent implements OnInit {
   user$: Observable<GmailUser>;
   userVideos$: Observable<Video[]> = new Observable<Video[]>;
-  userSharedVideos$: Observable<Video[]> = new Observable<Video[]>;
+  userSharedVideos$: Observable<SharedVideo[]> = new Observable<SharedVideo[]>;
   communityVideos$: Observable<Video[]> = new Observable<Video[]>;
   loading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
   youtubeVideoDetails: YoutubeVideoDetails[];
@@ -58,7 +59,7 @@ export class DashboardComponent implements OnInit {
           if (user) {
             this.userId$.next(user.uid);
             this.userVideos$ = this.dashboardService.getVideos(user.uid);
-            this.userSharedVideos$ = this.dashboardService.getSharedVideos(user.uid);
+            this.userSharedVideos$ = this.dashboardService.getSharedVideos(user.email);
             this.communityVideos$ = this.dashboardService.getCommunityVideos();
             return combineLatest([this.userVideos$, this.userSharedVideos$, this.communityVideos$]);
           } else {

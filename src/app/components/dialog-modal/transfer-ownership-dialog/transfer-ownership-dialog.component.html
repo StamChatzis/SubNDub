@@ -1,0 +1,10 @@
+<h3 mat-dialog-title>Transfer ownership?</h3>
+<div mat-dialog-content>
+    <h4>{{data.email}}</h4>
+    <br>
+    <p>You'll be the owner until this person accepts ownership.</p>
+</div>
+<div mat-dialog-actions align="end">
+  <button mat-button [mat-dialog-close]="null">Cancel</button>
+  <button class="Send" mat-raised-button [mat-dialog-close]="{email: data.email}" cdkFocusInitial color="primary">Send invitation</button>
+</div>

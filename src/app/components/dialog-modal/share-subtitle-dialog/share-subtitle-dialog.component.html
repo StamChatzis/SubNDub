@@ -25,26 +25,25 @@
 </div>
 
 <div class="accessGridList">
-    <mat-dialog-content>
-        <h3 style="font-weight:bold;">People with access</h3>
-        <div class="access-list">
+    <mat-dialog-content >
+        <h3>People with access</h3>
         <div *ngFor="let right of data.usersRights let i = index">
           <mat-card class="access-card">
             <div class="row">
               <div class="col">
-                <h4>{{right['userEmail']}}</h4>
+                <h4 [ngClass]="{ 'line-through': right['right'] === 'Remove right' }">{{right['userEmail']}}</h4>
+                <p *ngIf="right['userEmail'] == owner_text ">Owner pending </p>
               </div>
               <div class="col">
                 <mat-form-field>
-                  <mat-select [(value)]="right['right']" (selectionChange)="onSelectionChange($event, i)">
-                    <mat-option *ngFor="let option of getOptions(right['right'], i)" [value]="option.value">{{option.label}}</mat-option>
+                  <mat-select [(value)]="right['right']"  (selectionChange)="onSelectionChange($event, i)">
+                    <mat-option *ngFor="let option of getOptions(right['right'], i)" [value]="option.value">{{option.label }}</mat-option>
                   </mat-select>
                 </mat-form-field>
               </div>
             </div>
           </mat-card>
         </div>
-      </div>
     </mat-dialog-content>
 </div>
 <div class="buttons-div-container">

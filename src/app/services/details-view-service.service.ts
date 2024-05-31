@@ -4,6 +4,7 @@ import { Language } from '../models/google/google-supported-languages';
 import { Observable, combineLatest, map, of, switchMap, take } from 'rxjs';
 import { GmailUser } from '../models/firestore-schema/user.model';
 import { NotifierService } from './notifier.service';
+import {EmailService} from './email.service';
 
 @Injectable()
 
@@ -11,7 +12,7 @@ export class DetailsViewServiceService {
 
   subtitleLanguages$: Observable<Language[]>;
 
-  constructor(private firestore: AngularFirestore, private notifier: NotifierService) {}
+  constructor(private firestore: AngularFirestore, private notifier: NotifierService, private emailService: EmailService) {}
 
 
   getSubtitleLanguages(userUid: string, videoId: string): Observable<Language[]> {
@@ -90,82 +91,11 @@ export class DetailsViewServiceService {
     })
   }
 
-  addSharedSubtitle(videoId: string, ISOcode: string, language: string, userUid: string, name: string, format: string, userEmail: string, usersrights: string[]): void {
-    const userDocRef = this.firestore.collection(`users`).doc(userUid);
-    const sharedVideosColRef = userDocRef.collection(`/sharedVideos`);
-    const videoDocRef = sharedVideosColRef.doc(videoId);
+  shareSubtitle(videoId: string, ISOcode: string, language: string, userUid: string, name: string, format: string, email: string, right: string): void{
+    
+    this.addUserRightOnSub(videoId, ISOcode, language, userUid, name, format, email, right);
   
-    // Create the video document if it doesn't exist
-    videoDocRef.set({videoId}).then(() => {
-      const subtitleLanguagesColRef = videoDocRef.collection(`/subtitleLanguages`);
-      const subtitleLangDocRef = subtitleLanguagesColRef.doc(ISOcode);
-  
-      const docData = {
-        humanReadable: language,
-        ISOcode: ISOcode,
-      };
-  
-      subtitleLangDocRef.set(docData).then(() => {
-        const subtitlesColRef = subtitleLangDocRef.collection(`/subtitles`);
-        const subtitleDocRef = subtitlesColRef.doc(name);
-  
-        const data = {
-          lastUpdated: Date.now(),
-          fileName: name,
-          fullFileName: `${name}.${format}`,
-          format: format,
-          language: language,
-          iso: ISOcode,
-          usersRights: usersrights,
-        };
-  
-        subtitleDocRef.set(data);
-      }).catch((error) => {
-        console.error(`Error adding shared subtitle: ${error}`);
-      });
-    }).catch((error) => {
-      console.error(`Error creating video document: ${error}`);
-    });
-  
-  }
-
-  addUsersRight(videoId: string, language: string, ISOcode: string, format: string, userUid: string, useridEmail: string, name: string, right: string, email:string): void {
-    const docData = {
-      right: right,
-      userUid: useridEmail,
-      userEmail: email
-    }
-  
-    const subtitleRef = this.firestore.collection('users').doc(userUid).collection('videos').doc(videoId)
-    .collection('subtitleLanguages').doc(ISOcode).collection('subtitles').doc(name);
-  
-    subtitleRef.get().toPromise().then((docSnapshot) => {
-      const currentRights = docSnapshot.exists ? docSnapshot.data().usersRights || [] : []; // Get the current array or initialize an empty array
-      const existingRight = currentRights.find((right) => right.userUid === docData.userUid);
-  
-      if (!existingRight) {
-        currentRights.push(docData); // Add the new user right to the array
-        if(docSnapshot.exists) {        
-          const addSharedSubtitlePromises = [];
-          if(docSnapshot.data().usersRights.length == 1)
-            addSharedSubtitlePromises.push(this.addSharedSubtitle(videoId, ISOcode, language, userUid, name, format, email, currentRights));
-          addSharedSubtitlePromises.push(this.addSharedSubtitle(videoId, ISOcode, language, useridEmail, name, format, email, currentRights)); 
-  
-          Promise.all(addSharedSubtitlePromises).then(() => {
-            subtitleRef.update({ usersRights: currentRights }).then(() => {
-              setTimeout(() => {
-                this.updateSharedVideosForExistingUsers(videoId, ISOcode, language, name, currentRights);
-              }, 3000);         
-            }); // Update the document with the modified array and update shared videos for existing users
-  
-            this.notifier.showNotification("Right has been added","OK");
-          });
-        } 
-      } else {
-        this.notifier.showNotification("User already exist with a right.","DIMISS");
-      }
-    });
-  }
+  }   
 
   getUserIdByEmail(email: string ):Observable<string>{
     return this.firestore.collection('users', ref => ref.where('email', '==', email))
@@ -179,45 +109,229 @@ export class DetailsViewServiceService {
           }
         })
       );
-  }
+  } 
 
-  checkUserRightsOnSubtitle(videoId: string, language: string, format:string, userUid:string, useridEmail:string, name:string, ISOcode:string, right:string, email:string): void {
-  
-    this.addUsersRight(videoId, language, ISOcode, format, userUid, useridEmail, name, right, email);
+  updateSharedVideosUserRights(videoId: string, ISOcode: string, language: string, name: string, usersRights: string[]): Promise<void> {
     
-  }
+    const ownersId = usersRights.filter(user => user['right'] == "Owner")[0];
 
-  shareSubtitle(videoId: string, ISOcode: string, language: string, userUid: string, name: string, format: string, email: string, right: string): void{
+    const subtitleRef = this.firestore.collection('users').doc(ownersId['userUid']).collection('videos').doc(videoId)
+    .collection('subtitleLanguages').doc(ISOcode).collection('subtitles').doc(name);
 
-    let useridEmail ="";
-    //Retrive userId from the given email address (should exist on the users collection) 
-
-    this.getUserIdByEmail(email).pipe(take(1)).subscribe(userId => {
-      if (userId === null) {
-        this.notifier.showNotification("User does not exist in the collection. Try other email.","DIMISS");
+    
+    const promises = this.firestore.collection(`sharedVideos`, ref => ref.where('videoId', '==', videoId).where('iso', '==', ISOcode).where('language', '==', language)
+    .where('fileName', '==', name))
+    .get().toPromise()
+    .then(async (querySnapshot) => {
+      if (!querySnapshot.empty) {
+        subtitleRef.get().toPromise().then(subtitleDoc => {
+          if (subtitleDoc.exists && JSON.stringify(subtitleDoc.data()?.usersRights) != JSON.stringify(usersRights)) {
+            // usersRights arrays are not equal, proceed with the update
+            subtitleRef.update({usersRights: usersRights}); //update Owners subtitle rights
+            const sharedVideoRef = querySnapshot.docs[0].ref;
+            sharedVideoRef.update({
+              usersRights: usersRights
+            }).then(() => {
+              this.notifier.showNotification("User rights have been updated.","OK");
+            }).catch((error) => {
+              this.notifier.showNotification("Error updating user rights: " + error.message,"DIMISS");
+            });
+          }
+          });
       } else {
-        useridEmail = userId;
-        this.checkUserRightsOnSubtitle(videoId, language, format, userUid, useridEmail, name, ISOcode, right, email);
-      }
+        this.notifier.showNotification("Document does not exist.","DIMISS");
+      }       
+    
     });
-  
-  }   
-
-  updateSharedVideosForExistingUsers(videoId: string, ISOcode: string, language: string, name: string, usersRights: string[]): Promise<void[]> {
-    const promises = usersRights.map((userRight) => {
-      const userRef = this.firestore.collection('users').doc(userRight['userUid']);
-      return userRef.collection('sharedVideos').doc(videoId).collection('subtitleLanguages')
-      .doc(ISOcode).collection('subtitles').doc(name).update({ usersRights: usersRights });
-    });
-    return Promise.all(promises);
+    
+    return promises;
   }
 
   updateSharedSubtitleRights(videoId: string, ISOcode: string, language: string, userUid: string, name: string, format: string, usersrights: string[]): void {
       
-    this.updateSharedVideosForExistingUsers(videoId,ISOcode,language,name,usersrights);
-    const subRef = this.firestore.collection('users').doc(userUid).collection('videos').doc(videoId).collection('subtitleLanguages')
-    .doc(ISOcode).collection('subtitles').doc(name).update({usersRights: usersrights});
-    this.notifier.showNotification("Changes saved", "OK");
+    const removeUserRights = usersrights.some(user => user['right'] === "Remove right");
+    if (removeUserRights){
+      this.removeUserRightFromSub(videoId,ISOcode,language,name, usersrights);
+    }else {
+      this.updateSharedVideosUserRights(videoId, ISOcode, language, name, usersrights);
+    }
+  }
+
+  
+  resetUserRightByEmail(email: string, filename: string, videoId: string, ISOcode:string, language:string): Promise<string> {
+
+    const promises = this.firestore.collection(`sharedVideos`, ref => ref.where('videoId', '==', videoId).where('iso', '==', ISOcode).where('language', '==', language)
+    .where('fileName', '==', filename))
+    .get().toPromise()
+    .then((querySnapshot) => {
+      if (!querySnapshot.empty) {
+        const sharedVideoRef = querySnapshot.docs[0].data();  
+        const rights = sharedVideoRef['usersRights'];
+        const rightsFilter = rights.filter((obj) => obj.userEmail == email);
+        const result = rightsFilter.map((obj) => obj.right);
+        return result;
+      } else {
+        this.notifier.showNotification("Document does not exist.","DIMISS");
+      }       
+    
+    });
+
+    return promises;
+  }
+
+  transferOwnership(from_email: string, to_email: string, filename: string, videoId:string, ISOcode:string, language:string, format: string): void {
+    //this.emailService.sendEmail(from_email, to_email);
+
+    const requestOnwerEmail = to_email;
+
+    this.firestore.collection(`sharedVideos`, ref => ref.where('videoId', '==', videoId).where('iso', '==', ISOcode).where('language', '==', language)
+          .where('fileName', '==', filename))
+          .get()
+          .subscribe((querySnapshot) => {
+            if (!querySnapshot.empty) {
+              const sharedVideoRef = querySnapshot.docs[0].ref;
+              sharedVideoRef.update({
+                requestOwnerEmail: requestOnwerEmail
+              })
+            }});
+
+    const data = { 
+      sender: from_email,
+      recipient: to_email,
+      subject: "Invitation to accept ownership for subtitle: "+filename,
+      createdAt: Date.now(),
+      status: "unread",
+      subtitle_name: filename ,
+      body:from_email+" invited you to own a subtitle.\nPlease click the button below to accept or decline the transfer ownership invitation",
+      videoId: videoId,
+      iso: ISOcode,
+      language: language,
+      format: format
+    }
+
+    //Add message to user's messages
+    this.getUserIdByEmail(to_email).subscribe((userid) => { 
+      if (userid != ("" || null || undefined)){
+        const messageRef: AngularFirestoreCollection = this.firestore.collection('users').doc(userid).collection('messages');
+
+
+        messageRef.add(data).then((docRef) => {
+          docRef.update({ id: docRef.id });
+          this.notifier.showNotification("Invitation has been sent", "OK")
+        })
+        .catch((err) => this.notifier.showNotification("There was an error trying to send the invitation " + err, "DISMISS"));
+
+      }
+        
+    });
+    
+    
+}
+  
+
+
+addUserRightOnSub(videoId: string, ISOcode: string, language: string, userUid: string, name: string, format: string, email: string, right: string): void {
+  const sharedVideoRef: AngularFirestoreCollection = this.firestore.collection('sharedVideos');
+
+  const data = {
+    lastUpdated: Date.now(),
+    fileName: name,
+    fullFilename: `${name}.${format}`,
+    format: format,
+    language: language,
+    iso: ISOcode,
+    videoId: videoId,
+    usersRights:[],
+    requestOwnerEmail: ""
+  };
+
+  const subtitleRef = this.firestore.collection('users').doc(userUid).collection('videos').doc(videoId)
+  .collection('subtitleLanguages').doc(ISOcode).collection('subtitles').doc(name);
+
+  subtitleRef.get().toPromise().then((docSnapshot) => {
+    const currentRights = docSnapshot.exists ? docSnapshot.data().usersRights || [] : []; 
+    const existingRight = currentRights.find((right) => right.email === email);
+
+    if (!existingRight) {
+      currentRights.push({
+        right: right,
+        userEmail: email
+      }); 
+      if(docSnapshot.exists) {
+        subtitleRef.update({usersRights: currentRights});
+        data.usersRights = currentRights;  
+        this.firestore.collection(`sharedVideos`, ref => ref.where('videoId', '==', videoId).where('iso', '==', ISOcode).where('language', '==', language)
+          .where('fileName', '==', name))
+          .get()
+          .subscribe((querySnapshot) => {
+            if (!querySnapshot.empty) {
+              const sharedVideoRef = querySnapshot.docs[0].ref;
+              sharedVideoRef.update({
+                usersRights: currentRights
+              }).then(() => {
+                this.notifier.showNotification("User rights have been added.","OK");
+              }).catch((error) => {
+                this.notifier.showNotification("Error updating user rights: " + error.message,"DIMISS");
+              });
+            } else {
+              sharedVideoRef.add(data);
+              this.notifier.showNotification("User rights have been added.","OK");
+            }
+          });  
+    } 
+    } else {
+      this.notifier.showNotification("User already exist with a right.","DIMISS");
+    }
+  });
+ 
+}
+
+removeUserRightFromSub(videoId: string, ISOcode: string, language: string, name: string, usersrights: string[]): void {
+
+  const ownersId = usersrights.filter(user => user['right'] == "Owner")[0];
+
+  const subtitleRef = this.firestore.collection('users').doc(ownersId['userUid']).collection('videos').doc(videoId)
+  .collection('subtitleLanguages').doc(ISOcode).collection('subtitles').doc(name);
+
+  const updatedRights = usersrights.filter(user => user['right'] !== "Remove right");
+
+  this.firestore.collection(`sharedVideos`, ref => ref.where('videoId', '==', videoId).where('iso', '==', ISOcode).where('language', '==', language)
+  .where('fileName', '==', name))
+  .get().toPromise()
+  .then((querySnapshot) => {
+    if (!querySnapshot.empty) {
+      subtitleRef.get().toPromise().then(() => {
+        subtitleRef.update({usersRights: updatedRights}); //update Owners subtitle rights
+      });
+      const sharedVideoRef = querySnapshot.docs[0].ref;
+      sharedVideoRef.update({
+        usersRights: updatedRights
+      }).then(() => {
+        this.notifier.showNotification("User rights have been removed.","OK");
+      }).catch((error) => {
+        this.notifier.showNotification("Error updating user rights: " + error.message,"DIMISS");
+      });
+    
+    } else {
+      this.notifier.showNotification("Document does not exist.","DIMISS");
+    }       
+  
+  });
+          
+}
+
+  async getUsersRightsFromSub(userUid: string, videoId: string, ISOcode: string, name: string): Promise<string[]> {
+    const subtitleRef = this.firestore.collection('users').doc(userUid).collection('videos').doc(videoId)
+      .collection('subtitleLanguages').doc(ISOcode).collection('subtitles').doc(name);
+  
+    try {
+      const docSnapshot = await subtitleRef.get().toPromise();
+      const currentRights = docSnapshot.exists ? docSnapshot.data().usersRights || [] : [];
+      return currentRights;
+    } catch (error) {
+      console.error('Error getting subtitle document:', error);
+      return [];
+    }
   }
      
 }

@@ -26,7 +26,7 @@ export interface Subtitle {
 }
 
 export interface UserRights {
-    userId: string;
+    userId?: string;
     right: string;
     userEmail: string;
 }

@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { MessagesComponent } from './components/messages/messages.component';
 import { SignInComponent } from './components/sign-in/sign-in.component';
 import { AngularFireAuthGuard, redirectLoggedInTo, redirectUnauthorizedTo } from '@angular/fire/compat/auth-guard';
 import { SubtitlingContainerComponent } from './subtitling-container/subtitling-container.component';
@@ -15,6 +16,7 @@ const redirectLoggedInToDashboard = () => redirectLoggedInTo(['dashboard']);
 const routes: Routes = [
   {path: '', component: SignInComponent},
   {path: 'dashboard', component: DashboardComponent, canActivate: [AngularFireAuthGuard], data:{ authGuardPipe: redirectUnauthorizedToLogin }},
+  {path: 'messages', component: MessagesComponent, canActivate: [AngularFireAuthGuard], data:{ authGuardPipe: redirectUnauthorizedToLogin }},
   {path: 'profile', component: ProfileComponent, canActivate: [AngularFireAuthGuard], data:{ authGuardPipe: redirectUnauthorizedToLogin }},
   {path: 'details/:id', component: DetailsViewComponent, canActivate: [AngularFireAuthGuard], data:{ authGuardPipe: redirectUnauthorizedToLogin }},
   {path: 'edit/:id/:languageCode/:name', component: SubtitlingContainerComponent, canActivate: [AngularFireAuthGuard], data:{ authGuardPipe: redirectUnauthorizedToLogin }},

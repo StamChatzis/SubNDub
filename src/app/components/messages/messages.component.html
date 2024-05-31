@@ -1,0 +1,25 @@
+
+
+<div class="messages">
+    <mat-dialog-content >
+        <!--<h2>My Messages</h2>-->
+        <div *ngFor="let message of messages let i = index">
+          <mat-card class="message-card" tabindex="0">
+            <div class="bullet"></div>
+            <div class="row">
+              <div class="col">
+                <mat-card-title>
+                    <h3>{{ message.subject }}</h3>
+                </mat-card-title>
+             
+                <p [innerText]="message.body"></p>
+              </div>
+            </div>
+            <div>
+                <button class="accept" (click)="acceptTransferOwnership(message)">Accept</button>
+                <button  class="decline" (click)="declineTransferOwnership(message)">Decline</button>
+            </div>
+          </mat-card>
+        </div>
+    </mat-dialog-content>
+</div>

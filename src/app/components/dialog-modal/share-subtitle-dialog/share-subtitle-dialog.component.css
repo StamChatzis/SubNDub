@@ -42,6 +42,12 @@
   padding-left: 10px;
 }
 
+.col p {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding-left: 10px;
+}
+
 .col:first-child {
   text-align: left;
 }
@@ -80,4 +86,8 @@
 
 .access-card mat-option {
   font-size: 1rem;
+}
+
+.line-through {
+  text-decoration: line-through;
 }
