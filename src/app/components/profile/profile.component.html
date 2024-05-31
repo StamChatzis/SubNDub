@@ -1,8 +1,8 @@
 <main>
   <div class="profile-wrapper" *ngIf="(auth.user | async) as user">
-    <div class="profile-details">
+    <div class="profile-details-card">
       <div class="profile-details-header">
-        <p></p>
+        <p>Profile Overview</p>
       </div>
       <div class="profile-img">
         <img alt="profile-user-img" referrerpolicy="no-referrer" [src]="user.photoURL">
@@ -12,6 +12,9 @@
       </div>
       <div class="prof-user-email">
         <p>{{user.email}}</p>
+      </div>
+      <div class="prof-bio-display">
+        <p> &#x275D; <span>{{user.bio}}</span> &#x275E; </p>
       </div>
     </div>
     <div class="profile-edit">
@@ -81,9 +84,9 @@
               </form>
               <div class="lang-skill-sector">
                 <mat-card-header>
-                  <mat-card-title>{{((addingLang) ? "Add New Language" : "Foreign Languages") }}</mat-card-title>
+                  <mat-card-title>{{displayCardTitle}}</mat-card-title>
                   <div class="add-new-lang">
-                    <button mat-raised-button color="primary" *ngIf="!addingLang" (click)="addNewLanguage()" matTooltip="Click to add new foreign language" matTooltipPosition = above>
+                    <button mat-raised-button color="primary" *ngIf="!addLang" (click)="onClickToAddLang()" matTooltip="Click to add new foreign language" matTooltipPosition = above>
                       <div class="add-lang-btn" >
                         <mat-icon class="add-icon">add</mat-icon>
                         <span>Add</span>
@@ -91,23 +94,23 @@
                     </button>
                   </div>
                 </mat-card-header>
-                  <div class="lang-skill-table" *ngIf="!addingLang">
+                  <div class="lang-skill-table" *ngIf="!addLang && !editLang">
                     <div class="table-container">
                       <table mat-table matSort class="mat-elevation-z8 table" #table [dataSource]="langSkillDataSource" >
                         <ng-container matColumnDef="language" >
                           <th mat-header-cell *matHeaderCellDef>Language</th >
-                          <td mat-cell *matCellDef="let otherLang" style="text-align: center">{{otherLang.language}}</td>
+                          <td mat-cell *matCellDef="let otherLang" >{{otherLang.language}}</td>
                         </ng-container>
                         <ng-container matColumnDef="skill">
                           <th mat-header-cell *matHeaderCellDef>Level</th>
-                          <td mat-cell *matCellDef="let otherLang" style="width: 19px">{{otherLang.level}}</td>
+                          <td mat-cell *matCellDef="let otherLang">{{otherLang.level}}</td>
                         </ng-container>
                         <ng-container matColumnDef="options">
                           <th mat-header-cell *matHeaderCellDef >Options</th>
                           <td mat-cell *matCellDef="let row = index;">
                             <div class="leave-options">
-                              <mat-icon class="icon material-symbols-outlined edit-lang-icon" matTooltip="Edit" color="primary">edit</mat-icon>
-                              <mat-icon class="icon bin del-lang-icon"  matTooltip="Delete!" color="primary">delete_forever</mat-icon>
+                              <mat-icon class="icon material-symbols-outlined edit-lang-icon" matTooltip="Edit" color="primary" (click)="onClickToEditLang(row)">edit</mat-icon>
+                              <mat-icon class="icon bin del-lang-icon"  matTooltip="Delete!" color="primary" (click)="onClickToDeleteLang(row)">delete_forever</mat-icon>
                             </div>
                           </td>
                         </ng-container>
@@ -119,7 +122,7 @@
                       </table>
                     </div>
                   </div>
-                  <div class="add-lang-skill" *ngIf="addingLang" [formGroup]="langSkillsForm">
+                  <div class="add-lang-skill" *ngIf="addLang || editLang" [formGroup]="langSkillsForm">
                     <div class="foreign-lang-select">
                       <mat-card-header>
                         <mat-card-title>Language</mat-card-title>
@@ -145,12 +148,12 @@
                       </mat-form-field>
                       <div class="lang-skills-btns">
                         <div class="save-lang-btn">
-                          <button mat-raised-button color="primary" (click)="saveNewLang()" [disabled]="langSkillsForm!.get('lang')?.hasError('required') || langSkillsForm!.get('skill')?.hasError('required') || langSkillsForm!.get('lang')?.value == 0 || langSkillsForm!.get('skill')?.value == 0">
+                          <button mat-raised-button color="primary" (click)="onClickToSaveNewLanguage()" [disabled]="langSkillsForm!.get('lang')?.hasError('required') || langSkillsForm!.get('skill')?.hasError('required') || langSkillsForm!.get('lang')?.value == 0 || langSkillsForm!.get('skill')?.value == 0">
                             Save
                           </button>
                         </div>
                         <div class="cancel-lang-btn">
-                          <button mat-raised-button color="warn" (click)="cancelAdd()">Cancel</button>
+                          <button mat-raised-button color="warn" (click)="cancelAddEdit()">Cancel</button>
                         </div>
                       </div>
                     </div>

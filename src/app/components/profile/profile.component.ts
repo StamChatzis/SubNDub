@@ -5,7 +5,7 @@ import {GmailUser} from "../../models/firestore-schema/user.model";
 import {AuthService} from "../../services/auth.service";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {ProfileService} from "../../services/profile.service";
-import {Language, SupportedLanguages} from "../../models/google/google-supported-languages";
+import {SupportedLanguages} from "../../models/google/google-supported-languages";
 import {Country} from "../../models/google/google-supported-countries";
 import {GoogleTranslateService} from "../../services/googletranslate.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
@@ -25,19 +25,22 @@ export class ProfileComponent implements OnInit{
   uid: string;
   photoUrl: string;
   email: string;
+  row: number = -1;
+  displayCardTitle: string;
   loading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
   availableLanguages$: BehaviorSubject<SupportedLanguages> = new BehaviorSubject<SupportedLanguages>(null);
   countries?: Country[];
   skillLevels?: SkillLevel[];
-  otherLanguages: ForeignLanguage[] = [];
-  allLanguages$: Observable<ForeignLanguage[]> = new Observable<ForeignLanguage[]>();
+  foreignLanguages: ForeignLanguage[] = [];
+  deletedLang: ForeignLanguage[] = [];
   userInfoForm: FormGroup;
   langSkillsForm: FormGroup;
   motherLangForm: FormGroup;
   langSkillDataSource = new MatTableDataSource<any>([]);
   displayedColumns: string[] = ['language', 'skill', 'options'];
   editedProfileDetails: boolean;
-  addingLang: boolean;
+  addLang: boolean;
+  editLang: boolean;
 
   constructor(private router: Router,
               public auth: AuthService,
@@ -62,8 +65,10 @@ export class ProfileComponent implements OnInit{
     });
 
     this.editedProfileDetails = false;
-    this.addingLang = false;
+    this.addLang = false;
+    this.editLang = false;
     this.user$ = this.auth.user;
+    this.displayCardTitle = 'Foreign Languages';
   }
 
   ngOnInit() {
@@ -90,7 +95,6 @@ export class ProfileComponent implements OnInit{
     });
 
     this.getAvailableLanguages();
-    this.updateForeignLangData();
   }
 
   isEdited(){
@@ -122,7 +126,7 @@ export class ProfileComponent implements OnInit{
   }
 
   loadForeignLanguages(data: any): void {
-    this.otherLanguages = data;
+    this.foreignLanguages = data;
     this.updateForeignLangData()
   }
 
@@ -137,35 +141,59 @@ export class ProfileComponent implements OnInit{
       });
   }
 
-  updateForeignLangData(): void {
-    this.langSkillDataSource.data = [...this.otherLanguages];
-  }
-
-  addNewLanguage(){
-    this.addingLang = true;
+  onClickToAddLang(){
+    this.addLang = true;
     this.langSkillsForm.controls['lang'].setValue('0');
     this.langSkillsForm.controls['skill'].setValue('0');
   }
 
-  saveNewLang(){
+  onClickToEditLang(row: any){
+    this.row = row;
+    this.editedProfileDetails = true;
+    this.editLang = true;
+    this.langSkillsForm.controls['lang'].setValue(this.foreignLanguages[row].language);
+    this.langSkillsForm.controls['skill'].setValue(this.foreignLanguages[row].level);
+  }
+
+  onClickToDeleteLang(row: any){
+    this.editedProfileDetails = true;
+    const del = {
+      language: this.foreignLanguages[row].language,
+      level: this.foreignLanguages[row].level
+    };
+    this.deletedLang.push(del);
+    this.foreignLanguages.splice(row, 1);
+    this.updateForeignLangData();
+  }
+
+  onClickToSaveNewLanguage(){
     const newLang = {
       language: this.langSkillsForm.value.lang,
       level: this.langSkillsForm.value.skill
     };
-    this.otherLanguages.push(newLang);
-    this.addingLang = false;
+
+    if(this.editLang){
+      this.foreignLanguages.splice(this.row, 1);
+    }
+
+    this.foreignLanguages.push(newLang);
 
     this.langSkillsForm.controls['lang'].setValue('0');
     this.langSkillsForm.controls['skill'].setValue('0');
+    this.editLang = false;
+    this.addLang = false;
     this.updateForeignLangData();
-
-    this.proService.addOtherLanguage(this.uid, newLang);
   }
 
-  cancelAdd(){
-    this.addingLang = false;
+  cancelAddEdit(){
     this.langSkillsForm.controls['lang'].setValue('0');
     this.langSkillsForm.controls['skill'].setValue('0');
+    this.addLang = false;
+    this.editLang = false;
+  }
+
+  updateForeignLangData(): void {
+    this.langSkillDataSource.data = [...this.foreignLanguages];
   }
 
   saveChanges(): void{
@@ -179,11 +207,34 @@ export class ProfileComponent implements OnInit{
       mother_language: ((this.motherLangForm.controls['motherLang'].value == 0) ? '' : this.motherLangForm.value.motherLang)
     }
 
-    this.proService.updateProfile(updatedUser)
-      .then(rtn => {
-      this.snackbar.open('Profile has been updated successfully!','OK', {duration:5000});
-    })
-
-    this.editedProfileDetails = false;
+    if(this.saveNewLangData()){
+      this.deletedLang = [];
+      this.proService.updateProfile(updatedUser)
+        .then(rtn => {
+          this.snackbar.open('Profile has been updated successfully!','OK', {duration:5000});
+        }).catch(ex => {
+        this.snackbar.open('Problem with saving your profile settings!', 'OK', {duration:5000});
+        console.log(ex.message)
+      })
+    }
   }
+
+  saveNewLangData(){
+    if (this.proService.addForeignLanguages(this.uid, this.foreignLanguages)) {
+      this.editedProfileDetails = false;
+      for(let del of this.deletedLang){
+        this.proService.deleteForeignLang(this.uid, del.language)
+          .catch(ex => {
+            this.snackbar.open('Problem with saving your foreign language settings!', 'OK', {duration:5000});
+            console.log(ex.message)
+            return false
+          })
+      }
+      return true;
+    }else{
+      this.snackbar.open('Problem with saving your foreign language settings!', 'OK', {duration:5000});
+      return false;
+    }
+  }
+
 }

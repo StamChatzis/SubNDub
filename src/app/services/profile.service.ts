@@ -11,10 +11,8 @@ import { ForeignLanguage, MotherLanguage } from "../models/general/language-skil
 
 export class ProfileService {
   otherLanguages$: Observable<ForeignLanguage[]>;
-  motherLanguages$: Observable<MotherLanguage>;
 
-  constructor(private firestore: AngularFirestore, private http: HttpClient) {
-  }
+  constructor(private firestore: AngularFirestore, private http: HttpClient) {}
 
   getCountries(){
     const countryUrl = "../../assets/data/google-countries.json";
@@ -26,25 +24,30 @@ export class ProfileService {
     return this.http.get(skillsUrl);
   }
 
-  addOtherLanguage(uid: any, lang: any){
-    const language = lang.language;
-    const langRef: AngularFirestoreDocument<ForeignLanguage> = this.firestore.doc(`users/${uid}/languages/${language}`);
-    langRef.set(lang, {merge: true});
+  addForeignLanguages(uid: any, foreignLang: ForeignLanguage[]) {
+    for(let lang of foreignLang){
+      const language = lang.language;
+      const langRef: AngularFirestoreDocument<ForeignLanguage> = this.firestore.doc(`users/${uid}/languages/${language}`);
+      langRef.set(lang, {merge: true}).catch(ex => {
+        console.log(ex.message)
+        return false
+      });
+    }
+    return true
   }
 
   getAllLanguages(uid: string): Observable<ForeignLanguage[]> {
     return this.otherLanguages$ = this.firestore.collection<ForeignLanguage>(`users/${uid}/languages/`).valueChanges();
   }
 
-  addLanguage(userUid: string, language: string){
-    // const userRef: AngularFirestoreDocument<GmailUser> = this.firestore.doc(`users/${userUid}`);
-    // userRef.collection('languages').doc(language).set({language});
-    // this.userLanguages$ = this.firestore.collection<ForeignLanguage>(`users/${userUid}/languages/`).valueChanges();
-  }
-
   updateProfile(user: any) {
     const userRef: AngularFirestoreDocument<GmailUser> = this.firestore.doc(`users/${user.uid}`)
     return userRef.update(user)
+  }
+
+  deleteForeignLang(uid:any, language:any){
+    const userRef: AngularFirestoreDocument<ForeignLanguage> = this.firestore.doc(`users/${uid}/languages/${language}`)
+    return userRef.delete();
   }
 
 }
