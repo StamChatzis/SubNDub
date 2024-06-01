@@ -5,7 +5,9 @@
     <div class="menu-items">
         <span [routerLink]="''">Home</span>
         <span [routerLink]="'dashboard'" [matTooltip]="'Login to view your Dashboard'" [matTooltipDisabled]="auth.isLoggedIn">Dashboard</span>
-        <span [routerLink]="'messages'" [matTooltip]="'Login to view your Messages'" [matTooltipDisabled]="auth.isLoggedIn">Messages</span>
+        <span [routerLink]="'messages'" [matTooltip]="'Login to view your Messages'" [matTooltipDisabled]="auth.isLoggedIn">Messages<ng-container *ngIf="notifications > 0">
+          <span class="notification-badge" [ngStyle]="{'background-color': 'ed'}">{{notifications}}</span>
+      </ng-container></span>
     </div>
     <span class="spacer"></span>
     <div class="user-wrapper" *ngIf="(auth.user | async) as user" id="user-photo">

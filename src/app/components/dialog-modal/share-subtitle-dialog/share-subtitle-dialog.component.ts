@@ -1,4 +1,4 @@
-import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Inject, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { TransferOwnershipDialogComponent } from 'src/app/components/dialog-modal/transfer-ownership-dialog/transfer-ownership-dialog.component';
@@ -13,7 +13,7 @@ import { take } from 'rxjs';
   providers: [DetailsViewServiceService],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ShareSubtitleDialogComponent {
+export class ShareSubtitleDialogComponent implements OnInit {
   filename: string;
   usersRights: string[];
   videoId: string;
@@ -21,6 +21,8 @@ export class ShareSubtitleDialogComponent {
   language: string;
   owner_text: string;
   format: SubtitleFormat;
+  movedUsersRights = [];
+  requestOwnerEmail: string;
 
   constructor(public dialogRef: MatDialogRef<ShareSubtitleDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: { filename: string, usersRights: string[], videoId: string, ISOcode, language, owner_text, format},  
   private fb: FormBuilder, 
@@ -36,6 +38,16 @@ export class ShareSubtitleDialogComponent {
     this.language = data.language;
     this.owner_text = data.owner_text;
     this.format = data.format;
+    this.requestOwnerEmail = data.owner_text;
+  }
+
+  ngOnInit() {
+    const ownerIndex = this.data.usersRights.findIndex(right => right['right'] === 'Owner');
+    if (ownerIndex !== -1) {
+      this.movedUsersRights = [this.data.usersRights[ownerIndex]].concat(this.data.usersRights.slice(0, ownerIndex)).concat(this.data.usersRights.slice(ownerIndex + 1));
+    } else {
+      this.movedUsersRights = this.data.usersRights;
+    }
   }
 
   allOptions = [
@@ -60,9 +72,9 @@ export class ShareSubtitleDialogComponent {
 
   onSelectionChange(event: any, index: number) { 
     const selectedValue = event.value;
-    const selectedEmail = this.data.usersRights[index]['userEmail'];
+    const selectedEmail = this.movedUsersRights[index]['userEmail'];
     if (selectedValue === 'Transfer Ownership') {
-      const ownerEmail = this.data.usersRights.filter(user => user['right'] == "Owner")[0]['userEmail'];
+      const ownerEmail = this.movedUsersRights.filter(user => user['right'] == "Owner")[0]['userEmail'];
       this.resetUserRight(selectedEmail, index).then(() => {
         this.transferOwnershipPrompt(selectedEmail, index, ownerEmail);
       });
@@ -72,7 +84,7 @@ export class ShareSubtitleDialogComponent {
   }
 
   transferOwnershipPrompt(email: string, index: number, ownerEmail: string): void {
-    const dialogRef= this.dialog.open(TransferOwnershipDialogComponent, {width:'400px', data: {email}, scrollStrategy: new NoopScrollStrategy()});
+    const dialogRef= this.dialog.open(TransferOwnershipDialogComponent, {width:'400px', data: {email, requestOwnerEmail: this.requestOwnerEmail}, scrollStrategy: new NoopScrollStrategy()});
     dialogRef.afterClosed().pipe(take(1)).subscribe((transferFlag) => {
       if(transferFlag == (null || undefined)){ this.resetUserRight(email,index); }
       else if(transferFlag){
@@ -88,7 +100,7 @@ export class ShareSubtitleDialogComponent {
   resetUserRight(userEmail: string, index: number): Promise<void> {
     return new Promise((resolve) => {
       this.detailsViewService.resetUserRightByEmail(userEmail, this.filename, this.videoId, this.ISOcode, this.language).then((previousRight) => {
-        this.data.usersRights[index]['right'] = previousRight.toString();
+        this.movedUsersRights[index]['right'] = previousRight.toString();
         resolve();
       });
     });

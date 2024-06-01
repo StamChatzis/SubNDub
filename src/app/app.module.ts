@@ -66,6 +66,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import {MatSortModule} from "@angular/material/sort";
 import { TransferOwnershipDialogComponent } from './components/dialog-modal/transfer-ownership-dialog/transfer-ownership-dialog.component';
 import { MessagesComponent } from './components/messages/messages.component';
+import { DetailsViewServiceService } from './services/details-view-service.service';
 
 @NgModule({
   declarations: [
@@ -140,7 +141,7 @@ import { MessagesComponent } from './components/messages/messages.component';
         MatGridListModule,
         MatSortModule
     ],
-  providers: [],
+  providers: [DetailsViewServiceService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

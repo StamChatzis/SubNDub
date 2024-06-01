@@ -16,7 +16,6 @@ export class MessagesComponent implements OnInit, OnDestroy {
   messages: Message[] = [];
   useruid: string;
   userEmail: string;
-  notifications: number;
   messagesSubscription: any;
 
   constructor(private messagesService: MessagesService, private authService: AuthService){}
@@ -25,7 +24,6 @@ export class MessagesComponent implements OnInit, OnDestroy {
     this.authService.user.subscribe((id) => {
       this.useruid = id.uid;
       this.userEmail = id.email;
-      this.countNotifications(this.useruid);
   
       const messagesCollection = this.messagesService.getUserMessages(this.useruid);
       const messagesQuery = messagesCollection.stateChanges();
@@ -81,12 +79,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
     this.messagesSubscription.unsubscribe();
   }
 
-  countNotifications(userid:string){
-    this.messagesService.getNotificationsCount(userid).then((count) => {
-      this.notifications = count;
-      console.log(this.notifications);
-    });
-  }
+
 
   getMessages(useruid: string, userEmail: string) {
     this.messagesService.getUserMessages(useruid)
@@ -108,6 +101,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
               status: data.status,
               iso: data.iso,
               language: data.language
+              // Add other properties required by the Message type
             } as Message;
           }).filter(message => message.recipient === userEmail);
           return of(actions);

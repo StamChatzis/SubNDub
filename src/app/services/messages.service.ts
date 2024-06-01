@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Message} from 'src/app/models/firestore-schema/message.model';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from '@angular/fire/compat/firestore';
 import { DetailsViewServiceService, SubtitleFormat } from './details-view-service.service';
+import { Observable } from 'rxjs';
 
 
 @Injectable({
@@ -15,17 +16,17 @@ export class MessagesService {
     return this.firestore.collection('users').doc(userid).collection('messages');
   }
 
-  getGeneralInvitations(email: string): Promise<Message[]> {
-    const messageRef: AngularFirestoreCollection = this.firestore.collection('invitation', ref => ref.where('recipient', '==', email));
-    return messageRef.get().toPromise().then(snapshot => {
-      return snapshot.docs.map(doc => doc.data() as Message)
-    });
-  }
-
-  getNotificationsCount(userid: string): Promise<number> {
-    const messageRef: AngularFirestoreCollection = this.firestore.collection('users').doc(userid).collection('messages', ref => ref.where('status', '==', 'unread'));
-    return messageRef.get().toPromise().then(snapshot => {
-      return snapshot.docs.length;
+  getMessagesCount(userId: string): Observable<number> {
+    return new Observable((observer) => {
+      const notificationsRef = this.firestore.collection('users').doc(userId).collection('messages', ref => ref.where('status', '==', 'unread'));
+      const unsubscribe = notificationsRef.valueChanges().subscribe((notifications) => {
+        let count = 0;
+        notifications.forEach((notification) => {
+          count++;
+        });
+        observer.next(count);
+      });
+      return unsubscribe;
     });
   }
 
@@ -34,31 +35,25 @@ export class MessagesService {
     let ownerId = "";
     let updatedRights = [];
     let newOwnerId = "";
-
+    let currentDoc: any;
     const sharedVideosRef = this.firestore.collection("sharedVideos", ref=> ref.where('videoId', '==', message.videoId)
         .where('iso', '==', message.iso).where('language', '==', message.language).where('fileName', '==', message.subtitle_name).where('format', '==', message.format));
-
        this.detailsService.getUserIdByEmail(message.sender).subscribe((id) => {
          ownerId = id;
          this.firestore.collection('users').doc(ownerId).collection('videos').doc(message.videoId)
          .collection('subtitleLanguages').doc(message.iso).collection('subtitles', ref=> ref.where('fileName', '==', message.subtitle_name)).get()
          .toPromise()
          .then(querySnapshot => {
-           let currentRights = querySnapshot.docs[0].data()['usersRights'];
-          
+           currentDoc = querySnapshot.docs[0];
+           let currentRights = querySnapshot.docs[0].data()['usersRights'];      
           currentRights = currentRights.filter(right => right['userEmail'] !== message.recipient);
-
-
           updatedRights = currentRights.map(right => {
             if (right.userEmail === message.sender) {
               return { ...right, right: "Editor" };
             }
             return right;
           });
-          
-          
 
-          
           querySnapshot.docs[0].ref.delete()
           .then(() => {
             const language = {
@@ -83,8 +78,7 @@ export class MessagesService {
                   .collection('subtitleLanguages').doc(message.iso).collection('subtitles').doc(message.subtitle_name);
                   newOwnerRef.get()
                   .toPromise()
-                  .then(queryNewOwnerSnapshot => {
-                    
+                  .then(queryNewOwnerSnapshot => {             
                     if(queryNewOwnerSnapshot.exists){
                       const currentOwnerDoc = queryNewOwnerSnapshot.data()
                       const currentOwnerRight = currentOwnerDoc['usersRights'];
@@ -101,7 +95,7 @@ export class MessagesService {
                         sharedVideosRef.get().subscribe(querySharedSnapshot => {
                           if (querySharedSnapshot.docs.length > 0) {
                             const sharedVideoDoc = querySharedSnapshot.docs[0];
-                            sharedVideoDoc.ref.update({ usersRights: updatedRights })                            
+                            sharedVideoDoc.ref.update({ usersRights: updatedRights })                         
                           } else {
                             console.log("No shared video document found");
                           }
@@ -112,10 +106,8 @@ export class MessagesService {
                     }
                   }).catch((err) => console.error("No document ref found ", err));
                   }, 1000);
-                  
                 });
               })
-              
             }).then(() => {
               console.log("Subtitle has been created for new owner");
             }).catch((error) => { 
@@ -126,7 +118,7 @@ export class MessagesService {
             
           })
          .catch(error => {
-            console.error('Subtitle does not exist.', error);
+            console.error('Error: Subtitle does not exist. ', error);
           });
          
     });

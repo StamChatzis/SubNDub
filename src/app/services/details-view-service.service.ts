@@ -182,16 +182,20 @@ export class DetailsViewServiceService {
   transferOwnership(from_email: string, to_email: string, filename: string, videoId:string, ISOcode:string, language:string, format: string): void {
     //this.emailService.sendEmail(from_email, to_email);
 
-    const requestOnwerEmail = to_email;
+    const sharedRef = this.firestore.collection(`sharedVideos`, ref => ref.where('videoId', '==', videoId).where('iso', '==', ISOcode).where('language', '==', language)
+    .where('fileName', '==', filename));  
+    
+    let requestOwnerEmail='';
 
-    this.firestore.collection(`sharedVideos`, ref => ref.where('videoId', '==', videoId).where('iso', '==', ISOcode).where('language', '==', language)
-          .where('fileName', '==', filename))
-          .get()
+    const NewRequestOnwerEmail = to_email;
+
+    sharedRef.get()
           .subscribe((querySnapshot) => {
             if (!querySnapshot.empty) {
+              requestOwnerEmail = querySnapshot.docs[0].data()['requestOwnerEmail'];
               const sharedVideoRef = querySnapshot.docs[0].ref;
               sharedVideoRef.update({
-                requestOwnerEmail: requestOnwerEmail
+                requestOwnerEmail: NewRequestOnwerEmail
               })
             }});
 
@@ -222,10 +226,15 @@ export class DetailsViewServiceService {
         .catch((err) => this.notifier.showNotification("There was an error trying to send the invitation " + err, "DISMISS"));
 
       }
+        //Delete message from previous requestOwnerEmail if exists
+        if (requestOwnerEmail != ""){
+          this.getUserIdByEmail(requestOwnerEmail).subscribe((id) => {
+            this.removeMessageFromUser(id, videoId, ISOcode, language, filename);
+        })
+        }
+      
         
-    });
-    
-    
+    });  
 }
   
 
@@ -294,6 +303,8 @@ removeUserRightFromSub(videoId: string, ISOcode: string, language: string, name:
   .collection('subtitleLanguages').doc(ISOcode).collection('subtitles').doc(name);
 
   const updatedRights = usersrights.filter(user => user['right'] !== "Remove right");
+  const usersToRemove = usersrights.filter(user => user['right'] === "Remove right");
+  const emailsToRemove = usersToRemove.map(user => user['userEmail']);
 
   this.firestore.collection(`sharedVideos`, ref => ref.where('videoId', '==', videoId).where('iso', '==', ISOcode).where('language', '==', language)
   .where('fileName', '==', name))
@@ -304,6 +315,19 @@ removeUserRightFromSub(videoId: string, ISOcode: string, language: string, name:
         subtitleRef.update({usersRights: updatedRights}); //update Owners subtitle rights
       });
       const sharedVideoRef = querySnapshot.docs[0].ref;
+      const emailToCheck = querySnapshot.docs[0].data()['requestOwnerEmail'];
+      if (emailsToRemove.includes(emailToCheck)){
+        console.log()
+        sharedVideoRef.update({
+          requestOwnerEmail: ""
+        });
+
+        this.getUserIdByEmail(emailToCheck).subscribe((id) => {
+          this.removeMessageFromUser(id, videoId, ISOcode, language, name);
+        })
+        
+
+      }
       sharedVideoRef.update({
         usersRights: updatedRights
       }).then(() => {
@@ -332,6 +356,17 @@ removeUserRightFromSub(videoId: string, ISOcode: string, language: string, name:
       console.error('Error getting subtitle document:', error);
       return [];
     }
+  }
+
+  removeMessageFromUser(userid: string, videoId:string, ISOcode:string, language:string, name:string){
+    const messageRef = this.firestore.collection('users').doc(userid).collection('messages', ref=> ref.where('videoId', '==', videoId).where('iso', '==', ISOcode).where('language', '==', language)
+            .where('subtitle_name', '==', name));
+            
+            messageRef.get().toPromise().then(querySnapshot => {
+              querySnapshot.forEach(doc => {
+                doc.ref.delete();
+              });
+            });
   }
      
 }

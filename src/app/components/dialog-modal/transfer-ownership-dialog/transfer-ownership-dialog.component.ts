@@ -8,5 +8,5 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
   styleUrls: ['./transfer-ownership-dialog.component.css']
 })
 export class TransferOwnershipDialogComponent {
-  constructor(@Inject(MAT_DIALOG_DATA) public data: { email: string}, public dialogRef: MatDialogRef<TransferOwnershipDialogComponent>){ }
+  constructor(@Inject(MAT_DIALOG_DATA) public data: { email: string, requestOwnerEmail: string}, public dialogRef: MatDialogRef<TransferOwnershipDialogComponent>){ }
 }
