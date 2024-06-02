@@ -1,8 +1,8 @@
 <main>
   <div class="profile-wrapper" *ngIf="(auth.user | async) as user">
     <div class="profile-details-card">
-      <div class="profile-details-header">
-        <p>Profile Overview</p>
+      <div class="prof-overview-header">
+        <h3>Profile Overview</h3>
       </div>
       <div class="profile-img">
         <img alt="profile-user-img" referrerpolicy="no-referrer" [src]="user.photoURL">
@@ -14,7 +14,7 @@
         <p>{{user.email}}</p>
       </div>
       <div class="prof-bio-display">
-        <p> &#x275D; <span>{{user.bio}}</span> &#x275E; </p>
+        <p><span *ngIf="user.bio.length > 0"> &#x275D; {{user.bio}} &#x275E; </span></p>
       </div>
     </div>
     <div class="profile-edit">
@@ -84,7 +84,7 @@
               </form>
               <div class="lang-skill-sector">
                 <mat-card-header>
-                  <mat-card-title>{{displayCardTitle}}</mat-card-title>
+                  <mat-card-title>{{(addLang) ? 'Add new Foreign Language' : (editLang) ? 'Edit Foreign Language' : 'Foreign Languages'}}</mat-card-title>
                   <div class="add-new-lang">
                     <button mat-raised-button color="primary" *ngIf="!addLang" (click)="onClickToAddLang()" matTooltip="Click to add new foreign language" matTooltipPosition = above>
                       <div class="add-lang-btn" >
@@ -162,10 +162,14 @@
             </div>
         </div>
       </div>
-      <div class="save-profile-changes">
-        <button mat-raised-button color="primary" [disabled] = "!editedProfileDetails" (click)="saveChanges()">Save changes</button>
+      <div class="save-cancel-prof-btn">
+        <div class="save-profile-changes">
+          <button mat-raised-button color="primary" [disabled] = "!editedProfileDetails || addLang || editLang" (click)="saveChanges()">Save changes</button>
+        </div>
+        <div class="revert-profile-changes">
+          <button mat-raised-button color="warn" [disabled] = "!editedProfileDetails || addLang || editLang" (click)="revertChanges()">Revert changes</button>
+        </div>
       </div>
-
     </div>
   </div>
   <fullscreen-loader *ngIf="(loading$ | async)"></fullscreen-loader>

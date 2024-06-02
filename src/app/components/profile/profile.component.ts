@@ -26,7 +26,6 @@ export class ProfileComponent implements OnInit{
   photoUrl: string;
   email: string;
   row: number = -1;
-  displayCardTitle: string;
   loading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
   availableLanguages$: BehaviorSubject<SupportedLanguages> = new BehaviorSubject<SupportedLanguages>(null);
   countries?: Country[];
@@ -68,7 +67,6 @@ export class ProfileComponent implements OnInit{
     this.addLang = false;
     this.editLang = false;
     this.user$ = this.auth.user;
-    this.displayCardTitle = 'Foreign Languages';
   }
 
   ngOnInit() {
@@ -149,7 +147,6 @@ export class ProfileComponent implements OnInit{
 
   onClickToEditLang(row: any){
     this.row = row;
-    this.editedProfileDetails = true;
     this.editLang = true;
     this.langSkillsForm.controls['lang'].setValue(this.foreignLanguages[row].language);
     this.langSkillsForm.controls['skill'].setValue(this.foreignLanguages[row].level);
@@ -167,6 +164,7 @@ export class ProfileComponent implements OnInit{
   }
 
   onClickToSaveNewLanguage(){
+    this.editedProfileDetails = true;
     const newLang = {
       language: this.langSkillsForm.value.lang,
       level: this.langSkillsForm.value.skill
@@ -235,6 +233,11 @@ export class ProfileComponent implements OnInit{
       this.snackbar.open('Problem with saving your foreign language settings!', 'OK', {duration:5000});
       return false;
     }
+  }
+
+  revertChanges(){
+    this.ngOnInit()
+    this.editedProfileDetails = false;
   }
 
 }

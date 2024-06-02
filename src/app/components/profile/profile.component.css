@@ -34,20 +34,25 @@ main{
 
 .profile-display-name p{
   margin-top: 15px;
-  font-size: 1.57em;
+  font-size: 1.55em;
 }
 
 .prof-user-email{
-  margin-top: 20px;
+  margin-top: 10px;
 }
 
 .prof-user-email p{
   font-size: 0.9em;
-  font-style: italic;
   color: grey;
 }
 
-.profile-edit-head h3{
+.prof-bio-display{
+  font-size: 1.2em;
+  font-style: italic;
+  color: #333333;
+}
+
+.profile-edit-head h3, .prof-overview-header h3{
   font-size: 1.90em;
   margin-bottom: 40px;
 }
@@ -56,9 +61,14 @@ mat-card-title{
   font-size: 1.1em;
 }
 
-.save-profile-changes{
+.save-cancel-prof-btn{
   margin-top: 50px;
-  float: right;
+  display: flex;
+  justify-content: end;
+}
+
+.save-profile-changes{
+  margin-right: 25px;
 }
 
 .profile-details-header  h3, .lang-details-header h3{
