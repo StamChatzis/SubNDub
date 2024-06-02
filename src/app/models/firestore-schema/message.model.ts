@@ -11,4 +11,5 @@ export class Message {
     language:string;
     videoId:string;
     format?: string;
+    videoTitle?: string;
 }

@@ -24,7 +24,8 @@ export class ShareSubtitleDialogComponent implements OnInit {
   movedUsersRights = [];
   requestOwnerEmail: string;
 
-  constructor(public dialogRef: MatDialogRef<ShareSubtitleDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: { filename: string, usersRights: string[], videoId: string, ISOcode, language, owner_text, format},  
+
+  constructor(public dialogRef: MatDialogRef<ShareSubtitleDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: { filename: string, usersRights: string[], videoId: string, ISOcode, language, owner_text, format, videoTitle},  
   private fb: FormBuilder, 
   private detailsViewService: DetailsViewServiceService,
   public dialog: MatDialog
@@ -89,7 +90,7 @@ export class ShareSubtitleDialogComponent implements OnInit {
       if(transferFlag == (null || undefined)){ this.resetUserRight(email,index); }
       else if(transferFlag){
         if (transferFlag.email) {
-          this.detailsViewService.transferOwnership(ownerEmail, transferFlag.email, this.data.filename, this.videoId, this.ISOcode, this.language, this.data.format);
+          this.detailsViewService.transferOwnership(ownerEmail, transferFlag.email, this.data.filename, this.videoId, this.ISOcode, this.language, this.data.format, this.data.videoTitle);
           this.dialog.closeAll();
         }
       }

@@ -69,7 +69,7 @@
                 <mat-cell *matCellDef="let element"><button mat-raised-button color="primary" (click)="editSubtitle(element.iso, element.fullFileName)">Edit</button>
                 <button (click)="requestCommunityHelp(element.language,element.iso, element.fileName, element.format)"
                  style="margin-left:10px;" matTooltip="Request help by someone in the Sub&Dub Community" mat-icon-button color="primary"><mat-icon>person_pin_circle</mat-icon></button>
-                 <button (click)="shareSubtitle(element.language, element.iso, element.fileName, element.format, element.usersRights)"
+                 <button (click)="shareSubtitle(element.language, element.iso, element.fileName, element.format, element.usersRights, videoDetails$.value[0].snippet?.title)"
                  style="margin-left:10px;" matTooltip="Share subtitles with someone" mat-icon-button color="primary"><mat-icon>share</mat-icon></button>    
                 </mat-cell>
             </ng-container>

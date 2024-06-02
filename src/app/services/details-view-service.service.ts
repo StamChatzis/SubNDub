@@ -179,7 +179,7 @@ export class DetailsViewServiceService {
     return promises;
   }
 
-  transferOwnership(from_email: string, to_email: string, filename: string, videoId:string, ISOcode:string, language:string, format: string): void {
+  transferOwnership(from_email: string, to_email: string, filename: string, videoId:string, ISOcode:string, language:string, format: string, videoTitle: string): void {
     //this.emailService.sendEmail(from_email, to_email);
 
     const sharedRef = this.firestore.collection(`sharedVideos`, ref => ref.where('videoId', '==', videoId).where('iso', '==', ISOcode).where('language', '==', language)
@@ -202,7 +202,7 @@ export class DetailsViewServiceService {
     const data = { 
       sender: from_email,
       recipient: to_email,
-      subject: "Invitation to accept ownership for subtitle: "+filename,
+      subject: "Invitation to accept ownership for subtitle: "+filename+"."+format,
       createdAt: Date.now(),
       status: "unread",
       subtitle_name: filename ,
@@ -210,7 +210,8 @@ export class DetailsViewServiceService {
       videoId: videoId,
       iso: ISOcode,
       language: language,
-      format: format
+      format: format,
+      videoTitle: videoTitle
     }
 
     //Add message to user's messages

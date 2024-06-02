@@ -117,7 +117,7 @@ export class DetailsViewComponent implements OnInit {
     this.detailsViewService.requestCommunityHelp(this.user$.value, this.videoId,language, iso, filename, format)
   }
 
-  shareSubtitle(language:string, ISOcode:string ,filename: string, format: string, usersRights: string[]) : void { 
+  shareSubtitle(language:string, ISOcode:string ,filename: string, format: string, usersRights: string[], videoTitle: string) : void { 
     let owner_text = "";
     this.detailsViewService.getUsersRightsFromSub(this.user$.value.uid, this.videoId, ISOcode, filename).then((currentRights) => {
       usersRights = currentRights;
@@ -125,7 +125,7 @@ export class DetailsViewComponent implements OnInit {
         if (requestOwnerEmail){
            owner_text = requestOwnerEmail;
         } 
-          this.dialog.open(ShareSubtitleDialogComponent,{width:'600px', id: 'shared-dialog',data: {filename, usersRights, videoId:this.videoId, ISOcode, language, owner_text, format}}).afterClosed().pipe(take(1)).subscribe(dialog => {
+          this.dialog.open(ShareSubtitleDialogComponent,{width:'600px', id: 'shared-dialog',data: {filename, usersRights, videoId:this.videoId, ISOcode, language, owner_text, format, videoTitle}}).afterClosed().pipe(take(1)).subscribe(dialog => {
             if (dialog === (null || undefined )){
               this.dialog.closeAll();
             }else if(dialog){

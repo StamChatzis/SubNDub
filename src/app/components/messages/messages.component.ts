@@ -43,7 +43,8 @@ export class MessagesComponent implements OnInit, OnDestroy {
               status: data.status,
               iso: data.iso,
               language: data.language,
-              format: data.format
+              format: data.format,
+              videoTitle: data.videoTitle
             } as Message);
           } else if (change.type === 'removed') {
             const index = this.messages.findIndex(message => message.id === change.payload.doc.id);
@@ -66,7 +67,8 @@ export class MessagesComponent implements OnInit, OnDestroy {
                 status: data.status,
                 iso: data.iso,
                 language: data.language,
-                format: data.format
+                format: data.format,
+                videoTitle: data.videoTitle
               } as Message;
             }
           }
