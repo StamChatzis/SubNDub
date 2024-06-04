@@ -16,3 +16,19 @@
     height:42px;
     width:100px;
 }
+
+.add-vid-btn{
+  border-radius: 15px;
+}
+
+.add-span-txt{
+  display:flex;
+}
+
+.add-span-txt span{
+  margin-top: 4px;
+}
+
+.add-span-txt mat-icon{
+  margin-left: 5px;
+}

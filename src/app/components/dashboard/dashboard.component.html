@@ -1,8 +1,8 @@
 <div *ngIf="(user$ | async)" class="dashboard-wrapper">
     <div class="dashboard-header">
         <span class="my-videos">My Videos ({{(userVideos$ | async)?.length}})</span>
-        <button mat-icon-button
-           (click)="openDialog()" matTooltip="Add New video"><mat-icon>add</mat-icon>
+        <button mat-fab class="add-video-btn" color="primary" matTooltip="Add New video" (click)="openDialog()">
+          <mat-icon>add</mat-icon>
         </button>
         <mat-form-field>
             <mat-label>Search By Title</mat-label>
@@ -26,8 +26,8 @@
                     (deleteVideoEmitter)="deleteVideoPrompt($event)"
                     (videoIdEmitter)="previewVideo($event)"
                     [videoDetails]="getVideoDetailsById(video.videoId)"></video-card>
-                </div>            
-            </ng-template>            
+                </div>
+            </ng-template>
         </div>
         <div *ngIf="listView" class="video-player-card">
             <mat-card>
@@ -43,10 +43,10 @@
             </mat-card>
         </div>
     </div>
-    
+
     <mat-divider></mat-divider>
     <div class="myshared-videos-header">
-        <h1>My Shared Videos ({{(userSharedVideos$ | async)?.length}})</h1> 
+        <h1>My Shared Videos ({{(userSharedVideos$ | async)?.length}})</h1>
     </div>
 
     <mat-divider></mat-divider>

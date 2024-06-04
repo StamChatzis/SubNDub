@@ -1,11 +1,16 @@
 <form [formGroup]="form" (submit)="onSubmit()">
     <div class="url-wrapper">
-        <mat-form-field color="primary" class="form-field">
-            <mat-label>Enter YouTube URL</mat-label>
-            <input formControlName="youtubeUrl" matInput type="text">
-            <mat-hint>Enter the YouTube video URL which you want subtitles/dubbing for</mat-hint>
-            <mat-error>Invalid URL</mat-error>
-        </mat-form-field>
-        <button mat-raised-button color="primary" type="submit">ADD +</button>
+      <mat-card-header>
+        <mat-card-title>Enter YouTube Video URL</mat-card-title>
+      </mat-card-header>
+      <mat-form-field color="primary" class="form-field">
+        <mat-label>Enter YouTube URL</mat-label>
+        <input formControlName="youtubeUrl" matInput type="text">
+        <mat-hint>Enter the YouTube video URL which you want subtitles/dubbing for</mat-hint>
+        <mat-error>Invalid URL</mat-error>
+      </mat-form-field>
+      <button mat-raised-button color="primary" type="submit" class="add-vid-btn">
+        <div class="add-span-txt"><span>Add</span><mat-icon>add</mat-icon></div>
+      </button>
     </div>
 </form>

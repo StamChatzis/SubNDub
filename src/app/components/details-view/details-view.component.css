@@ -1,79 +1,86 @@
 .wrapper {
-    display:flex;
-    gap:50px;
+  display:flex;
+  gap:50px;
 }
 
 .main-content {
-    padding-top:10px;
-    display:flex;
-    flex-direction: column;
-    flex-grow: 1;
+  margin-top:10px;
+  margin-right: 50px;
+  display:flex;
+  flex-direction: column;
+  flex-grow: 1;
 }
 
 .left-container {
-    max-width: 35vh;
-    display: flex;
-    flex-grow:1;
-    flex-direction: column;
-    padding-left:20px;
+  max-width: 20vw;
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  padding-left: 20px;
 }
 
 .dashboard-navigation {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
+  margin-top: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
 }
 
 .video-details{
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .video-details img {
-    width: 100%;
+  width: 100%;
 }
 
 .video-details .title {
-    font-size: 18px;
-    color: black;
-    font-weight: bold;
-    text-decoration: none;
+  font-size: 18px;
+  color: black;
+  font-weight: bold;
+  text-decoration: none;
 }
 
 .subtitles-header {
-    display: flex;
-    flex-direction: row;
-    align-items:center;
-    font-size: 32px;
-    gap: 30px
+  display: flex;
+  flex-direction: row;
+  align-items:center;
+  font-size: 32px;
+  gap: 30px
 }
 
 .mat-mdc-table {
-    background: none;
-    box-shadow: none;
+  background: none;
+  box-shadow: none;
 }
 
 ::ng-deep .mat-mdc-menu-content {
-    max-height: 700px;
+  max-height: 700px;
 }
 
 .captions-details {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .views {
-    flex: 6;
-    font-size: 16px;
-    color: grey;
+  flex: 6;
+  font-size: 16px;
+  color: grey;
 }
 
 .video-wrapper{
-    box-shadow: rgb(113, 113, 114) 0px 10px 35px -10px;
-    border-radius:5px;
+  margin-top: 20px;
+  box-shadow: rgb(113, 113, 114) 0px 10px 35px -10px;
+  border-radius:5px;
 }
 
 .title,.views,.captions-details {
-    padding-left:10px;
-    padding-bottom:5px;
+  padding-left:10px;
+  padding-bottom:5px;
+}
+
+.mat-column-Format, .mat-column-Language, .mat-column-Last-Updated, .mat-column-Subtitles {
+  text-align: center;
 }

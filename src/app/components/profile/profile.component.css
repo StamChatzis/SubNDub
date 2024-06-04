@@ -104,10 +104,6 @@ mat-card-title{
   color: #323e48;
 }
 
-/*.no-data-row td{*/
-/*  padding-left: 6.5vw !important;*/
-/*}*/
-
 .lang-skill-sector mat-card-header{
   display: flex;
   justify-content: space-between;

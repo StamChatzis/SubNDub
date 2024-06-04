@@ -38,8 +38,8 @@ export class DashboardComponent implements OnInit {
   apiLoaded = false;
   @ViewChild('userVideosContainer') userVideosContainer: ElementRef
 
-  constructor(private auth: AuthService, 
-    private dashboardService: DashboardService, 
+  constructor(private auth: AuthService,
+    private dashboardService: DashboardService,
     private youtubeService: YoutubeService,
     private router: Router,
     public dialog: MatDialog,
@@ -74,10 +74,10 @@ export class DashboardComponent implements OnInit {
         const userVideoIds = userVideos.map(item => item.videoId);
         const userSharedVideoIds = userSharedVideos.map(item => item.videoId);
         const communityVideoIds = communityVideos.map(item => item.videoId);
-        
+
         // Using Set to ensure unique video IDs
         const uniqueVideoIds = new Set([...userVideoIds, ...userSharedVideoIds, ...communityVideoIds]);
-        
+
         const allVideoIds = Array.from(uniqueVideoIds).join(',');
         return this.youtubeService.getVideoDetails(allVideoIds);
       })
@@ -116,7 +116,7 @@ export class DashboardComponent implements OnInit {
   }
 
   openDialog(): void {
-    const dialogRef = this.dialog.open(VideoInitFormComponent, {height: '150px'});
+    const dialogRef = this.dialog.open(VideoInitFormComponent, {height: '200px'});
     dialogRef.afterClosed().subscribe((result: string) => {
       if (this.youtubeVideoDetails.map(details=> details.id).includes(result)) {
         this.snackbar.open('Video already exists in Collection.', 'DISMISS', {duration:5000});
