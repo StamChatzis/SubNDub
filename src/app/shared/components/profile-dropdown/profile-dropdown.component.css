@@ -42,3 +42,11 @@ nav{
 .go-to-settings mat-icon{
   padding-top: 10px;
 }
+
+.user-name{
+  text-align: center;
+}
+
+.hello-txt{
+  max-width: 220px;
+}

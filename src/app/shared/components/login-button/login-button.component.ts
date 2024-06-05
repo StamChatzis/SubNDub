@@ -7,6 +7,6 @@ import { AuthService } from '../../../services/auth.service';
   styleUrls: ['./login-button.component.css']
 })
 export class LoginButtonComponent {
-  
+
   constructor(public auth: AuthService ) { }
 }

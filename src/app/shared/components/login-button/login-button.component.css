@@ -6,3 +6,11 @@
   overflow: hidden;
   display: none;
 }
+
+.logout-btn-content, .login-btn-content{
+  display: flex;
+}
+
+.material-symbols-outlined{
+  margin-right: 5px;
+}

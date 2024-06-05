@@ -36,7 +36,7 @@ export class DetailsViewComponent implements OnInit {
   @ViewChild('translateMenu') translateMenu;
 
   displayedColumns = ['Name','Format','Language','Last Updated','Subtitles'];
-  constructor(private route: ActivatedRoute, 
+  constructor(private route: ActivatedRoute,
     private router: Router,
     private youtubeService: YoutubeService,
     public dialog: MatDialog,
@@ -70,7 +70,7 @@ export class DetailsViewComponent implements OnInit {
       tap(() => {
         this.loading$.next(true);
       })).subscribe((res) => {
-      if (res) { 
+      if (res) {
         this.videoDetails$.next(res);
         this.loading$.next(false);
         this.publishDate.next(timeSince(new Date(this.videoDetails$.value[0]?.snippet?.publishedAt)));
@@ -83,7 +83,7 @@ export class DetailsViewComponent implements OnInit {
       tap(() => {
         this.loading$.next(true);
       })).subscribe((res) => {
-      if (res) { 
+      if (res) {
         this.videoCaptionDetails$.next(res);
         this.loading$.next(false);
       }
@@ -102,7 +102,8 @@ export class DetailsViewComponent implements OnInit {
   }
 
   addSubtitle(language: Language): void {
-    this.dialog.open(SaveSubtitleDialogComponent,{width:'500px', data: language.name}).afterClosed().pipe(take(1)).subscribe(dialog => {
+    this.dialog.open(SaveSubtitleDialogComponent,{width:'500px', data: language.name})
+      .afterClosed().pipe(take(1)).subscribe(dialog => {
       if (dialog?.name) {
         this.detailsViewService.addSubtitle(this.videoId, language, this.user$.value.uid, dialog.name, dialog.format, this.user$.value.email);
       }
@@ -117,32 +118,36 @@ export class DetailsViewComponent implements OnInit {
     this.detailsViewService.requestCommunityHelp(this.user$.value, this.videoId,language, iso, filename, format)
   }
 
-  shareSubtitle(language:string, ISOcode:string ,filename: string, format: string, usersRights: string[], videoTitle: string) : void { 
+  deleteSubtitle(ISOCode:string, name:string){
+    this.snackbar.open('Under development', 'DISMISS', {duration:3000});
+  }
+
+  shareSubtitle(language:string, ISOcode:string ,filename: string, format: string, usersRights: string[], videoTitle: string) : void {
     let owner_text = "";
     this.detailsViewService.getUsersRightsFromSub(this.user$.value.uid, this.videoId, ISOcode, filename).then((currentRights) => {
       usersRights = currentRights;
       this.shareService.getRequestOwnerEmail(this.videoId, ISOcode, language, filename).then((requestOwnerEmail) => {
         if (requestOwnerEmail){
            owner_text = requestOwnerEmail;
-        } 
+        }
           this.dialog.open(ShareSubtitleDialogComponent,{width:'600px', id: 'shared-dialog',data: {filename, usersRights, videoId:this.videoId, ISOcode, language, owner_text, format, videoTitle}}).afterClosed().pipe(take(1)).subscribe(dialog => {
-            if (dialog === (null || undefined )){
+            if (dialog === undefined){
               this.dialog.closeAll();
             }else if(dialog){
               if (dialog.email && dialog.right) {
                 this.detailsViewService.shareSubtitle(this.videoId, ISOcode, language, this.user$.value.uid, filename, format, dialog.email, dialog.right);
               }else if((dialog.email == "" && dialog.right) || (dialog.email && dialog.right == undefined)){
                 this.snackbar.open('Both email and right have to be filled', 'DISMISS', {duration:3000});
-              }else {     
+              }else {
                 this.detailsViewService.updateSharedSubtitleRights(this.videoId, ISOcode, language, this.user$.value.uid, filename, format, usersRights);
-              } 
+              }
             }
-            
+
           });
-        
+
       })
     });
-    
+
   }
 
   navigateToDashboard(): void {
