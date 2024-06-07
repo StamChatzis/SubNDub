@@ -31,11 +31,7 @@
     <div class="main-content">
         <div class="subtitles-header">
           <span>Subtitles</span>
-<!--          <button mat-mini-fab color="primary" [matMenuTriggerFor]="translateMenu" matTooltip="Add new language"><mat-icon>add</mat-icon></button>-->
-          <button mat-mini-fab color="primary" matTooltip="Add new language" (click)="addNewSubtitle()"><mat-icon>add</mat-icon></button>
-<!--          <mat-menu #translateMenu="matMenu">-->
-<!--            <p mat-menu-item *ngFor="let language of (supportedLanguages$ | async)?.data?.languages" (click)="addSubtitle(language)">{{language.name}}</p>-->
-<!--          </mat-menu>-->
+          <button mat-mini-fab color="primary" matTooltip="Add new language" (click)="addSubtitle()"><mat-icon>add</mat-icon></button>
         </div>
         <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
           <ng-container matColumnDef="Name">

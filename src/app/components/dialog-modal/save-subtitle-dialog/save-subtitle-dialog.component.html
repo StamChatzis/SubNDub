@@ -4,7 +4,7 @@
     <h3 class="mat-typography">First select Language:</h3>
     <mat-form-field appearance="fill">
       <mat-select (selectionChange)="isSelected()" formControlName="language">
-        <mat-option *ngFor="let lang of (supportedLanguages$ | async)?.data?.languages" value="{{lang.name}}">{{lang.name}}</mat-option>
+        <mat-option *ngFor="let lang of (supportedLanguages$ | async)?.data?.languages" value="{{lang.language}}" (click)="saveLanguage(lang)">{{lang.name}}</mat-option>
       </mat-select>
     </mat-form-field>
   </div>
@@ -28,6 +28,11 @@
 <div class="actions-btn">
   <mat-dialog-actions align="end">
     <button mat-button color="warn" [mat-dialog-close]="null">Cancel</button>
-    <button mat-raised-button [mat-dialog-close]="{language: newSubForm.controls['language'].value ,name: newSubForm.controls['name'].value, format: newSubForm.controls['format'].value}" color="primary" [disabled]="newSubForm.invalid">Save</button>
+    <button mat-raised-button color="primary" [disabled]="newSubForm.invalid" [mat-dialog-close]="{
+    language: selectedLang,
+    name: newSubForm.controls['name'].value,
+    format: newSubForm.controls['format'].value}">
+      Save
+    </button>
   </mat-dialog-actions>
 </div>

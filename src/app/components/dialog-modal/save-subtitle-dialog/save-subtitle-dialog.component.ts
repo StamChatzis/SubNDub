@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import {BehaviorSubject, tap} from "rxjs";
-import {SupportedLanguages} from "../../../models/google/google-supported-languages";
+import {Language, SupportedLanguages} from "../../../models/google/google-supported-languages";
 import {GoogleTranslateService} from "../../../services/googletranslate.service";
 import {DetailsViewServiceService} from "../../../services/details-view-service.service";
 
@@ -16,6 +16,7 @@ export class SaveSubtitleDialogComponent implements OnInit{
   loading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
   newSubForm: FormGroup
   langIsSelected: boolean = false;
+  selectedLang: Language;
 
   constructor(private translateService: GoogleTranslateService, private fb: FormBuilder) {
     this.newSubForm = new FormGroup({
@@ -42,5 +43,9 @@ export class SaveSubtitleDialogComponent implements OnInit{
 
   isSelected(){
     this.langIsSelected = this.newSubForm.controls['language'].value != '0';
+  }
+
+  saveLanguage(language: Language): void {
+    this.selectedLang = language;
   }
 }

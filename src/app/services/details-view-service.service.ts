@@ -66,8 +66,7 @@ export class DetailsViewServiceService {
     });
   }
 
-  addSubtitle(videoId: string, language: Language, userUid: string, name: string, format: SubtitleFormat, userEmail: string): void {
-    console.log(language.language)
+  addSubtitle(videoId: string, language: Language, userUid: string, name: string, format: SubtitleFormat, userEmail: string) {
     const docRef: AngularFirestoreDocument = this.firestore.doc(`users/${userUid}/videos/${videoId}/subtitleLanguages/${language.language}`);
 
     const docData = {

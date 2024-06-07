@@ -101,25 +101,12 @@ export class DetailsViewComponent implements OnInit {
     });
   }
 
-  addNewSubtitle(): void {
+  addSubtitle(): void {
     this.dialog.open(SaveSubtitleDialogComponent, {width: '500px'})
       .afterClosed().pipe(take(1)).subscribe(dialog => {
         if (dialog) {
-          const newLang: Language ={
-            language: dialog.language,
-            name: dialog.name
-          }
-          this.detailsViewService.addSubtitle(this.videoId, newLang, this.user$.value.uid, dialog.name, dialog.format, this.user$.value.email);
+          this.detailsViewService.addSubtitle(this.videoId, dialog.language, this.user$.value.uid, dialog.name, dialog.format, this.user$.value.email);
         }
-    })
-  }
-
-  addSubtitle(language: Language): void {
-    this.dialog.open(SaveSubtitleDialogComponent,{width:'500px', data: language.name})
-      .afterClosed().pipe(take(1)).subscribe(dialog => {
-      if (dialog?.name) {
-        this.detailsViewService.addSubtitle(this.videoId, language, this.user$.value.uid, dialog.name, dialog.format, this.user$.value.email);
-      }
     })
   }
 
@@ -131,7 +118,7 @@ export class DetailsViewComponent implements OnInit {
     this.detailsViewService.requestCommunityHelp(this.user$.value, this.videoId,language, iso, filename, format)
   }
 
-  deleteSubtitle(ISOCode:string, name:string){
+  deleteSubtitle(ISOcode:string, name:string){
     this.snackbar.open('Under development', 'DISMISS', {duration:3000});
   }
 
