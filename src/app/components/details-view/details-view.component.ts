@@ -101,6 +101,19 @@ export class DetailsViewComponent implements OnInit {
     });
   }
 
+  addNewSubtitle(): void {
+    this.dialog.open(SaveSubtitleDialogComponent, {width: '500px'})
+      .afterClosed().pipe(take(1)).subscribe(dialog => {
+        if (dialog) {
+          const newLang: Language ={
+            language: dialog.language,
+            name: dialog.name
+          }
+          this.detailsViewService.addSubtitle(this.videoId, newLang, this.user$.value.uid, dialog.name, dialog.format, this.user$.value.email);
+        }
+    })
+  }
+
   addSubtitle(language: Language): void {
     this.dialog.open(SaveSubtitleDialogComponent,{width:'500px', data: language.name})
       .afterClosed().pipe(take(1)).subscribe(dialog => {

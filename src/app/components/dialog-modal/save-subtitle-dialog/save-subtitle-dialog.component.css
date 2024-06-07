@@ -16,3 +16,14 @@
 .mat-mdc-dialog-actions {
     padding-right:25px;
 }
+
+.language-selector{
+  display: flex;
+  padding-right:25px;
+  padding-left:25px;
+}
+
+.language-selector .mat-typography{
+  margin-top: 14px;
+  margin-right: 10px;
+}

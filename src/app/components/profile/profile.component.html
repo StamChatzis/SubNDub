@@ -33,6 +33,7 @@
               </mat-card-header>
               <mat-form-field>
                 <input matInput formControlName="displayName" placeholder="Your Name to Display" (keydown)="isEdited()">
+                <mat-error *ngIf="userInfoForm!.get('displayName')?.hasError('required')">Please fill out display name correctly</mat-error>
               </mat-form-field>
             </div>
             <div class="profile-edit-gmail">
@@ -169,7 +170,7 @@
       </div>
       <div class="save-cancel-prof-btn">
         <div class="save-profile-changes">
-          <button mat-raised-button color="primary" [disabled] = "!editedProfileDetails || addLang || editLang" (click)="saveChanges()">Save changes</button>
+          <button mat-raised-button color="primary" [disabled] = "!editedProfileDetails || addLang || editLang || !userInfoForm.valid" (click)="saveChanges()">Save changes</button>
         </div>
         <div class="revert-profile-changes">
           <button mat-raised-button color="warn" [disabled] = "!editedProfileDetails || addLang || editLang" (click)="revertChanges()">Revert changes</button>

@@ -31,10 +31,11 @@
     <div class="main-content">
         <div class="subtitles-header">
           <span>Subtitles</span>
-          <button mat-mini-fab color="primary" [matMenuTriggerFor]="translateMenu" matTooltip="Add new language"><mat-icon>add</mat-icon></button>
-          <mat-menu #translateMenu="matMenu">
-            <p mat-menu-item *ngFor="let language of (supportedLanguages$ | async)?.data?.languages" (click)="addSubtitle(language)">{{language.name}}</p>
-          </mat-menu>
+<!--          <button mat-mini-fab color="primary" [matMenuTriggerFor]="translateMenu" matTooltip="Add new language"><mat-icon>add</mat-icon></button>-->
+          <button mat-mini-fab color="primary" matTooltip="Add new language" (click)="addNewSubtitle()"><mat-icon>add</mat-icon></button>
+<!--          <mat-menu #translateMenu="matMenu">-->
+<!--            <p mat-menu-item *ngFor="let language of (supportedLanguages$ | async)?.data?.languages" (click)="addSubtitle(language)">{{language.name}}</p>-->
+<!--          </mat-menu>-->
         </div>
         <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
           <ng-container matColumnDef="Name">
@@ -69,6 +70,9 @@
 
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          <tr class="mat-row no-data-row" *matNoDataRow>
+            <td class="mat-cell empty-table" colspan="5"><span >No subtitles have been added!</span></td>
+          </tr>
         </table>
     </div>
 </div>

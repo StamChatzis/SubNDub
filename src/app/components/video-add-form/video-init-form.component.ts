@@ -12,7 +12,7 @@ export class VideoInitFormComponent {
   youtubeVideoId: string;
 
   constructor(private fb: FormBuilder, public dialogRef: MatDialogRef<VideoInitFormComponent>) { }
-  
+
   ngOnInit(): void {
     const youtubeUrlPattern = /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?(?=.*v=\w+)(?:\S+)?|embed\/\w+|v\/\w+|\S+)|youtu\.be\/\w+)(?:\S+)?$/;
 

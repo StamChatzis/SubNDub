@@ -84,3 +84,8 @@
 .mat-column-Format, .mat-column-Language, .mat-column-Last-Updated, .mat-column-Subtitles {
   text-align: center;
 }
+
+.empty-table{
+  text-align: center;
+  font-style: italic;
+}

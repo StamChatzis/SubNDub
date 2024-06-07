@@ -1,26 +1,33 @@
-<h2 mat-dialog-title>Set a name.</h2>
-<mat-dialog-content class="mat-typography">
-  <h3 class="mat-typography">Language: <b>{{data}}</b></h3>
-  <h3>Setting a name will help you identify your subtitles.</h3>
-</mat-dialog-content>
-<div class="input-container">
-    <mat-form-field>
-        <mat-label>Choose name</mat-label>
-        <input autofocus matInput type="text" #name>
-    </mat-form-field>
-    <mat-form-field class="format-selector">
-      <mat-label>Format</mat-label>
-      <mat-select #format>
-        <mat-option [value]="'sbv'">
-          SBV
-        </mat-option>
-        <mat-option [value]="'srt'">
-          SRT
-        </mat-option>
+<h2 mat-dialog-title>Set up new subtitle</h2>
+<div class="new-sub-container-form" [formGroup]="newSubForm">
+  <div class="language-selector">
+    <h3 class="mat-typography">First select Language:</h3>
+    <mat-form-field appearance="fill">
+      <mat-select (selectionChange)="isSelected()" formControlName="language">
+        <mat-option *ngFor="let lang of (supportedLanguages$ | async)?.data?.languages" value="{{lang.name}}">{{lang.name}}</mat-option>
       </mat-select>
     </mat-form-field>
+  </div>
+  <mat-dialog-content class="mat-typography" *ngIf="langIsSelected">
+    <h3>Now set a name that will help you identify your subtitle.</h3>
+  </mat-dialog-content>
+  <div class="input-container" *ngIf="langIsSelected">
+      <mat-form-field>
+          <mat-label>Choose name</mat-label>
+          <input matInput type="text" formControlName="name">
+      </mat-form-field>
+      <mat-form-field class="format-selector">
+        <mat-label>Format</mat-label>
+        <mat-select formControlName="format">
+          <mat-option [value]="'sbv'">SBV</mat-option>
+          <mat-option [value]="'srt'">SRT</mat-option>
+        </mat-select>
+      </mat-form-field>
+  </div>
 </div>
-<mat-dialog-actions align="end">
-  <button mat-button [mat-dialog-close]="null">Cancel</button>
-  <button mat-raised-button [mat-dialog-close]="{name: name.value, format: format.value}" color="primary">Save</button>
-</mat-dialog-actions>
+<div class="actions-btn">
+  <mat-dialog-actions align="end">
+    <button mat-button color="warn" [mat-dialog-close]="null">Cancel</button>
+    <button mat-raised-button [mat-dialog-close]="{language: newSubForm.controls['language'].value ,name: newSubForm.controls['name'].value, format: newSubForm.controls['format'].value}" color="primary" [disabled]="newSubForm.invalid">Save</button>
+  </mat-dialog-actions>
+</div>

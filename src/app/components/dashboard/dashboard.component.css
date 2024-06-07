@@ -94,15 +94,11 @@
 }
 
 .iframe-container{
-    height:100%;
-    width: 100%;
-}
-
-::ng-deep youtube-player iframe {
-    height:100%;
-    width: 100%;
+    height:auto;
+    width: auto;
 }
 
 .my-videos{
     font-size:32px;
 }
+
