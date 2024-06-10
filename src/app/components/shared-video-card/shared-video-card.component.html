@@ -1,0 +1,23 @@
+<div class="yt-card">
+	<div class="thumb">
+        <a [href]="'//youtube.com/watch?v=' + videoDetails?.id" target="_blank">
+			<img [src]="videoDetails?.snippet?.thumbnails?.medium.url">
+        </a>
+	</div>
+	<div class="details">
+		<div class="info">
+			<div class="title" > 
+				{{ (videoDetails?.snippet?.title?.length > 50) ? (videoDetails?.snippet?.title | slice:0:50) + '...' : (videoDetails?.snippet?.title) }}
+			</div>
+			<div class="channel-name">{{videoDetails?.snippet?.channelTitle}}</div>
+			<div class="views">
+				<span id="views">{{videoDetails?.statistics?.viewCount | number }} views</span>
+        	</div>
+
+		</div>
+	</div>
+	<div class="actions">
+			<mat-icon (click)="editVideo(sharedVideoDetails)" matTooltip="Go to Video Details">edit</mat-icon>
+	</div>
+</div>
+

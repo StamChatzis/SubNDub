@@ -106,6 +106,10 @@ export class DashboardComponent implements OnInit {
     this.router.navigate(['community/edit', communityRequestDetails.videoId, communityRequestDetails.iso, communityRequestDetails.requestId])
   }
 
+  navigateToSharedEdit(sharedVideoDetails: SharedVideo){
+    this.router.navigate(['shared/', sharedVideoDetails.videoId])
+  }
+
   deleteVideoPrompt(videoId: string): void {
     const dialogRef= this.dialog.open(DialogConfirmationComponent, {width:'400px', scrollStrategy: new NoopScrollStrategy()});
     dialogRef.afterClosed().subscribe((deletionFlag) => {

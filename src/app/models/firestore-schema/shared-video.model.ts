@@ -1,4 +1,5 @@
 export class SharedVideo {
+    id: string;
     lastUpdated: number;
     fileName: string;
     fullFileName: string;

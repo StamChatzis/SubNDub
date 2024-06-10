@@ -9,6 +9,7 @@ import { DetailsViewComponent } from './components/details-view/details-view.com
 import { GenerateTTSComponent } from './components/generate-tts/generate-tts/generate-tts.component';
 import { CommunitySubtitlingContainerComponent } from './community-subtitling-container/community-subtitling-container.component';
 import {ProfileComponent} from "./components/profile/profile.component";
+import { ShareSubtitlingContainerComponent } from './share-subtitling-container/share-subtitling-container.component';
 
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['']);
 const redirectLoggedInToDashboard = () => redirectLoggedInTo(['dashboard']);
@@ -21,7 +22,9 @@ const routes: Routes = [
   {path: 'details/:id', component: DetailsViewComponent, canActivate: [AngularFireAuthGuard], data:{ authGuardPipe: redirectUnauthorizedToLogin }},
   {path: 'edit/:id/:languageCode/:name', component: SubtitlingContainerComponent, canActivate: [AngularFireAuthGuard], data:{ authGuardPipe: redirectUnauthorizedToLogin }},
   {path: 'community/edit/:id/:languageCode/:requestId', component: CommunitySubtitlingContainerComponent, canActivate: [AngularFireAuthGuard], data:{ authGuardPipe: redirectUnauthorizedToLogin }},
-  {path: 'generate-tts/:id/:languageCode', component: GenerateTTSComponent, canActivate: [AngularFireAuthGuard], data:{ authGuardPipe: redirectUnauthorizedToLogin }}
+  {path: 'generate-tts/:id/:languageCode', component: GenerateTTSComponent, canActivate: [AngularFireAuthGuard], data:{ authGuardPipe: redirectUnauthorizedToLogin }},
+  {path: 'shared/:id', component: ShareSubtitlingContainerComponent, canActivate: [AngularFireAuthGuard], data:{ authGuardPipe: redirectUnauthorizedToLogin }},
+  {path: 'edit/shared/:id/:languageCode/:name', component: SubtitlingContainerComponent, canActivate: [AngularFireAuthGuard], data:{ authGuardPipe: redirectUnauthorizedToLogin }}
 ]
 
 @NgModule({

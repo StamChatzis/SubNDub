@@ -5,6 +5,7 @@ import { TransferOwnershipDialogComponent } from 'src/app/components/dialog-moda
 import {DetailsViewServiceService, SubtitleFormat} from 'src/app/services/details-view-service.service';
 import { NoopScrollStrategy } from '@angular/cdk/overlay';
 import { take } from 'rxjs';
+import { ShareService } from 'src/app/services/share.service';
 
 @Component({
   selector: 'app-share-subtitle-dialog',
@@ -23,12 +24,15 @@ export class ShareSubtitleDialogComponent implements OnInit {
   format: SubtitleFormat;
   movedUsersRights = [];
   requestOwnerEmail: string;
+  videoTitle: string;
+  subtitleId: any;
 
 
-  constructor(public dialogRef: MatDialogRef<ShareSubtitleDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: { filename: string, usersRights: string[], videoId: string, ISOcode, language, owner_text, format, videoTitle},  
+  constructor(public dialogRef: MatDialogRef<ShareSubtitleDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: { filename: string, usersRights: string[], videoId: string, ISOcode, language, owner_text, format, videoTitle, subtitleId},  
   private fb: FormBuilder, 
   private detailsViewService: DetailsViewServiceService,
-  public dialog: MatDialog
+  public dialog: MatDialog,
+  private shareService: ShareService
   )
 
   {
@@ -40,6 +44,8 @@ export class ShareSubtitleDialogComponent implements OnInit {
     this.owner_text = data.owner_text;
     this.format = data.format;
     this.requestOwnerEmail = data.owner_text;
+    this.videoTitle = data.videoTitle;
+    this.subtitleId = data.subtitleId;
   }
 
   ngOnInit() {
@@ -79,9 +85,7 @@ export class ShareSubtitleDialogComponent implements OnInit {
       this.resetUserRight(selectedEmail, index).then(() => {
         this.transferOwnershipPrompt(selectedEmail, index, ownerEmail);
       });
-      
     }
-    
   }
 
   transferOwnershipPrompt(email: string, index: number, ownerEmail: string): void {
@@ -90,7 +94,7 @@ export class ShareSubtitleDialogComponent implements OnInit {
       if(transferFlag == (null || undefined)){ this.resetUserRight(email,index); }
       else if(transferFlag){
         if (transferFlag.email) {
-          this.detailsViewService.transferOwnership(ownerEmail, transferFlag.email, this.data.filename, this.videoId, this.ISOcode, this.language, this.data.format, this.data.videoTitle);
+          this.detailsViewService.transferOwnership(ownerEmail, transferFlag.email, this.data.filename, this.videoId, this.ISOcode, this.language, this.data.format, this.videoTitle, this.subtitleId);
           this.dialog.closeAll();
         }
       }
@@ -100,7 +104,7 @@ export class ShareSubtitleDialogComponent implements OnInit {
 
   resetUserRight(userEmail: string, index: number): Promise<void> {
     return new Promise((resolve) => {
-      this.detailsViewService.resetUserRightByEmail(userEmail, this.filename, this.videoId, this.ISOcode, this.language).then((previousRight) => {
+      this.detailsViewService.resetUserRightByEmail(userEmail, this.filename, this.videoId, this.ISOcode, this.language, this.subtitleId).then((previousRight) => {
         this.movedUsersRights[index]['right'] = previousRight.toString();
         resolve();
       });

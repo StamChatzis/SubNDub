@@ -44,7 +44,8 @@ export class MessagesComponent implements OnInit, OnDestroy {
               iso: data.iso,
               language: data.language,
               format: data.format,
-              videoTitle: data.videoTitle
+              videoTitle: data.videoTitle,
+              subtitleId: data.subtitleId
             } as Message);
           } else if (change.type === 'removed') {
             const index = this.messages.findIndex(message => message.id === change.payload.doc.id);
@@ -68,7 +69,8 @@ export class MessagesComponent implements OnInit, OnDestroy {
                 iso: data.iso,
                 language: data.language,
                 format: data.format,
-                videoTitle: data.videoTitle
+                videoTitle: data.videoTitle,
+                subtitleId: data.subtitleId
               } as Message;
             }
           }
@@ -80,8 +82,6 @@ export class MessagesComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.messagesSubscription.unsubscribe();
   }
-
-
 
   getMessages(useruid: string, userEmail: string) {
     this.messagesService.getUserMessages(useruid)
@@ -102,7 +102,8 @@ export class MessagesComponent implements OnInit, OnDestroy {
               videoId: data.videoId,
               status: data.status,
               iso: data.iso,
-              language: data.language
+              language: data.language,
+              subtitleId: data.subtitleId
               // Add other properties required by the Message type
             } as Message;
           }).filter(message => message.recipient === userEmail);
@@ -112,21 +113,21 @@ export class MessagesComponent implements OnInit, OnDestroy {
       .subscribe();
     }
 
-  acceptTransferOwnership(message: Message){
-     this.messagesService.updateSub(message)
-     .then(() => this.messagesService.resetRequestOwnerEmail(message))
-     .catch(error => console.error(error))
-     .then(() => this.messagesService.deleteMessageFromUserMessages(message, this.useruid))
-     .catch(error => console.error("Error accepting transfer ownership:", error));
+    acceptTransferOwnership(message: Message){
+      this.messagesService.updateSub(message)
+      .then(() => this.messagesService.resetRequestOwnerEmail(message))
+      .catch(error => console.error(error))
+      .then(() => this.messagesService.deleteMessageFromUserMessages(message, this.useruid))
+      .catch(error => console.error("Error accepting transfer ownership:", error));
+      
      
-    
-  }
-
-  declineTransferOwnership(message: Message){
-    this.messagesService.resetRequestOwnerEmail(message)
-   .then(() => this.messagesService.deleteMessageFromUserMessages(message, this.useruid))
-   .catch(error => console.error("Error declining transfer ownership:", error));
-  }
+   }
+ 
+   declineTransferOwnership(message: Message){
+     this.messagesService.resetRequestOwnerEmail(message)
+    .then(() => this.messagesService.deleteMessageFromUserMessages(message, this.useruid))
+    .catch(error => console.error("Error declining transfer ownership:", error));
+   }
 
 
 

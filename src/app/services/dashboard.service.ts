@@ -31,19 +31,19 @@ export class DashboardService {
   }
 
   getSharedVideos(email): Observable<SharedVideo[]> {
-    this.sharedVideos$  = this.firestore.collection<SharedVideo>('sharedVideos').snapshotChanges().pipe(
+    return this.firestore.collection<SharedVideo>('sharedVideos').snapshotChanges().pipe(
       map(actions => {
         return actions.map(a => {
           const data = a.payload.doc.data() as SharedVideo;
           const id = a.payload.doc.id;
           const owner = data.usersRights.find(right => right.right === 'Owner')?.userEmail;
-          return { id, ...data, owner };
+          return { id,...data, owner };
         }).filter(video => {
           return video.usersRights.some(right => right.userEmail === email);
         });
-      })
+      }),
+      map(videos => [...new Map(videos.map(video => [video.videoId, video])).values()]) 
     );
-    return this.sharedVideos$;
   }
 
   getCommunityVideos(): Observable<Video[]> {

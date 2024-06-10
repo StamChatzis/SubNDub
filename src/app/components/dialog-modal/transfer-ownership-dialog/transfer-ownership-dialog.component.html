@@ -1,6 +1,7 @@
 <h3 mat-dialog-title>Transfer ownership?</h3>
 <div mat-dialog-content>
   <h4>{{data.email}}</h4>
+  <br>
   <ng-container [ngTemplateOutlet]="data.requestOwnerEmail != '' ? alternativeTemplate : defaultTemplate"></ng-container>
 
   <ng-template #alternativeTemplate>

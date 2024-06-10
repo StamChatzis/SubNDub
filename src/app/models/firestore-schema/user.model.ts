@@ -23,6 +23,7 @@ export interface Subtitle {
     created: Date;
     last_updated: Date;
     usersRights: UserRights[];
+    subtitleSharedId?: string;
 }
 
 export interface UserRights {

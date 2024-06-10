@@ -67,6 +67,8 @@ import {MatSortModule} from "@angular/material/sort";
 import { TransferOwnershipDialogComponent } from './components/dialog-modal/transfer-ownership-dialog/transfer-ownership-dialog.component';
 import { MessagesComponent } from './components/messages/messages.component';
 import { DetailsViewServiceService } from './services/details-view-service.service';
+import { ShareSubtitlingContainerComponent } from './share-subtitling-container/share-subtitling-container.component';
+import { SharedVideoCardComponent } from './components/shared-video-card/shared-video-card.component';
 
 @NgModule({
   declarations: [
@@ -103,7 +105,9 @@ import { DetailsViewServiceService } from './services/details-view-service.servi
     ProfileComponent,
     ShareSubtitleDialogComponent,
     TransferOwnershipDialogComponent,
-    MessagesComponent
+    MessagesComponent,
+    ShareSubtitlingContainerComponent,
+    SharedVideoCardComponent
   ],
     imports: [
         BrowserModule,

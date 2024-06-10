@@ -48,6 +48,16 @@
     <div class="myshared-videos-header">
         <h1>My Shared Videos ({{(userSharedVideos$ | async)?.length}})</h1>
     </div>
+    <div class="video-container">
+        <div class="" *ngFor="let sharedVideo of userSharedVideos$ | async">
+            <app-shared-video-card *ngIf="youtubeVideoDetails" [videoId]="sharedVideo.videoId"
+                (editVideoEmitter)="navigateToSharedEdit($event)"
+                [sharedVideoDetails] = "sharedVideo"
+                (videoIdEmitter)="previewVideo($event)"
+                [videoDetails]="getVideoDetailsById(sharedVideo.videoId)">
+            </app-shared-video-card>
+        </div>
+    </div>
 
     <mat-divider></mat-divider>
     <div class="community-videos-header">

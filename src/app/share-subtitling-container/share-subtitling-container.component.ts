@@ -1,27 +1,30 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, of, switchMap, take, tap } from 'rxjs';
-import { Language, SupportedLanguages } from 'src/app/models/google/google-supported-languages';
-import { YoutubeVideoDetails } from 'src/app/models/youtube/youtube-response.model';
-import { AuthService } from 'src/app/services/auth.service';
-import { DetailsViewServiceService } from 'src/app/services/details-view-service.service';
-import { GoogleTranslateService } from 'src/app/services/googletranslate.service';
-import { YoutubeService } from 'src/app/services/youtube.service';
-import { SaveSubtitleDialogComponent } from '../dialog-modal/save-subtitle-dialog/save-subtitle-dialog.component';
-import { GmailUser } from 'src/app/models/firestore-schema/user.model';
-import { timeSince } from '../video-card/video-card.component';
-import { ShareSubtitleDialogComponent } from '../dialog-modal/share-subtitle-dialog/share-subtitle-dialog.component';
-import { ShareService } from 'src/app/services/share.service';
+import { StorageService } from '../services/storage.service';
+import { AngularFireStorage } from '@angular/fire/compat/storage';
+import { MatDialog } from '@angular/material/dialog';
+import { UnsavedChangesDialogComponent } from '../components/dialog-modal/unsaved-changes-dialog/unsaved-changes-dialog.component';
+import { ShareService } from '../services/share.service';
+import { SharedVideo } from '../models/firestore-schema/shared-video.model';
+import { GoogleTranslateService } from '../services/googletranslate.service';
+import { DetailsViewServiceService } from '../services/details-view-service.service';
+import { YoutubeVideoDetails } from '../models/youtube/youtube-response.model';
+import { SupportedLanguages } from '../models/google/google-supported-languages';
+import { GmailUser } from '../models/firestore-schema/user.model';
+import { timeSince } from '../components/video-card/video-card.component';
+import { YoutubeService } from '../services/youtube.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { AuthService } from '../services/auth.service';
+import { ShareSubtitleDialogComponent } from '../components/dialog-modal/share-subtitle-dialog/share-subtitle-dialog.component';
 
 @Component({
-  selector: 'details-view',
-  templateUrl: './details-view.component.html',
-  styleUrls: ['./details-view.component.css'],
+  selector: 'app-share-subtitling-container',
+  templateUrl: './share-subtitling-container.component.html',
+  styleUrls: ['./share-subtitling-container.component.css'],
   providers: [GoogleTranslateService, DetailsViewServiceService]
 })
-export class DetailsViewComponent implements OnInit {
+export class ShareSubtitlingContainerComponent implements OnInit {
   videoId: string;
   videoDetails$: BehaviorSubject<YoutubeVideoDetails[]> = new BehaviorSubject<YoutubeVideoDetails[]>(null);
   videoCaptionDetails$: BehaviorSubject<any[]> = new BehaviorSubject<any[]>(null);
@@ -32,11 +35,10 @@ export class DetailsViewComponent implements OnInit {
   publishDate: BehaviorSubject<string> = new BehaviorSubject<string>('');
   readonly regionNamesInEnglish = new Intl.DisplayNames(['en'], { type: 'language' });
 
-
   @ViewChild('translateMenu') translateMenu;
 
   displayedColumns = ['Name','Format','Language','Last Updated','Subtitles'];
-  constructor(private route: ActivatedRoute,
+  constructor(private route: ActivatedRoute, 
     private router: Router,
     private youtubeService: YoutubeService,
     public dialog: MatDialog,
@@ -53,7 +55,7 @@ export class DetailsViewComponent implements OnInit {
       switchMap(user => {
         if (user) {
           this.user$.next(user);
-          return this.detailsViewService.getSubtitleLanguages(this.user$.value.uid, this.videoId);
+          return this.shareService.getSharedSubtitleLanguages(this.user$.value.email, this.videoId);
         } else {
           return of(null); // Return an empty observable if there is no user
         }
@@ -70,7 +72,7 @@ export class DetailsViewComponent implements OnInit {
       tap(() => {
         this.loading$.next(true);
       })).subscribe((res) => {
-      if (res) {
+      if (res) { 
         this.videoDetails$.next(res);
         this.loading$.next(false);
         this.publishDate.next(timeSince(new Date(this.videoDetails$.value[0]?.snippet?.publishedAt)));
@@ -83,7 +85,7 @@ export class DetailsViewComponent implements OnInit {
       tap(() => {
         this.loading$.next(true);
       })).subscribe((res) => {
-      if (res) {
+      if (res) { 
         this.videoCaptionDetails$.next(res);
         this.loading$.next(false);
       }
@@ -101,32 +103,20 @@ export class DetailsViewComponent implements OnInit {
     });
   }
 
-  addSubtitle(): void {
-    this.dialog.open(SaveSubtitleDialogComponent, {width: '500px'})
-      .afterClosed().pipe(take(1)).subscribe(dialog => {
-        if (dialog) {
-          this.detailsViewService.addSubtitle(this.videoId, dialog.language, this.user$.value.uid, dialog.name, dialog.format, this.user$.value.email);
-        }
-    })
-  }
+  
 
   editSubtitle(ISOcode:string, name:string): void {
-    this.router.navigate(['edit', this.videoId, ISOcode, name])
+    this.router.navigate(['edit/shared', this.videoId, ISOcode, name])
   }
 
-  requestCommunityHelp(language:string ,iso: string, filename: string, format: string): void {
-    this.detailsViewService.requestCommunityHelp(this.user$.value, this.videoId,language, iso, filename, format)
-  }
 
-  deleteSubtitle(ISOcode:string, name:string){
-    this.snackbar.open('Under development', 'DISMISS', {duration:3000});
-  }
 
+  
   shareSubtitle(language:string, ISOcode:string ,filename: string, format: string, usersRights: string[], videoTitle:string, subtitleId: string) : void { 
     let owner_text = "";
     if(subtitleId === undefined)
         subtitleId = "";
-    this.detailsViewService.getUsersRightsFromSub(this.user$.value.uid, this.videoId, ISOcode, filename, subtitleId).then((currentRights) => {
+    this.detailsViewService.getUsersRightsFromSharedSub(this.user$.value.uid, this.videoId, ISOcode, filename, subtitleId, language).then((currentRights) => {
       usersRights = currentRights;
       this.shareService.getRequestOwnerEmail(this.videoId, ISOcode, language, filename, subtitleId).then((requestOwnerEmail) => {
         if (requestOwnerEmail){
@@ -152,8 +142,11 @@ export class DetailsViewComponent implements OnInit {
     });
     
   }
-
+ 
   navigateToDashboard(): void {
     this.router.navigate(['dashboard']);
   }
+
+
+
 }

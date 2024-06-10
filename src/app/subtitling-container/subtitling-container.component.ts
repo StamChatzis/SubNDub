@@ -64,12 +64,21 @@ export class SubtitlingContainerComponent implements OnInit {
   }
 
   navigateToDetails(): void {
+    const currentUrl = this.route.snapshot.url.join('/');
     if (this.isFormDirty) {
       this.dialog.open(UnsavedChangesDialogComponent, {'width' : '500px' }).afterClosed().subscribe((res) => {
-        if (res) this.router.navigate(['details', this.videoId]);
+        if (res) {
+          if (currentUrl.includes('edit/shared')) 
+            this.router.navigate(['shared', this.videoId]);
+          else 
+            this.router.navigate(['details', this.videoId]);
+        }
       });
     } else {
-      this.router.navigate(['details', this.videoId]);
+      if (currentUrl.includes('edit/shared')) 
+        this.router.navigate(['shared', this.videoId]);
+      else 
+        this.router.navigate(['details', this.videoId]);
     }
   }
 }

@@ -4,7 +4,6 @@
   <mat-dialog-content >
     
       <div *ngIf="messages.length > 0">
-        <!-- render the list of messages -->
         <div *ngFor="let message of messages let i = index">
           <mat-card class="message-card" tabindex="0">
             <div class="bullet"></div>
