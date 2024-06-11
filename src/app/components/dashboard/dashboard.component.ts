@@ -111,7 +111,7 @@ export class DashboardComponent implements OnInit {
   }
 
   deleteVideoPrompt(videoId: string): void {
-    const dialogRef= this.dialog.open(DialogConfirmationComponent, {width:'400px', scrollStrategy: new NoopScrollStrategy()});
+    const dialogRef= this.dialog.open(DialogConfirmationComponent, {width:'400px', scrollStrategy: new NoopScrollStrategy(), data: 'Are you sure you want to delete this video? This is irreversible and all related data linked to it will be lost.'});
     dialogRef.afterClosed().subscribe((deletionFlag) => {
       if (deletionFlag === true) {
         this.dashboardService.deleteVideo(videoId, this.userId$.value);

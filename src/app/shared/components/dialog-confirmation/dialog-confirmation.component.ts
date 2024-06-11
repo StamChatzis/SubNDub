@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import {Component, Inject} from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-dialog-confirmation',
@@ -8,10 +9,10 @@ import { MatDialogRef } from '@angular/material/dialog';
 })
 export class DialogConfirmationComponent {
 
-  constructor(public dialogRef: MatDialogRef<DialogConfirmationComponent>){ }
+  constructor(@Inject(MAT_DIALOG_DATA) public data, public dialogRef: MatDialogRef<DialogConfirmationComponent>){ }
 
   onNoClick(): void {
     this.dialogRef.close();
   }
-  
+
 }
