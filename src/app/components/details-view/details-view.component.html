@@ -60,7 +60,7 @@
               <button (click)="editSubtitle(element.iso, element.fullFileName)" matTooltip="Edit subtitles" mat-icon-button color="primary" ><mat-icon>edit</mat-icon></button>
               <button (click)="requestCommunityHelp(element.language,element.iso, element.fileName, element.format)" style="margin-left:5px;" matTooltip="Request help by someone in the Sub&Dub Community" mat-icon-button color="primary"><mat-icon>person_pin_circle</mat-icon></button>
               <button (click)="shareSubtitle(element.language, element.iso, element.fileName, element.format, element.usersRights, videoDetails$.value[0].snippet?.title, element.subtitleSharedId)" style="margin-left:5px;" matTooltip="Share subtitles with someone" mat-icon-button color="primary"><mat-icon>share</mat-icon></button>
-              <button (click)="deleteSubtitle(element.iso, element.fullFileName)" style="margin-left:5px;" matTooltip="Delete this subtitle" mat-icon-button color="warn"><mat-icon>delete</mat-icon></button>
+              <button (click)="deleteSubtitle(element.iso, element.fileName)" style="margin-left:5px;" matTooltip="Delete this subtitle" mat-icon-button color="warn"><mat-icon>delete</mat-icon></button>
             </td>
           </ng-container>
 

@@ -16,12 +16,12 @@ export class StorageService {
     private storageRef: AngularFireStorage
 
     constructor(private http: HttpClient,
-        private authService: AuthService, 
-        private firestore: AngularFirestore, 
+        private authService: AuthService,
+        private firestore: AngularFirestore,
         private snackbar: MatSnackBar) { }
 
     createFirestorageRef(storage: AngularFireStorage, language: string, subtitle: Blob, videoId: string, filePath: string): void {
-        //sets up the Firestorage required references and receives required parameters to complete the upload proccess
+        //sets up the Firestorage required references and receives required parameters to complete the upload process
         this.storageRef = storage;
         let pathRef: AngularFireStorageReference;
         this.authService.user.pipe(take(1)).subscribe(user => {
@@ -48,7 +48,7 @@ export class StorageService {
     }
 
     createFirestorageRefCommunity(storage: AngularFireStorage, subtitle: Blob, requestId: string, requestDetails: CommunityHelpRequest): void {
-        //sets up the Firestorage required references and receives required parameters to complete the upload proccess
+        //sets up the Firestorage required references and receives required parameters to complete the upload process
         this.storageRef = storage;
         let pathRef: AngularFireStorageReference;
         this.authService.user.pipe(take(1)).subscribe(user => {
@@ -96,7 +96,7 @@ export class StorageService {
     getCommunityRequestDetails(requestId: string): Observable<CommunityHelpRequest> {
         return this.firestore.doc<CommunityHelpRequest>(`helpRequests/${requestId}`).get()
         .pipe(
-            map(content => { 
+            map(content => {
                 return content.data()
             })
         );

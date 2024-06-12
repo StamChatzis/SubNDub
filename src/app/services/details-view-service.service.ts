@@ -1,18 +1,21 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from '@angular/fire/compat/firestore';
 import { Language } from '../models/google/google-supported-languages';
-import { Observable, combineLatest, map, of, switchMap, take } from 'rxjs';
+import {Observable, combineLatest, map, of, switchMap, take, Subscription} from 'rxjs';
 import { GmailUser } from '../models/firestore-schema/user.model';
 import { NotifierService } from './notifier.service';
 import {EmailService} from './email.service';
+import {AngularFireStorage} from "@angular/fire/compat/storage";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Injectable()
 
 export class DetailsViewServiceService {
 
-  subtitleLanguages$: Observable<Language[]>;
-
-  constructor(private firestore: AngularFirestore, private notifier: NotifierService, private emailService: EmailService) {}
+  constructor(private firestore: AngularFirestore,
+              private notifier: NotifierService,
+              private emailService: EmailService,
+              private snackbar: MatSnackBar) {}
 
   getSubtitleLanguages(userUid: string, videoId: string): Observable<Language[]> {
     const videoRef = this.firestore.collection('users').doc(userUid).collection('videos').doc(videoId);
@@ -91,7 +94,21 @@ export class DetailsViewServiceService {
     })
   }
 
-  deleteSubtitle(videoId:any, uid:any, ISOcode:any, name:any){
+  deleteSubtitle(videoId:any, uid:any, ISOcode:any, subName: any){
+    const subRef: AngularFirestoreDocument = this.firestore.doc(`users/${uid}/videos/${videoId}/subtitleLanguages/${ISOcode}`)
+    const storageUrlRef: AngularFirestoreDocument = this.firestore.doc(`users/${uid}/videos/${videoId}/subtitleLanguages/${ISOcode}/subtitles/${subName}`)
+
+    storageUrlRef.get().subscribe({
+        next: subRef => {this.deleteSubtitleFile(subRef.data().storageUrl)},
+        error: err => {this.snackbar.open('Could not delete subtitle due to unexpected error: ' + err.message, 'OK', {duration:5000});}
+      }
+    );
+
+    //const subFileRef: AngularFireStorage = this.firestore.doc()
+    //return subRef.delete()
+  }
+
+  deleteSubtitleFile(storageUrl: any){
 
   }
 
