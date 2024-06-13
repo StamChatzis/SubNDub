@@ -7,14 +7,18 @@ import { NotifierService } from './notifier.service';
 import {EmailService} from './email.service';
 import {AngularFireStorage} from "@angular/fire/compat/storage";
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {StorageService} from "./storage.service";
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 
 export class DetailsViewServiceService {
 
   constructor(private firestore: AngularFirestore,
               private notifier: NotifierService,
               private emailService: EmailService,
+              private storageService: StorageService,
               private snackbar: MatSnackBar) {}
 
   getSubtitleLanguages(userUid: string, videoId: string): Observable<Language[]> {
@@ -99,17 +103,23 @@ export class DetailsViewServiceService {
     const storageUrlRef: AngularFirestoreDocument = this.firestore.doc(`users/${uid}/videos/${videoId}/subtitleLanguages/${ISOcode}/subtitles/${subName}`)
 
     storageUrlRef.get().subscribe({
-        next: subRef => {this.deleteSubtitleFile(subRef.data().storageUrl)},
+        next: subRef => {
+          if(subRef.data().storageUrl != undefined){
+            const storeUrl = subRef.data().storageUrl
+            this.storageService.deleteSubtitleFile(storeUrl).subscribe({
+              next: data => {
+                const subRef: AngularFirestoreDocument = this.firestore.doc(`users/${uid}/videos/${videoId}/subtitleLanguages/${ISOcode}`)
+                return subRef.delete()
+              },
+              error: err =>{this.snackbar.open('Could not delete subtitle due to unexpected error: ' + err.message, 'OK', {duration:5000});}
+            });
+          }else{
+            this.snackbar.open('Could not delete subtitle due to unexpected error', 'OK', {duration:5000});
+          }
+        },
         error: err => {this.snackbar.open('Could not delete subtitle due to unexpected error: ' + err.message, 'OK', {duration:5000});}
       }
     );
-
-    //const subFileRef: AngularFireStorage = this.firestore.doc()
-    //return subRef.delete()
-  }
-
-  deleteSubtitleFile(storageUrl: any){
-
   }
 
   shareSubtitle(videoId: string, ISOcode: string, language: string, userUid: string, name: string, format: string, email: string, right: string, subtitleId: any): void{

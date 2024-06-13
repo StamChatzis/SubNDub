@@ -9,7 +9,9 @@ import { HttpClient } from '@angular/common/http';
 import { CommunityHelpRequest } from '../models/firestore-schema/help-request.model';
 import { GmailUser } from '../models/firestore-schema/user.model';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 
 export class StorageService {
 
@@ -92,6 +94,12 @@ export class StorageService {
     fetchSubtitleFile(url: string): Observable<string> {
        return this.http.get(url, {responseType: 'text'});
     }
+
+  deleteSubtitleFile(url: any){
+    let pathRef: AngularFireStorageReference;
+    pathRef = this.storageRef.ref(url);
+    return pathRef.delete();
+  }
 
     getCommunityRequestDetails(requestId: string): Observable<CommunityHelpRequest> {
         return this.firestore.doc<CommunityHelpRequest>(`helpRequests/${requestId}`).get()

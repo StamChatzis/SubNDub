@@ -124,15 +124,16 @@ export class DetailsViewComponent implements OnInit {
     const dialogRef= this.dialog.open(DialogConfirmationComponent, {width:'400px', scrollStrategy: new NoopScrollStrategy(), data: 'Are you sure you want to delete this subtitle? This is irreversible and all related data linked to it will be lost.'});
     dialogRef.afterClosed().subscribe((deletionFlag) => {
       if (deletionFlag === true) {
-        this.detailsViewService.deleteSubtitle(this.videoId, this.user$.value.uid, ISOcode, name)//.then(() => {
-        //   this.snackbar.open('You have successfully deleted this subtitle', 'OK', {duration:5000});
-        // })
-        //   .catch(error => {
-        //     this.snackbar.open('Could not delete subtitle due to unexpected error: ' + error.message, 'OK', {duration:5000});
-        //   });
-        this.snackbar.open('Under Construction!', 'OK', {duration:2000})
+        this.snackbar.open('Under Construction ', 'OK', {duration:5000});
+        // this.detailsViewService.deleteSubtitle(this.videoId, this.user$.value.uid, ISOcode, name).then(() => {
+        //     this.snackbar.open('You have successfully deleted this subtitle', 'OK', {duration:5000});
+        //   })
+        //     .catch(error => {
+        //       this.snackbar.open('Could not delete subtitle due to unexpected error: ' + error.message, 'OK', {duration:5000});
+        //     });
+        // }
       }
-    });
+    })
   }
 
   shareSubtitle(language:string, ISOcode:string ,filename: string, format: string, usersRights: string[], videoTitle:string, subtitleId: string) : void {
