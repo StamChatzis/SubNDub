@@ -16,6 +16,7 @@ import { ShareSubtitleDialogComponent } from '../dialog-modal/share-subtitle-dia
 import { ShareService } from 'src/app/services/share.service';
 import {DialogConfirmationComponent} from "../../shared/components/dialog-confirmation/dialog-confirmation.component";
 import {NoopScrollStrategy} from "@angular/cdk/overlay";
+import {StorageService} from "../../services/storage.service";
 
 @Component({
   selector: 'details-view',
@@ -44,6 +45,7 @@ export class DetailsViewComponent implements OnInit {
     public dialog: MatDialog,
     private snackbar: MatSnackBar,
     private authService: AuthService,
+    private storageService: StorageService,
     private translateService: GoogleTranslateService,
     private detailsViewService: DetailsViewServiceService,
     private shareService: ShareService) { }
@@ -120,18 +122,27 @@ export class DetailsViewComponent implements OnInit {
     this.detailsViewService.requestCommunityHelp(this.user$.value, this.videoId,language, iso, filename, format)
   }
 
-  deleteSubtitle(ISOcode:string, name:any){
+  deleteSubtitle(ISOcode:string, name:any, format: any){
     const dialogRef= this.dialog.open(DialogConfirmationComponent, {width:'400px', scrollStrategy: new NoopScrollStrategy(), data: 'Are you sure you want to delete this subtitle? This is irreversible and all related data linked to it will be lost.'});
+    const subFileUrl = `subtitles/${this.user$.value.uid}/${this.videoId}/${ISOcode}/${name}.${format}`
+    const subUrl = `users/${this.user$.value.uid}/videos/${this.videoId}/subtitleLanguages/${ISOcode}/subtitles/${name}`
+
     dialogRef.afterClosed().subscribe((deletionFlag) => {
       if (deletionFlag === true) {
-        this.snackbar.open('Under Construction ', 'OK', {duration:5000});
-        // this.detailsViewService.deleteSubtitle(this.videoId, this.user$.value.uid, ISOcode, name).then(() => {
-        //     this.snackbar.open('You have successfully deleted this subtitle', 'OK', {duration:5000});
-        //   })
-        //     .catch(error => {
-        //       this.snackbar.open('Could not delete subtitle due to unexpected error: ' + error.message, 'OK', {duration:5000});
-        //     });
-        // }
+        this.detailsViewService.deleteSubtitle(this.videoId, this.user$.value.uid, ISOcode, name)
+          .then(() => {
+            this.storageService.deleteSubtitleFile(subFileUrl).subscribe({
+              next: success => {
+                this.snackbar.open('You have successfully deleted this subtitle', 'OK', {duration: 5000});
+              },
+              error: err => {
+                this.snackbar.open('Could not delete subtitle due to unexpected error: ' + err.message, 'OK', {duration: 5000});
+              }
+            })
+          })
+          .catch(error => {
+            this.snackbar.open('Could not delete subtitle due to unexpected error: ' + error.message, 'OK', {duration: 5000});
+          });
       }
     })
   }

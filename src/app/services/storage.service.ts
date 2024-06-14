@@ -15,11 +15,10 @@ import { GmailUser } from '../models/firestore-schema/user.model';
 
 export class StorageService {
 
-    private storageRef: AngularFireStorage
-
     constructor(private http: HttpClient,
         private authService: AuthService,
         private firestore: AngularFirestore,
+        private storageRef: AngularFireStorage,
         private snackbar: MatSnackBar) { }
 
     createFirestorageRef(storage: AngularFireStorage, language: string, subtitle: Blob, videoId: string, filePath: string): void {
@@ -95,9 +94,15 @@ export class StorageService {
        return this.http.get(url, {responseType: 'text'});
     }
 
-  deleteSubtitleFile(url: any){
-    let pathRef: AngularFireStorageReference;
-    pathRef = this.storageRef.ref(url);
+  deleteSubtitleFile(subFileUrl: any){
+    // try {
+    //   this.storageRef.ref(subFileUrl).getMetadata()
+    // } catch (error) {
+    //   if (error.code === 'storage/object-not-found') {
+    //   }
+    //   throw error;  // rethrow if it's an unexpected error
+    // }
+    const pathRef = this.storageRef.ref(subFileUrl);
     return pathRef.delete();
   }
 
