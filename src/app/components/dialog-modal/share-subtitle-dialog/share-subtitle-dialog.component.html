@@ -2,10 +2,13 @@
 <mat-dialog-content class="mat-typography">
   <h3 class="mat-typography">Filename: <b>{{data.filename}}</b></h3>
 </mat-dialog-content>
-<div class="input-container">
+<ng-container [ngTemplateOutlet]="canEdit == true ? defaultTemplate : noEdit"></ng-container>
+
+<ng-template #defaultTemplate>
+  <div class="input-container" >
     <mat-form-field class="emailInput">
         <mat-label>Add email</mat-label>
-        <input matInput type="email" #email required>
+        <input matInput  type="email" #email required >
         
     </mat-form-field>
     <mat-form-field class="format-selector">
@@ -22,33 +25,69 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
-</div>
+  </div>
 
-<div class="accessGridList">
-    <mat-dialog-content >
-        <h3>People with access</h3>
-        <div *ngFor="let right of movedUsersRights let i = index">
-          <mat-card class="access-card">
-            <div class="row">
-              <div class="col">
-                <h4 [ngClass]="{ 'line-through': right['right'] === 'Remove right' }">{{right['userEmail']}}</h4>
-                <p *ngIf="right['userEmail'] == owner_text ">Owner pending </p>
+    <div class="accessGridList">
+      <mat-dialog-content >
+          <h3>People with access</h3>
+          <div *ngFor="let right of movedUsersRights let i = index">
+            <mat-card class="access-card">
+              <div class="row">
+                <div class="col">
+                  <h4 [ngClass]="{ 'line-through': right['right'] === 'Remove right' }">{{right['userEmail']}}</h4>
+                  <p *ngIf="right['userEmail'] == owner_text ">Owner pending </p>
+                </div>
+                <div class="col">
+                  <mat-form-field>
+                    <mat-select [(value)]="right['right']"  (selectionChange)="onSelectionChange($event, i)">
+                      <mat-option *ngFor="let option of getOptions(right['right'], i)" [value]="option.value">{{option.label }}</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
               </div>
-              <div class="col">
-                <mat-form-field>
-                  <mat-select [(value)]="right['right']"  (selectionChange)="onSelectionChange($event, i)">
-                    <mat-option *ngFor="let option of getOptions(right['right'], i)" [value]="option.value">{{option.label }}</mat-option>
-                  </mat-select>
-                </mat-form-field>
-              </div>
-            </div>
-          </mat-card>
-        </div>
-    </mat-dialog-content>
-</div>
-<div class="buttons-div-container">
+            </mat-card>
+          </div>
+      </mat-dialog-content>
+  </div>
+
+  <div class="buttons-div-container">
     <mat-dialog-actions class="dialog-buttons" >
         <button mat-button [mat-dialog-close]="null">Cancel</button>
         <button mat-raised-button [mat-dialog-close]="{email: email.value , right: right.value, usersRights: data.usersRights }" color="primary">Save</button>
     </mat-dialog-actions>
-</div>
+  </div>
+</ng-template>
+
+
+
+<ng-template #noEdit>  
+      <div class="accessGridList">
+        <mat-dialog-content >
+            <h3>People with access</h3>
+            <div *ngFor="let right of movedUsersRights let i = index">
+              <mat-card class="access-card">
+                <div class="row">
+                  <div class="col">
+                    <h4 [ngClass]="{ 'line-through': right['right'] === 'Remove right' }">{{right['userEmail']}}</h4>
+                    <p *ngIf="right['userEmail'] == owner_text ">Owner pending </p>
+                  </div>
+                  <div class="col">
+                    <mat-form-field>
+                      <mat-select [(value)]="right['right']"  (selectionChange)="onSelectionChange($event, i)">
+                        <mat-option *ngFor="let option of getOptions(right['right'], i)" [value]="option.value" [disabled]="canEdit">{{option.label }}</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+              </mat-card>
+            </div>
+        </mat-dialog-content>
+    </div>
+  
+    <div class="buttons-div-container">
+      <mat-dialog-actions class="dialog-buttons" >
+          <button mat-raised-button [mat-dialog-close]="null" color="primary">Close</button>
+      </mat-dialog-actions>
+    </div>
+
+</ng-template>

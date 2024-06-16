@@ -1,22 +1,4 @@
-<!--<div class="container">
-    <div class="dashboard-navigation">
-        <button class="back-button" (click)="navigateToDashboard()" mat-mini-fab color="primary"
-        matTooltip="Back to Details"><mat-icon>arrow_back</mat-icon>
-    </button>
-    </div>
-    <div class="wrapper">
-        <video-player [videoId]="videoId"></video-player>
-        <dialog-component
-            [isoCode]="currentLanguage"
-            [videoId]="videoId"
-            [initSubtitles]="false"
-            (subtitleUploadEmitter)="uploadToFirestorage($event)"
-            (navigateTTS)="navigateTTS()"
-            (formStatusChange)="setFormDirtyStatus($event)">
-        </dialog-component>
-    </div>
-    <sub-timeline [videoDurationISO]="videoDuration"></sub-timeline>
-</div>-->
+
 <div class="wrapper">
     <div class="left-container">
         <div class="dashboard-navigation">
@@ -37,7 +19,7 @@
                     <span id="views">{{videoDetails[0]?.statistics?.viewCount | number }} views</span> · 
                     <span>{{publishDate | async}} ago</span>
                 </div>
-                <!-- <video-card [videoDetails]="videoDetails[0]" [showActions]="false"></video-card> -->
+             
             </div>
             <div class="captions-details">
                 <span>Existing Captions in YouTube:</span>

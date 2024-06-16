@@ -122,7 +122,7 @@ export class ShareSubtitlingContainerComponent implements OnInit {
         if (requestOwnerEmail){
            owner_text = requestOwnerEmail;
         } 
-          this.dialog.open(ShareSubtitleDialogComponent,{width:'600px', id: 'shared-dialog',data: {filename, usersRights, videoId:this.videoId, ISOcode, language, owner_text, format, videoTitle, subtitleId}}).afterClosed().pipe(take(1)).subscribe(dialog => {
+          this.dialog.open(ShareSubtitleDialogComponent,{width:'600px', id: 'shared-dialog',data: {filename, usersRights, videoId:this.videoId, ISOcode, language, owner_text, format, videoTitle, subtitleId, userEmail:this.user$.value.email}}).afterClosed().pipe(take(1)).subscribe(dialog => {
             if (dialog === (null || undefined )){
               //this.snackbar.open('No changes have been made', 'DISMISS', {duration:1000}); 
               this.dialog.closeAll();

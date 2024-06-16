@@ -26,9 +26,10 @@ export class ShareSubtitleDialogComponent implements OnInit {
   requestOwnerEmail: string;
   videoTitle: string;
   subtitleId: any;
+  canEdit: boolean = false;
 
 
-  constructor(public dialogRef: MatDialogRef<ShareSubtitleDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: { filename: string, usersRights: string[], videoId: string, ISOcode, language, owner_text, format, videoTitle, subtitleId},  
+  constructor(public dialogRef: MatDialogRef<ShareSubtitleDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: { filename: string, usersRights: string[], videoId: string, ISOcode, language, owner_text, format, videoTitle, subtitleId, userEmail},  
   private fb: FormBuilder, 
   private detailsViewService: DetailsViewServiceService,
   public dialog: MatDialog,
@@ -54,6 +55,11 @@ export class ShareSubtitleDialogComponent implements OnInit {
       this.movedUsersRights = [this.data.usersRights[ownerIndex]].concat(this.data.usersRights.slice(0, ownerIndex)).concat(this.data.usersRights.slice(ownerIndex + 1));
     } else {
       this.movedUsersRights = this.data.usersRights;
+    }
+
+    const ownerEmail = this.movedUsersRights.filter(user => user['right'] == "Owner")[0]['userEmail'];
+    if (ownerEmail == this.data.userEmail){
+      this.canEdit = true;
     }
   }
 
