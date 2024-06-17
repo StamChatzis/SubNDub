@@ -94,17 +94,15 @@ export class StorageService {
        return this.http.get(url, {responseType: 'text'});
     }
 
-  deleteSubtitleFile(subFileUrl: any){
-    // try {
-    //   this.storageRef.ref(subFileUrl).getMetadata()
-    // } catch (error) {
-    //   if (error.code === 'storage/object-not-found') {
-    //   }
-    //   throw error;  // rethrow if it's an unexpected error
-    // }
-    const pathRef = this.storageRef.ref(subFileUrl);
-    return pathRef.delete();
-  }
+    deleteSubtitleFile(subFileUrl: any){
+      const pathRef = this.storageRef.ref(subFileUrl);
+      try {
+        return pathRef.delete();
+      }
+      catch (error) {
+        console.log(error.message)
+      }
+    }
 
     getCommunityRequestDetails(requestId: string): Observable<CommunityHelpRequest> {
         return this.firestore.doc<CommunityHelpRequest>(`helpRequests/${requestId}`).get()

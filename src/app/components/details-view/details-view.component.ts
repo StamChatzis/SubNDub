@@ -61,9 +61,14 @@ export class DetailsViewComponent implements OnInit {
         } else {
           return of(null); // Return an empty observable if there is no user
         }
-      })).subscribe(languages => {
-      this.dataSource = languages;
-    });
+      })).subscribe({
+        next: languages => {
+          this.dataSource = languages;
+        },
+        error: err => {
+          this.snackbar.open('Could not load data due to an unexpected error: ' + err.message, 'OK', {duration: 5000});
+        }
+      });
     this.getVideoDetails();
     this.getCaptionDetails();
     this.getSupportedLanguages();
@@ -136,7 +141,8 @@ export class DetailsViewComponent implements OnInit {
                 this.snackbar.open('You have successfully deleted this subtitle', 'OK', {duration: 5000});
               },
               error: err => {
-                this.snackbar.open('Could not delete subtitle due to unexpected error: ' + err.message, 'OK', {duration: 5000});
+                this.snackbar.open('You have successfully deleted this subtitle. The subtitle file had not been created so could not be deleted', 'OK', {duration: 5000});
+                console.log(err.message);
               }
             })
           })
@@ -176,6 +182,14 @@ export class DetailsViewComponent implements OnInit {
       })
     });
 
+  }
+
+  exportAllSubtitles(){
+    if(this.dataSource.length <= 0) {
+      this.snackbar.open('There are no subtitles to export!', 'DISMISS', {duration:5000});
+    }else{
+      this.snackbar.open('Under Construction', 'DISMISS', {duration:3000});
+    }
   }
 
   navigateToDashboard(): void {
