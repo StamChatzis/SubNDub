@@ -13,15 +13,15 @@
             [matMenuTriggerFor]="translateMenu">
             <mat-icon>g_translate</mat-icon>
         </button>
-            <mat-menu #translateMenu="matMenu">
-                <sd-loader *ngIf="loading; else loadingComplete"></sd-loader>
-                <ng-template #loadingComplete>
-                    <p mat-menu-item *ngFor="let language of (supportedLanguages$ | async)?.data?.languages"
-                    (click)="translateAllSubtitles(language.language)">
-                        {{language.name}}
-                    </p>
-                </ng-template>
-            </mat-menu>
+        <mat-menu #translateMenu="matMenu">
+            <sd-loader *ngIf="loading; else loadingComplete"></sd-loader>
+            <ng-template #loadingComplete>
+                <p mat-menu-item *ngFor="let language of (supportedLanguages$ | async)?.data?.languages"
+                (click)="translateAllSubtitles(language.language)">
+                    {{language.name}}
+                </p>
+            </ng-template>
+        </mat-menu>
         <import-button (fileContentEmit)="handleFileUpload($event)" [acceptedFiles]="'.sbv, .srt, .txt'">
         </import-button>
         <button (click)="downloadSubtitle()" mat-icon-button color="primary"
@@ -34,7 +34,9 @@
        <button (click)="openPersonCreationModal()" mat-icon-button color="primary" matTooltip="Add Person (Character/Voice actor) & assign them to subtitles">
             <mat-icon>person_add</mat-icon>
         </button>
-        <button (click)="generateSpeechInit()" mat-icon-button color="primary" matTooltip="Generete Voices/Speech for your subtitles"><mat-icon>record_voice_over</mat-icon></button>
+        <button (click)="generateSpeechInit()" mat-icon-button color="primary" matTooltip="Generete Voices/Speech for your subtitles">
+          <mat-icon>record_voice_over</mat-icon>
+        </button>
     </div>
     <div class="main-content_wrapper" #scrollContainer>
         <dialog-content *ngFor="let dialogBox of dialogBoxes; let dialogIndex = index"

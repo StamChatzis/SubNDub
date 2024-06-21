@@ -35,7 +35,6 @@ export class DialogComponentComponent implements OnInit {
   public _supportedLanguages$: BehaviorSubject<SupportedLanguages> = new BehaviorSubject<SupportedLanguages>(null);
   public _translatedText$: BehaviorSubject<GoogleTranslateResponse> = new BehaviorSubject<GoogleTranslateResponse>(null);
   public subtitles$: BehaviorSubject<string> = new BehaviorSubject<string>(null);
-  public currentSelectedLanguage: string;
   protected loading: boolean;
   public form: FormGroup;
   public persons: PersonAssign[];
@@ -117,7 +116,7 @@ export class DialogComponentComponent implements OnInit {
         this.youtube.updateCurrentCaption(null);
       }
     })
-    
+
     this.getSupportedLanguages();
   }
 
@@ -134,7 +133,7 @@ export class DialogComponentComponent implements OnInit {
     this.form.addControl(((this.dialogBoxId + '-dialogBox')), this.fb.group({
       subtitles: this.fb.control((value?.subtitleText) ? value.subtitleText : ''),
       start_time: this.fb.control((value?.start_time) ? value.start_time : this.setStartTimeControlValue()),
-      end_time: this.fb.control((value?.end_time) ? value.end_time : this.setEndTimeControlValue()), 
+      end_time: this.fb.control((value?.end_time) ? value.end_time : this.setEndTimeControlValue()),
     }));
 
     this.dialogBoxes.push({
@@ -193,11 +192,11 @@ export class DialogComponentComponent implements OnInit {
           return x.replace(/\D/, '');
       }
     });
-    
+
     const hours = (parseInt(match[0]) || 0);
     const minutes = (parseInt(match[1]) || 0);
     const seconds = (parseInt(match[2]) || 0);
-    
+
     return hours * 3600 + minutes * 60 + seconds;
   }
 
@@ -223,18 +222,18 @@ export class DialogComponentComponent implements OnInit {
       const prevControl = Object.keys(this.form.controls);
       const targetControlString = prevControl[prevControlIndex].toString();
       const prevEndTime = this.form?.get(targetControlString)?.get('end_time')?.value as string;
-    
+
       const [prevTime, prevMilliseconds] = prevEndTime.split('.');
       const [minutes, seconds] = prevTime.split(':');
-    
+
       let newSeconds = parseInt(seconds) + 2;
       let newMinutes = parseInt(minutes);
-    
+
       if (newSeconds >= 60) {
         newMinutes += Math.floor(newSeconds / 60);
         newSeconds %= 60;
       }
-    
+
       const newEndTime = `${newMinutes.toString().padStart(2, '0')}:${newSeconds.toString().padStart(2, '0')}.${prevMilliseconds}`;
       return newEndTime;
     } else {
@@ -250,7 +249,7 @@ export class DialogComponentComponent implements OnInit {
     const startTimestampFormatted = parseTimestamp(currentGroup.get('start_time').value);
     const endTimestampFormatted = parseTimestamp(currentGroup.get('end_time').value);
 
-    (dialogContent.control === 'start_time') ? 
+    (dialogContent.control === 'start_time') ?
     this.startTimeValidation(prevGroup, currentGroup, startTimestampFormatted, endTimestampFormatted) :
     this.endTimeValidation(nextGroup, currentGroup, startTimestampFormatted, endTimestampFormatted);
   }
@@ -321,7 +320,7 @@ getSecondsFromTime(time: string): number {
         controllersToChange.controlsName.push(control)
       }
     });
-    
+
     if (translationObject.q) {
       this.google.translate(translationObject).subscribe((response: GoogleTranslateResponse) => {
         this._translatedText$.next(response);
@@ -393,8 +392,7 @@ getSecondsFromTime(time: string): number {
       const currentGroup = this.form.get(control);
       sbvContent += `${'00:'+ currentGroup.get('start_time').value},${'00:' + currentGroup.get('end_time').value}\n${currentGroup.get('subtitles').value}\n\n`;
     });
-    const blob = new Blob([sbvContent], { type: 'text/sbv;charset=utf8'});
-    return blob;
+    return new Blob([sbvContent], {type: 'text/sbv;charset=utf8'});
   }
 
   downloadSubtitle(): void {
@@ -402,7 +400,7 @@ getSecondsFromTime(time: string): number {
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'subtitles.sbv';
+    a.download = this.subtitleName;
     document.body.appendChild(a);
     a.click();
     window.URL.revokeObjectURL(url);

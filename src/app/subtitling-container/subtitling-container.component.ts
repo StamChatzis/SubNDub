@@ -21,6 +21,7 @@ export class SubtitlingContainerComponent implements OnInit {
   videoId: string;
   currentLanguage: string;
   fileName: string;
+  subFormat: string;
   videoDetails$: BehaviorSubject<YoutubeVideoDetails[]> = new BehaviorSubject<YoutubeVideoDetails[]>(null);
   videoDuration: BehaviorSubject<string> = new BehaviorSubject<string>('');
   loading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
@@ -29,7 +30,7 @@ export class SubtitlingContainerComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router, 
+    private router: Router,
     private storageService: StorageService,
     protected youtube: YoutubeService,
     public dialog: MatDialog) { }
@@ -38,11 +39,12 @@ export class SubtitlingContainerComponent implements OnInit {
     this.videoId = this.route.snapshot.paramMap.get('id');
     this.currentLanguage = this.route.snapshot.paramMap.get('languageCode');
     this.fileName = this.route.snapshot.paramMap.get('name');
+    this.subFormat = this.route.snapshot.paramMap.get('format')
 
     this.youtube.getVideoDetails(this.videoId).pipe(take(1),tap(() => {
       this.loading$.next(true);
     })).subscribe((res) => {
-      if (res) { 
+      if (res) {
         this.videoDetails$.next(res);
         this.videoDuration.next(this.videoDetails$.value[0].contentDetails.duration);
         this.loading$.next(false);
@@ -68,16 +70,16 @@ export class SubtitlingContainerComponent implements OnInit {
     if (this.isFormDirty) {
       this.dialog.open(UnsavedChangesDialogComponent, {'width' : '500px' }).afterClosed().subscribe((res) => {
         if (res) {
-          if (currentUrl.includes('edit/shared')) 
+          if (currentUrl.includes('edit/shared'))
             this.router.navigate(['shared', this.videoId]);
-          else 
+          else
             this.router.navigate(['details', this.videoId]);
         }
       });
     } else {
-      if (currentUrl.includes('edit/shared')) 
+      if (currentUrl.includes('edit/shared'))
         this.router.navigate(['shared', this.videoId]);
-      else 
+      else
         this.router.navigate(['details', this.videoId]);
     }
   }
