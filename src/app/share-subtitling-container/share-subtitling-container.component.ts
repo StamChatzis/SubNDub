@@ -105,8 +105,13 @@ export class ShareSubtitlingContainerComponent implements OnInit {
 
   
 
-  editSubtitle(ISOcode:string, name:string): void {
-    this.router.navigate(['edit/shared', this.videoId, ISOcode, name])
+  editSubtitle(ISOcode:string, name:string, usersRights: string[]): void {
+    const userRight = usersRights.find((right: any) => right["userEmail"] === this.user$.value.email);
+    let right: string;
+    if (userRight["right"] === 'Viewer') right = "Viewer";
+    else if (userRight["right"] === 'Commenter') right = "Commenter";
+    else right="";
+    this.router.navigate(['edit/shared', this.videoId, ISOcode, name, right]);
   }
 
 

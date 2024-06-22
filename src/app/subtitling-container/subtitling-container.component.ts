@@ -27,6 +27,8 @@ export class SubtitlingContainerComponent implements OnInit {
   loading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
   isFormDirty: boolean = false;
   private storage: AngularFireStorage = inject(AngularFireStorage);
+  right: string;
+  canOnlyView: boolean;
 
   constructor(
     private route: ActivatedRoute,
@@ -40,6 +42,8 @@ export class SubtitlingContainerComponent implements OnInit {
     this.currentLanguage = this.route.snapshot.paramMap.get('languageCode');
     this.fileName = this.route.snapshot.paramMap.get('name');
     this.subFormat = this.route.snapshot.paramMap.get('format')
+    this.right = this.route.snapshot.paramMap.get('right');
+    if (this.right) this.canOnlyView = true; else this.canOnlyView = false;
 
     this.youtube.getVideoDetails(this.videoId).pipe(take(1),tap(() => {
       this.loading$.next(true);

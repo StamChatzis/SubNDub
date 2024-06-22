@@ -73,8 +73,8 @@
                   </div>
                   <div class="col">
                     <mat-form-field>
-                      <mat-select [(value)]="right['right']"  (selectionChange)="onSelectionChange($event, i)">
-                        <mat-option *ngFor="let option of getOptions(right['right'], i)" [value]="option.value" [disabled]="canEdit">{{option.label }}</mat-option>
+                      <mat-select  [(value)]="right['right']"  (selectionChange)="onSelectionChange($event, i)">
+                        <mat-option [value]="right['right']" >{{ right['right'] }}</mat-option>
                       </mat-select>
                     </mat-form-field>
                   </div>

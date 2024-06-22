@@ -39,6 +39,7 @@ export class DialogComponentComponent implements OnInit {
   public form: FormGroup;
   public persons: PersonAssign[];
   public focusedDialogBox: number;
+  @Input() canOnlyView: boolean;
   @Input() initSubtitles: boolean = true;
   @Input() subtitleName: string;
   @Input() videoId: string;

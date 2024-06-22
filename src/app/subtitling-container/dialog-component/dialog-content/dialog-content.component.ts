@@ -17,6 +17,7 @@ export class DialogContentComponent implements OnChanges {
   @Input() persons: PersonAssign[];
   @Input() supportedLanguages: Language[];
   @Input() hasFocus: boolean;
+  @Input() canOnlyView: boolean;
   @Output() deleteDialogBoxEvent: EventEmitter<number> = new EventEmitter();
   @Output() dialogEmitter: EventEmitter<TimeEmitterObject> = new EventEmitter();
   @Output() translateSubtitle: EventEmitter<{lang: string, id: number}> = new EventEmitter();

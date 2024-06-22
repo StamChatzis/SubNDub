@@ -31,10 +31,10 @@
         <button (click)="uploadSubtitle()" mat-icon-button color="primary" matTooltip="Save">
            <mat-icon>save</mat-icon>
        </button>
-       <button (click)="openPersonCreationModal()" mat-icon-button color="primary" matTooltip="Add Person (Character/Voice actor) & assign them to subtitles">
+       <button [disabled]="canOnlyView" (click)="openPersonCreationModal()" mat-icon-button color="primary" matTooltip="Add Person (Character/Voice actor) & assign them to subtitles">
             <mat-icon>person_add</mat-icon>
         </button>
-        <button (click)="generateSpeechInit()" mat-icon-button color="primary" matTooltip="Generete Voices/Speech for your subtitles">
+        <button [disabled]="canOnlyView" (click)="generateSpeechInit()" mat-icon-button color="primary" matTooltip="Generete Voices/Speech for your subtitles">
           <mat-icon>record_voice_over</mat-icon>
         </button>
     </div>
@@ -49,7 +49,8 @@
         (translateSubtitle)="translateSingleSubtitle($event)"
         (chatGPTEventEmmiter)="chatGPTEventDispatcher($event)"
         (deleteDialogBoxEvent)="deleteDialogBox($event)"
-        (dialogEmitter)="timeRangeValidation($event)">
+        (dialogEmitter)="timeRangeValidation($event)"
+        [canOnlyView]="canOnlyView">
         </dialog-content>
     </div>
 </div>

@@ -13,7 +13,8 @@
             [videoDuration]="videoDuration | async"
             (subtitleUploadEmitter)="uploadToFirestorage($event)"
             (navigateTTS)="navigateTTS()"
-            (formStatusChange)="setFormDirtyStatus($event)">
+            (formStatusChange)="setFormDirtyStatus($event)"
+            [canOnlyView]="canOnlyView">
         </dialog-component>
     </div>
 <!-- <sub-timeline [videoDurationISO]="videoDuration"></sub-timeline> -->

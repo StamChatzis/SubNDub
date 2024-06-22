@@ -3,7 +3,7 @@
     <mat-card-header>
       <mat-card-title #cardElement>Subtitle {{index + 1}}</mat-card-title>
       <mat-icon class="estimation-icon" [matTooltip]="estimationTooltip">{{estimationIcon}}</mat-icon>
-      <button mat-icon-button matTooltip="ChatGPT Helper"
+      <button [disabled]="canOnlyView" mat-icon-button matTooltip="ChatGPT Helper"
         [matMenuTriggerFor]="openAIMenu">
         <img width="48" height="48" src="https://img.icons8.com/material-outlined/48/chatgpt.png" alt="chatgpt"/>
       </button>
@@ -13,7 +13,7 @@
           {{item.value}}
         </p>
       </mat-menu>
-      <button mat-icon-button matTooltip="Translate this subtitle"
+      <button [disabled]="canOnlyView" mat-icon-button matTooltip="Translate this subtitle"
         [matMenuTriggerFor]="translateMenu">
         <mat-icon>g_translate</mat-icon>
       </button>
@@ -23,7 +23,7 @@
                 {{language.name}}
             </p>
     </mat-menu>
-      <button mat-icon-button matTooltip="Assign Person to this subtitle"
+      <button [disabled]="canOnlyView" mat-icon-button matTooltip="Assign Person to this subtitle"
         [matMenuTriggerFor]="assignPersonMenu">
         <mat-icon>person</mat-icon>
       </button>
@@ -42,23 +42,23 @@
         <h3 class="mat-typography">{{assignedPerson.name}}</h3>
         <span class="person-item" [style.background]="assignedPerson.color"></span>
       </ng-container>
-      <button (click)="deleteDialogBox(dialogId)" class="delete-action" mat-icon-button matTooltip="Delete Subtitle">
+      <button [disabled]="canOnlyView" (click)="deleteDialogBox(dialogId)" class="delete-action" mat-icon-button matTooltip="Delete Subtitle">
         <mat-icon>delete</mat-icon>
       </button>
     </mat-card-header>
     <mat-card-content>
         <mat-form-field subscriptSizing="dynamic">
-          <textarea matInput (input)="wordCounter(); characterCounter(); subtitlingTimingEstimation();"
+          <textarea [readonly]="canOnlyView" matInput (input)="wordCounter(); characterCounter(); subtitlingTimingEstimation();"
             (click)="seekToPlayer(dialogGroup.get('start_time').value)"  [formControl]="getDialogControl('subtitles')" type="text"></textarea>
         </mat-form-field>
         <div fxLayout="column" fxLayoutGap="10px" fxFlex="30">
           <mat-form-field subscriptSizing="dynamic" (click)="seekToPlayer(dialogGroup.get('start_time').value)">
             <mat-label>From:</mat-label>
-            <input matInput (input)="emitDialogId('start_time'); subtitlingTimingEstimation();" [formControl]="getDialogControl('start_time')" [maxlength]="9" matTooltip="mm:ss:ms" type="text">
+            <input [readonly]="canOnlyView" matInput (input)="emitDialogId('start_time'); subtitlingTimingEstimation();" [formControl]="getDialogControl('start_time')" [maxlength]="9" matTooltip="mm:ss:ms" type="text">
           </mat-form-field>
           <mat-form-field subscriptSizing="dynamic" (click)="seekToPlayer(dialogGroup.get('end_time').value)">
             <mat-label>To:</mat-label>
-            <input matInput (input)="emitDialogId('end_time'); subtitlingTimingEstimation();" [formControl]="getDialogControl('end_time')" [maxlength]="9" matTooltip="mm:ss:ms" type="text">
+            <input [readonly]="canOnlyView" matInput (input)="emitDialogId('end_time'); subtitlingTimingEstimation();" [formControl]="getDialogControl('end_time')" [maxlength]="9" matTooltip="mm:ss:ms" type="text">
             <mat-error *ngIf="getDialogControl('end_time').hasError('invalidTimeFormat')">Invalid time format.</mat-error>
           </mat-form-field>
         </div>
