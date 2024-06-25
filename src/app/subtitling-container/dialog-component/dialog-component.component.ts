@@ -408,7 +408,7 @@ getSecondsFromTime(time: string): number {
     document.body.removeChild(a);
   }
 
-  handleFileUpload(event): void {
+  handleFileUpload(event: any): void {
     let fileContent = event.data.value as string;
     let cleanArray = [];
     switch (event.format) {

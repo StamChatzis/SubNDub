@@ -4,16 +4,26 @@
     flex-wrap: wrap;
     gap: 40px;
     justify-content: space-around;
-    padding-top: 20px;
-}
-
-.back-button {
-    top:5%;
-    left:3%
+    padding-top: 35px;
 }
 
 .dashboard-navigation {
-    padding-top: 15px;
+  display: flex;
+  justify-content: space-between;
+  padding-top: 20px;
+}
+
+.back-button-wrapper{
+  margin-left: 20px;
+}
+
+.sub-details-wrapper{
+  margin-top: 10px;
+}
+
+.back-button {
+    top: 5%;
+    left: 3%
 }
 
 video-player {

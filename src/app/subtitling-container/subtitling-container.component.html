@@ -1,8 +1,19 @@
 <div class="container">
     <div class="dashboard-navigation">
+      <div class="back-button-wrapper">
         <button class="back-button" (click)="navigateToDetails()" mat-mini-fab color="primary"
-        matTooltip="Back to Details"><mat-icon>arrow_back</mat-icon>
-    </button>
+          matTooltip="Back to Details"><mat-icon>arrow_back</mat-icon>
+        </button>
+      </div>
+      <div class="sub-details-wrapper">
+        <h2>Subtitle details: </h2>
+      </div>
+      <div class="subtitle-name-wrapper">
+        <h2>{{fileName}}</h2>
+      </div>
+      <div class="language-wrapper">
+        <h2>{{currentLanguage}}</h2>
+      </div>
     </div>
     <div class="wrapper">
         <video-player [videoId]="videoId" [captionsPreview]="(youtube.getCurrentCaption() | async)"></video-player>
