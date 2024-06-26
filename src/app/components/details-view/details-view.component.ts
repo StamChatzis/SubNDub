@@ -17,6 +17,7 @@ import { ShareService } from 'src/app/services/share.service';
 import {DialogConfirmationComponent} from "../../shared/components/dialog-confirmation/dialog-confirmation.component";
 import {NoopScrollStrategy} from "@angular/cdk/overlay";
 import {StorageService} from "../../services/storage.service";
+import {DownloadFileHandlerService} from "../../services/download-file-handler.service";
 
 @Component({
   selector: 'details-view',
@@ -48,6 +49,7 @@ export class DetailsViewComponent implements OnInit {
     private storageService: StorageService,
     private translateService: GoogleTranslateService,
     private detailsViewService: DetailsViewServiceService,
+    private downloadFileService: DownloadFileHandlerService,
     private shareService: ShareService) { }
 
   ngOnInit(): void {
@@ -184,12 +186,18 @@ export class DetailsViewComponent implements OnInit {
 
   }
 
-  exportAllSubtitles(){
+  async exportAllSubtitles(){
     if(this.dataSource.length <= 0) {
       this.snackbar.open('There are no subtitles to export!', 'DISMISS', {duration:5000});
     }else{
-      this.snackbar.open('Under Construction', 'DISMISS', {duration:3000});
+      const videoSubsUrl = `subtitles/${this.user$.value.uid}/${this.videoId}/`;
+
+      this.snackbar.open('Under Construction!', 'DISMISS', {duration:3000});
     }
+  }
+
+  createSubBlob() {
+
   }
 
   navigateToDashboard(): void {

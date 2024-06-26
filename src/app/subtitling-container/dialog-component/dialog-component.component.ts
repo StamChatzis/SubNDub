@@ -415,6 +415,9 @@ getSecondsFromTime(time: string): number {
       case ('sbv'):
         cleanArray = this.fileService.cleanMultilineString(fileContent);
         break;
+      case ('srt'):
+        cleanArray = this.fileService.cleanMultilineString(fileContent);
+        break;
       case ('txt'):
         cleanArray = this.fileService.youtubeTranscriptParse(fileContent);
         break;
