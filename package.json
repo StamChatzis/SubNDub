@@ -26,6 +26,7 @@
     "emailjs-com": "^3.2.0",
     "firebase": "^9.23.0",
     "firebase-tools": "^13.10.2",
+    "jszip": "^3.10.1",
     "ngx-color-picker": "^14.0.0",
     "openai": "^4.24.1",
     "rxjs": "~7.5.0",

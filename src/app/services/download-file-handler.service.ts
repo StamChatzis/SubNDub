@@ -1,43 +1,38 @@
 import { Injectable } from '@angular/core';
-import { getStorage, ref, listAll, getDownloadURL } from 'firebase/storage';
+import { AngularFireStorage } from "@angular/fire/compat/storage";
+import * as JSZip from "jszip";
 
 @Injectable({
   providedIn: 'root'
 })
 export class DownloadFileHandlerService {
 
-  constructor() {}
+  constructor(private storage: AngularFireStorage) {}
 
-  async downloadAllSubtitles(folderPath: string) {
-    // const subtitlesRef = ref(this.storage, folderPath);
-    //
-    // try {
-    //   // List all subtitles in the folder
-    //   const subtitles = await listAll(subtitlesRef);
-    //
-    //   // Create a zip file to store the subtitles
-    //   const zip = new JSZip();
-    //
-    //   // Download each subtitle and add it to the zip file
-    //   for (const subtitle of subtitles.items) {
-    //     const downloadURL = await getDownloadURL(subtitle);
-    //     const filename = subtitle.name;
-    //     const content = await fetch(downloadURL).then(res => res.blob());
-    //     zip.file(filename, content);
-    //   }
-    //
-    //   // Generate the zip file and download it
-    //   const content = await zip.generateAsync({ type: 'blob' });
-    //   const url = window.URL.createObjectURL(content);
-    //   const link = document.createElement('a');
-    //   link.href = url;
-    //   link.download = 'subtitles.zip';
-    //   link.click();
-    //   window.URL.revokeObjectURL(url);
-    //
-    // } catch (error) {
-    //   console.error('Error downloading subtitles:', error);
-    // }
+  downloadAllSubtitles(userId: string, videoId: string) {
+    const storagePath = `subtitles/${userId}/${videoId}/`;
+    const ref = this.storage.ref(storagePath);
+
+    ref.listAll().subscribe(result => {
+      const subtitles = result.items;
+      const zip = new JSZip();
+
+      subtitles.forEach(subtitle => {
+        subtitle.getDownloadURL().then(url => {
+          fetch(url)
+            .then(response => response.blob())
+            .then(blob => {
+              zip.file(subtitle.name, blob);
+            });
+        });
+      });
+
+      zip.generateAsync({ type: 'blob' }).then(content => {
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(content);
+        link.download = `${videoId}_subtitles.zip`;
+        link.click();
+      });
+    });
   }
-
 }

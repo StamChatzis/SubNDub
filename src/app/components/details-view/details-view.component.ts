@@ -14,10 +14,10 @@ import { GmailUser } from 'src/app/models/firestore-schema/user.model';
 import { timeSince } from '../video-card/video-card.component';
 import { ShareSubtitleDialogComponent } from '../dialog-modal/share-subtitle-dialog/share-subtitle-dialog.component';
 import { ShareService } from 'src/app/services/share.service';
-import {DialogConfirmationComponent} from "../../shared/components/dialog-confirmation/dialog-confirmation.component";
-import {NoopScrollStrategy} from "@angular/cdk/overlay";
-import {StorageService} from "../../services/storage.service";
-import {DownloadFileHandlerService} from "../../services/download-file-handler.service";
+import { DialogConfirmationComponent } from "../../shared/components/dialog-confirmation/dialog-confirmation.component";
+import { NoopScrollStrategy } from "@angular/cdk/overlay";
+import { StorageService } from "../../services/storage.service";
+import { DownloadFileHandlerService } from "../../services/download-file-handler.service";
 
 @Component({
   selector: 'details-view',
@@ -34,12 +34,11 @@ export class DetailsViewComponent implements OnInit {
   user$: BehaviorSubject<GmailUser> = new BehaviorSubject<GmailUser>(null);
   dataSource: any[];
   publishDate: BehaviorSubject<string> = new BehaviorSubject<string>('');
+  displayedColumns = ['Name','Format','Language','Last Updated','Subtitles'];
   readonly regionNamesInEnglish = new Intl.DisplayNames(['en'], { type: 'language' });
-
 
   @ViewChild('translateMenu') translateMenu;
 
-  displayedColumns = ['Name','Format','Language','Last Updated','Subtitles'];
   constructor(private route: ActivatedRoute,
     private router: Router,
     private youtubeService: YoutubeService,
@@ -186,13 +185,12 @@ export class DetailsViewComponent implements OnInit {
 
   }
 
-  async exportAllSubtitles(){
+  exportAllSubtitles(){
     if(this.dataSource.length <= 0) {
       this.snackbar.open('There are no subtitles to export!', 'DISMISS', {duration:5000});
     }else{
-      const videoSubsUrl = `subtitles/${this.user$.value.uid}/${this.videoId}/`;
-
-      this.snackbar.open('Under Construction!', 'DISMISS', {duration:3000});
+      this.downloadFileService.downloadAllSubtitles(this.user$.value.uid, this.videoId)
+      //this.snackbar.open('Under Construction!', 'DISMISS', {duration:3000});
     }
   }
 
