@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { AngularFireStorage } from "@angular/fire/compat/storage";
-import { combineLatest, Observable, switchMap } from "rxjs";
+import { combineLatest, filter, Observable, switchMap } from "rxjs";
 import { saveAs } from 'file-saver';
+import { NavigationEnd, Router } from "@angular/router";
 import * as JSZip from "jszip";
 //import { getStorage, ref, listAll, getDownloadURL } from 'firebase/storage';
 
@@ -10,11 +11,17 @@ import * as JSZip from "jszip";
 })
 export class DownloadFileHandlerService {
 
-  constructor(private storage: AngularFireStorage) {
+  // private history: string[] = []; //for navigation example
+
+  constructor(private storage: AngularFireStorage, private router: Router) {
+    // this.router.events
+    //   .pipe(filter(event => event instanceof NavigationEnd))
+    //   .subscribe((event: NavigationEnd) => {
+    //     this.history.push(event.urlAfterRedirects);
+    //   });
   }
 
   getSubtitles(userId: string, videoId: string) {
-    console.log('Fetching subtitles...');
     const path = `subtitles/${userId}/${videoId}/`;
     const ref = this.storage.ref(path);
     return ref.listAll().pipe(
@@ -26,28 +33,22 @@ export class DownloadFileHandlerService {
   }
 
   downloadFiles(urls: string[]) {
-    console.log('Downloading files...');
     return Promise.all(urls.map(url => {
-      console.log(`Fetching file from: ${url}`);
       return fetch(url).then(res => res.blob())
     }));
   }
 
   createZip(blobs: Blob[], filenames: string[]) {
-    console.log('Creating zip file...');
     const zip = new JSZip();
     blobs.forEach((blob, index) => {
-      console.log(`Adding file to zip: ${filenames[index]}`);
       zip.file(filenames[index], blob);
     });
     return zip.generateAsync({ type: 'blob' });
   }
 
   downloadSubtitles(userId: string, videoId: string) {
-    console.log('Downloading subtitles...');
     this.getSubtitles(userId, videoId).pipe(
       switchMap(async urls => {
-        console.log('Fetched URLs:', urls);
         const blobs = await this.downloadFiles(urls);
         return ({blobs, urls});
       }),
@@ -57,7 +58,6 @@ export class DownloadFileHandlerService {
       })
     ).subscribe({
       next: zipBlob => {
-        console.log('Triggering file download...');
         saveAs(zipBlob, `${videoId}-subtitles.zip`);
       },
       error: err => {
@@ -157,5 +157,18 @@ export class DownloadFileHandlerService {
     //   console.error('Error downloading subtitles:', error);
     // }
 //   }
-//
+
+//A great way to go back to where you were with the click o button
+//Do not delete me please :(
+// public getHistory(): string[] {
+//   return this.history;
+// }
+
+// public goBack(): void {
+//   this.history.pop(); // Remove current url
+//   if (this.history.length > 0) {
+//     this.router.navigateByUrl(this.history.pop()!);
+//   } else {
+//     this.router.navigate(['/']); // Navigate to default route if history is empty
+//   }
 // }

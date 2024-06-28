@@ -190,13 +190,9 @@ export class DetailsViewComponent implements OnInit {
     if(this.dataSource.length <= 0) {
       this.snackbar.open('There are no subtitles to export!', 'DISMISS', {duration:5000});
     }else{
-      this.downloadFileService.downloadSubtitles(this.user$.value.uid, this.videoId);
+      this.downloadFileService.downloadAllSubtitles(this.user$.value.uid, this.videoId);
       //this.snackbar.open('Under Construction!', 'DISMISS', {duration:3000});
     }
-  }
-
-  createSubBlob() {
-
   }
 
   navigateToDashboard(): void {
