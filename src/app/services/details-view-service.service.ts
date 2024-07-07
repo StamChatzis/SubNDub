@@ -37,7 +37,7 @@ export class DetailsViewServiceService {
     );
   }
 
-  requestCommunityHelp(user: GmailUser, videoId: string, language:string, iso: string, filename: string, format: string): void {
+  requestCommunityHelp(user: GmailUser, videoId: string, language:string, iso: string, filename: string, format: string, deadline: string): void {
     const helpRequestRef: AngularFirestoreCollection = this.firestore.collection(`helpRequests`);
 
     const data = {
@@ -49,23 +49,29 @@ export class DetailsViewServiceService {
       status: 'open',
       iso: iso,
       filename: filename,
-      format: format
+      format: format,
+      deadline: deadline,
+      offerList: [],
+      currentBid: 0
     }
-
-    this.firestore.collection(`helpRequests`, ref => ref.where('filename', '==', filename).where('status', '==','open'))
+ 
+    this.firestore.collection(`helpRequests`, ref => ref.where('filename', '==', filename).where('status', '==','open').where('language', '==', language).where('format', '==', format)
+      .where('requestedByID', '==', user.uid))
     .get()
     .subscribe(subRequest => {
       if (!subRequest.empty) {
+        console.log('Filename exists in at least one document in the collection.');
         // Perform actions if filename exists
         this.notifier.showNotification("Subtitle has been already requested for a bid.","DIMISS");
         return;
       } else {
+        console.log('Filename does not exist in any document in the collection.');
         // Perform actions if filename does not exist
         helpRequestRef.add(data);
         this.notifier.showNotification("Subtitle has been successfully requested for a bid.","OK");
-
       }
     });
+
   }
 
   addSubtitle(videoId: string, language: Language, userUid: string, name: string, format: SubtitleFormat, userEmail: string, subName?: string) {

@@ -6,7 +6,7 @@ export class Message {
     createdAt: Date;
     status: string;
     subtitle_name: string; 
-    subtitleId: string;
+    subtitleId?: string;
     body:string;
     iso:string;
     language:string;

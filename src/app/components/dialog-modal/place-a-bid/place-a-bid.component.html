@@ -1,0 +1,35 @@
+
+
+<h2 mat-dialog-title>{{videoTitle}}</h2>
+
+    <div mat-dialog-content>
+      
+    <p class="language-requested">Language: {{ languageRequested }}</p>
+  
+    <div class="bid-details">
+        <p>Deadline: {{ deadline}}</p>
+        <div class="input-container">
+          <div *ngIf="deadline != 'No'">
+            <p>Offer Deadline:</p>
+            <input type="date" [(ngModel)]="bidDeadline" [min]="today" [max]="deadline | date: 'yyyy-MM-dd'" lang="en">
+            
+          </div>
+        </div>
+
+        <p>Current Minimum Bid:</p>
+        <p class="current-bid">€ {{ currentBidAmount }}</p>
+      
+        <p>Offer Bid: </p>
+        <div class="input-container">
+          <input #bidInput class="mybid" matInput type="number" [(ngModel)]="yourBidAmount" placeholder="Enter your bid" min="1">
+        </div>
+        
+      </div>
+  
+      <mat-dialog-actions class="button-container">
+        <button mat-button [mat-dialog-close]="null">Cancel</button>
+        <button mat-raised-button [disabled]="!(deadline === 'No' && bidInput.value) && !(bidInput.value && bidDeadline)" [mat-dialog-close]="{yourBidAmount}" (click)="placeBid(yourBidAmount, deadline === 'No' ? 'No' : bidDeadline)" color="primary">Place Bid</button>
+      </mat-dialog-actions>
+    </div> 
+    
+  

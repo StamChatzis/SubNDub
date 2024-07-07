@@ -4,6 +4,7 @@
   <mat-dialog-content >
     
       <div *ngIf="messages.length > 0">
+        <!-- render the list of messages -->
         <div *ngFor="let message of messages let i = index">
           <mat-card class="message-card" tabindex="0">
             <div class="bullet"></div>
@@ -17,8 +18,12 @@
             </div>
           </div>
           <div>
-              <button class="accept" (click)="acceptTransferOwnership(message)">Accept</button>
-              <button  class="decline" (click)="declineTransferOwnership(message)">Decline</button>
+              <button class="accept" (click)="message.subject.startsWith('Offer')? handleOffer(message) : acceptTransferOwnership(message)"> 
+                {{ message.subject.startsWith('Offer')? 'Accept Offer' : 'Accept' }}
+              </button>
+              <button class="decline" (click)="message.subject.startsWith('Offer')? declineOffer(message) : declineTransferOwnership(message)"> 
+                {{ message.subject.startsWith('Offer')? 'Decline Offer' : 'Decline' }}
+              </button>
           </div>
           </mat-card>
         </div>

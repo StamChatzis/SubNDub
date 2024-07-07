@@ -68,7 +68,8 @@
                 <community-video-card *ngIf="youtubeVideoDetails" [videoId]="video.videoId"
                     (editVideoEmitter)="navigateToCommunityEdit($event)"
                     [communityRequestDetails] = "video"
-                    [videoDetails]="getVideoDetailsById(video.videoId)">
+                    [videoDetails]="getVideoDetailsById(video.videoId)"
+                    [userEmail]="userEmail">
                 </community-video-card>
             </div>
     </div>

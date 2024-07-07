@@ -129,6 +129,15 @@ export class MessagesComponent implements OnInit, OnDestroy {
     .catch(error => console.error("Error declining transfer ownership:", error));
    }
 
+   handleOffer(message: Message){
+    console.log("handle offer");
+  }
+
+   declineOffer(message: Message){
+    this.messagesService.deleteMessageFromUserMessages(message, this.useruid);
+    
+  }
+
 
 
 }

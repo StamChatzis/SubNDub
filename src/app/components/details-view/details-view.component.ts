@@ -18,6 +18,7 @@ import {DialogConfirmationComponent} from "../../shared/components/dialog-confir
 import {NoopScrollStrategy} from "@angular/cdk/overlay";
 import {StorageService} from "../../services/storage.service";
 import {DownloadFileHandlerService} from "../../services/download-file-handler.service";
+import { RequestCommunityHelpComponent } from '../dialog-modal/request-community-help/request-community-help.component';
 
 @Component({
   selector: 'details-view',
@@ -125,8 +126,13 @@ export class DetailsViewComponent implements OnInit {
     this.router.navigate(['edit', this.videoId, ISOcode, name])
   }
 
-  requestCommunityHelp(language:string ,iso: string, filename: string, format: string): void {
-    this.detailsViewService.requestCommunityHelp(this.user$.value, this.videoId,language, iso, filename, format)
+  requestCommunityHelp(language:string ,iso: string, filename: string, format: string, videoTitle: string): void {
+    this.dialog.open(RequestCommunityHelpComponent,{width:'400px', data: { videoTitle, subtitleTitle:filename+"."+format, language}}).afterClosed().pipe(take(1)).subscribe(dialog => {
+      if (dialog === (null || undefined )){
+        this.dialog.closeAll();
+      }else if (dialog){
+        this.detailsViewService.requestCommunityHelp(this.user$.value, this.videoId,language, iso, filename, format, dialog);
+      }});
   }
 
   deleteSubtitle(ISOcode:string, name:any, format: any){

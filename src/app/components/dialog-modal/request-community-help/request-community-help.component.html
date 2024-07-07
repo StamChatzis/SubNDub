@@ -1,0 +1,21 @@
+<h2 mat-dialog-title>{{ videoTitle }}</h2>
+<mat-dialog-content>
+  <h4>{{ subtitleTitle }}</h4>
+  <h4>Language: {{ language }}</h4>
+  <p>Select a deadline:</p>
+  <label>
+    <input type="radio" name="deadlineOption" [(ngModel)]="deadlineOption" [value]="true">
+    Deadline
+  </label>
+  <label>
+    <input type="radio" name="deadlineOption" [(ngModel)]="deadlineOption" [value]="false">
+    No deadline
+  </label>
+  <div *ngIf="deadlineOption">
+    <input type="date" [(ngModel)]="deadlineDate" [min]="today | date: 'yyyy-MM-dd'" lang="en">
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions class="button-container">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-raised-button [mat-dialog-close]="deadlineOption ? deadlineDate : 'No'" [disabled]="!(deadlineOption === false || deadlineDate)" color="primary">Request Help</button>
+</mat-dialog-actions>

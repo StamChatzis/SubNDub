@@ -58,7 +58,7 @@
             
             <ng-container matColumnDef="Subtitles">
                 <mat-header-cell *matHeaderCellDef> Subtitles </mat-header-cell>
-                <mat-cell *matCellDef="let element"><button mat-raised-button color="primary" (click)="editSubtitle(element.iso, element.fileName, element.usersRights)">Edit</button> 
+                <mat-cell *matCellDef="let element"><button matTooltip="Edit subtitles" mat-icon-button color="primary" (click)="editSubtitle(element.iso, element.fileName, element.usersRights)"><mat-icon>edit</mat-icon></button> 
                  <button (click)="shareSubtitle(element.language, element.iso, element.fileName, element.format, element.usersRights, videoDetails$?.value[0]?.snippet?.title, element.id)"
                  style="margin-left:10px;" matTooltip="Share subtitles with someone" mat-icon-button color="primary"><mat-icon>share</mat-icon></button> 
                 </mat-cell>        

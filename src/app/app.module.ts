@@ -69,6 +69,8 @@ import { MessagesComponent } from './components/messages/messages.component';
 import { DetailsViewServiceService } from './services/details-view-service.service';
 import { ShareSubtitlingContainerComponent } from './share-subtitling-container/share-subtitling-container.component';
 import { SharedVideoCardComponent } from './components/shared-video-card/shared-video-card.component';
+import { RequestCommunityHelpComponent } from './components/dialog-modal/request-community-help/request-community-help.component';
+import { PlaceABidComponent } from './components/dialog-modal/place-a-bid/place-a-bid.component';
 
 @NgModule({
   declarations: [
@@ -107,7 +109,9 @@ import { SharedVideoCardComponent } from './components/shared-video-card/shared-
     TransferOwnershipDialogComponent,
     MessagesComponent,
     ShareSubtitlingContainerComponent,
-    SharedVideoCardComponent
+    SharedVideoCardComponent,
+    RequestCommunityHelpComponent,
+    PlaceABidComponent
   ],
     imports: [
         BrowserModule,

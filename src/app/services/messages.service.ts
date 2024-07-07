@@ -153,11 +153,21 @@ export class MessagesService {
       console.error("Message properties are undefined");
       return;
     }
-  
+
+    if (message.subject.startsWith('Offer')) message.subtitleId = '';
+    
+    const offerMessageRef: AngularFirestoreCollection = this.firestore.collection('users').doc(userid).collection('messages', ref => ref.where('subtitle_name', '==', message.subtitle_name)
+    .where('iso', '==', message.iso).where('language', '==', message.language).where('videoId', '==', message.videoId).where('status', '==', "unread"));
+
     const messageRef: AngularFirestoreCollection = this.firestore.collection('users').doc(userid).collection('messages', ref => ref.where('subtitle_name', '==', message.subtitle_name)
       .where('iso', '==', message.iso).where('language', '==', message.language).where('videoId', '==', message.videoId).where("subtitleId","==", message.subtitleId).where('status', '==', "unread"));
-    try {
-      const snapshot = await messageRef.get().toPromise();
+    
+      try {
+        let mesRef;
+        if (message.subject.startsWith('Offer')){
+          mesRef = offerMessageRef;
+        } else mesRef = messageRef;
+        const snapshot = await mesRef.get().toPromise();
       if (snapshot.size > 0) {
         await snapshot.docs[0].ref.delete();
       }
