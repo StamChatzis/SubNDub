@@ -388,12 +388,12 @@ getSecondsFromTime(time: string): number {
   }
 
   createSubtitleBlob(): Blob {
-    let sbvContent = ''
+    let subtitleContent = ''
     Object.keys(this.form.controls).forEach((control) => {
       const currentGroup = this.form.get(control);
-      sbvContent += `${'00:'+ currentGroup.get('start_time').value},${'00:' + currentGroup.get('end_time').value}\n${currentGroup.get('subtitles').value}\n\n`;
+      subtitleContent += `${'00:'+ currentGroup.get('start_time').value},${'00:' + currentGroup.get('end_time').value}\n${currentGroup.get('subtitles').value}\n\n`;
     });
-    return new Blob([sbvContent], {type: 'text/sbv;charset=utf8'});
+    return new Blob([subtitleContent], {type: 'text/sbv;charset=utf8'});
   }
 
   downloadSubtitle(): void {

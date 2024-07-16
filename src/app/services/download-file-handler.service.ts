@@ -1,96 +1,58 @@
 import { Injectable } from '@angular/core';
 import { AngularFireStorage } from "@angular/fire/compat/storage";
-import { combineLatest, filter, Observable, switchMap } from "rxjs";
+import {combineLatest, filter, lastValueFrom, Observable, switchMap} from "rxjs";
 import { saveAs } from 'file-saver';
-import { NavigationEnd, Router } from "@angular/router";
 import * as JSZip from "jszip";
-//import { getStorage, ref, listAll, getDownloadURL } from 'firebase/storage';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DownloadFileHandlerService {
 
-  // private history: string[] = []; //for navigation example
-
-  constructor(private storage: AngularFireStorage, private router: Router) {
-    // this.router.events
-    //   .pipe(filter(event => event instanceof NavigationEnd))
-    //   .subscribe((event: NavigationEnd) => {
-    //     this.history.push(event.urlAfterRedirects);
-    //   });
+  constructor(private storage: AngularFireStorage) {
   }
 
-  getSubtitles(userId: string, videoId: string) {
-    const path = `subtitles/${userId}/${videoId}/`;
-    const ref = this.storage.ref(path);
-    return ref.listAll().pipe(
-      switchMap(result => {
-        const fileObservables = result.items.map(item => item.getDownloadURL());
-        return combineLatest(fileObservables);
-      })
-    );
+  async getLanguages(videoId: string, userId: string) {
+    const ref = this.storage.ref(`subtitles/${userId}/${videoId}`);
+    const allLang$ = ref.listAll()
+    const result_1 = await lastValueFrom(allLang$);
+    return result_1.items.map(item => item.name);
   }
 
-  downloadFiles(urls: string[]) {
-    return Promise.all(urls.map(url => {
-      return fetch(url).then(res => res.blob())
-    }));
+  async downloadSubtitleFile(videoId: string, userId: string, languageIsoCode: string): Promise<Blob> {
+    const ref = this.storage.ref(`subtitles/${userId}/${videoId}/${languageIsoCode}`);
+    const url = ref.getDownloadURL();
+    const result_1 = await lastValueFrom(url);
+    const response = await fetch(result_1);
+    return await response.blob();
   }
 
-  createZip(blobs: Blob[], filenames: string[]) {
+  async massExportSubtitles(videoId: string, userId: string): Promise<void> {
+    const languages = await this.getLanguages(videoId, userId);
     const zip = new JSZip();
-    blobs.forEach((blob, index) => {
-      zip.file(filenames[index], blob);
-    });
-    return zip.generateAsync({ type: 'blob' });
-  }
-
-  downloadSubtitles(userId: string, videoId: string) {
-    this.getSubtitles(userId, videoId).pipe(
-      switchMap(async urls => {
-        const blobs = await this.downloadFiles(urls);
-        return ({blobs, urls});
-      }),
-      switchMap(({ blobs, urls }) => {
-        const filenames = urls.map(url => url.split('/').pop()!);
-        return this.createZip(blobs, filenames);
-      })
-    ).subscribe({
-      next: zipBlob => {
-        saveAs(zipBlob, `${videoId}-subtitles.zip`);
-      },
-      error: err => {
-        console.error('Error:', err);
-      }
-    });
-  }
-
-  downloadAllSubtitles(userId: string, videoId: string) {
-    const storagePath = `subtitles/${userId}/${videoId}/`;
-    const ref = this.storage.ref(storagePath);
-
-    ref.listAll().subscribe(result => {
-      const subtitles = result.items;
-      const zip = new JSZip();
-
-      subtitles.forEach(subtitle => {
-        subtitle.getDownloadURL().then(url => {
-          fetch(url)
-            .then(response => response.blob())
-            .then(blob => {
-              zip.file(subtitle.name, blob);
-            });
-        });
-      });
-
-      zip.generateAsync({ type: 'blob' }).then(content => {
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(content);
-        link.download = `${videoId}_subtitles.zip`;
-        link.click();
+    const promises = languages.map(async language => {
+      const blob = await this.downloadSubtitleFile(videoId, userId, language);
+      console.log('Blob:', blob); // Check if the blob is valid
+      return await new Promise<void>(resolve => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const fileContent = reader.result as string;
+          console.log('File content:', fileContent); // Check if the file content is valid
+          zip.file(`${videoId}_${language}.srt`, fileContent);
+          console.log('Zip:', zip); // Check if the file is added to the zip archive
+          resolve();
+        };
+        reader.readAsText(blob);
       });
     });
+    await Promise.all(promises);
+    const blob_2 = await zip.generateAsync({type: 'blob'});
+    const url = window.URL.createObjectURL(blob_2);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${videoId}_subtitles.zip`;
+    a.click();
+    window.URL.revokeObjectURL(url);
   }
 
 }
@@ -158,12 +120,27 @@ export class DownloadFileHandlerService {
     // }
 //   }
 
+
+
+
+//----------------------------------------------------------------------------------------
 //A great way to go back to where you were with the click o button
 //Do not delete me please :(
+//
+// private history: string[] = []; //for navigation example
+//
+// constructor(private router: Router) {
+//   this.router.events
+//     .pipe(filter(event => event instanceof NavigationEnd))
+//     .subscribe((event: NavigationEnd) => {
+//       this.history.push(event.urlAfterRedirects);
+//     });
+//  }
+//
 // public getHistory(): string[] {
 //   return this.history;
 // }
-
+//
 // public goBack(): void {
 //   this.history.pop(); // Remove current url
 //   if (this.history.length > 0) {

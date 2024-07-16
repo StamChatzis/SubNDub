@@ -37,17 +37,17 @@
     </div>
     <div class="main-content_wrapper" #scrollContainer>
         <dialog-content *ngFor="let dialogBox of dialogBoxes; let dialogIndex = index"
-        [dialogGroup]="getDialogControl(dialogBox.id)"
-        [index]="dialogIndex"
-        [dialogId]="dialogBox.id"
-        [persons]="persons"
-        [hasFocus]="focusedDialogBox === dialogBox.id"
-        [supportedLanguages]="(supportedLanguages$ | async)?.data?.languages"
-        (translateSubtitle)="translateSingleSubtitle($event)"
-        (chatGPTEventEmmiter)="chatGPTEventDispatcher($event)"
-        (deleteDialogBoxEvent)="deleteDialogBox($event)"
-        (dialogEmitter)="timeRangeValidation($event)"
-        [canOnlyView]="canOnlyView">
+          [dialogGroup]="getDialogControl(dialogBox.id)"
+          [index]="dialogIndex"
+          [dialogId]="dialogBox.id"
+          [persons]="persons"
+          [hasFocus]="focusedDialogBox === dialogBox.id"
+          [supportedLanguages]="(supportedLanguages$ | async)?.data?.languages"
+          (translateSubtitle)="translateSingleSubtitle($event)"
+          (chatGPTEventEmmiter)="chatGPTEventDispatcher($event)"
+          (deleteDialogBoxEvent)="deleteDialogBox($event)"
+          (dialogEmitter)="timeRangeValidation($event)"
+          [canOnlyView]="canOnlyView">
         </dialog-content>
     </div>
 </div>
