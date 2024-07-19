@@ -17,14 +17,15 @@
     <div class="wrapper">
         <video-player [videoId]="videoId" [captionsPreview]="(youtube.getCurrentCaption() | async)"></video-player>
         <dialog-component
-            [isoCode]="currentLanguage"
-            [videoId]="videoId"
-            [subtitleName]="fileName"
-            [videoDuration]="videoDuration | async"
-            (subtitleUploadEmitter)="uploadToFirestorage($event)"
-            (navigateTTS)="navigateTTS()"
-            (formStatusChange)="setFormDirtyStatus($event)"
-            [canOnlyView]="canOnlyView">
+          [isoCode]="currentLanguage"
+          [videoId]="videoId"
+          [subtitleName]="fileName"
+          [videoDuration]="videoDuration | async"
+          (subtitleUploadEmitter)="uploadToFirestorage($event)"
+          (navigateTTS)="navigateTTS()"
+          (formStatusChange)="setFormDirtyStatus($event)"
+          [canOnlyView]="canOnlyView"
+          >
         </dialog-component>
     </div>
 <!-- <sub-timeline [videoDurationISO]="videoDuration"></sub-timeline> -->

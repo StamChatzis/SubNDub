@@ -129,6 +129,10 @@ export class DialogComponentComponent implements OnInit {
     return this.form.get(dialogBoxId + '-dialogBox') as FormGroup
   }
 
+  setIsFormDirty(isDirty: boolean){
+    this.formStatusChange.emit(isDirty);
+  }
+
   addDialogBox(value: ImportModel = null): void {
     this.dialogBoxId ++;
     this.form.addControl(((this.dialogBoxId + '-dialogBox')), this.fb.group({
@@ -299,10 +303,10 @@ export class DialogComponentComponent implements OnInit {
   }
 
   // Helper function to convert time format (mm:ss.SSS) to seconds
-getSecondsFromTime(time: string): number {
-  const [minutes, seconds] = time.split(':').map(parseFloat);
-  return minutes * 60 + seconds;
-}
+  getSecondsFromTime(time: string): number {
+    const [minutes, seconds] = time.split(':').map(parseFloat);
+    return minutes * 60 + seconds;
+  }
 
   translateAllSubtitles(targetLanguage: string): void {
     let translationObject: GoogleTranslateRequestObject = {
@@ -334,6 +338,7 @@ getSecondsFromTime(time: string): number {
           }
         }
       });
+      this.formStatusChange.emit(true)
     }
   }
 
@@ -346,8 +351,8 @@ getSecondsFromTime(time: string): number {
     this.google.translate(translationObject).subscribe((response: ResponseObject) => {
       if (response) {
         this.form.get(targetLanguage.id + '-dialogBox').get('subtitles').setValue(response.data.translations[0].translatedText);
+        this.formStatusChange.emit(true);
       }
-
     })
 
   }

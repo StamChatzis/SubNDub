@@ -10,6 +10,7 @@ export class ImportButtonComponent {
 
   public fileContent$ = new BehaviorSubject<string>(null);
   @Input() acceptedFiles: string;
+  @Output() isFormDirty: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() fileContentEmit: EventEmitter<any> = new EventEmitter<any>();
 
   selectFile(event: Event): void {
@@ -27,9 +28,10 @@ export class ImportButtonComponent {
 
       reader.onload = (e: ProgressEvent<FileReader>) => {
         this.fileContent$.next(<string>reader.result);
+        this.isFormDirty.emit(true);
         return resolve((e.target as FileReader).result);
       };
-      
+
       reader.onerror = () => {
         console.error(`FileReader failed on file ${file.name}.`);
         return reject(null);
@@ -41,7 +43,6 @@ export class ImportButtonComponent {
       }
 
       reader.readAsText(file);
-      
     });
   }
 }

@@ -41,7 +41,7 @@ export class SubtitlingContainerComponent implements OnInit {
     this.fileName = this.route.snapshot.paramMap.get('name');
     this.subFormat = this.route.snapshot.paramMap.get('format')
     this.right = this.route.snapshot.paramMap.get('right');
-    if (this.right) this.canOnlyView = true; else this.canOnlyView = false;
+    this.canOnlyView = !!this.right;
 
     this.youtube.getVideoDetails(this.videoId).pipe(take(1),tap(() => {
       this.loading$.next(true);
