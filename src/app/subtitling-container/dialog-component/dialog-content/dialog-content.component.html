@@ -48,7 +48,7 @@
     </mat-card-header>
     <mat-card-content>
         <mat-form-field subscriptSizing="dynamic">
-          <textarea [readonly]="canOnlyView" matInput (input)="wordCounter(); characterCounter(); subtitlingTimingEstimation();"
+          <textarea class="sub-text-area" [readonly]="canOnlyView" matInput (input)="wordCounter(); characterCounter(); subtitlingTimingEstimation();"
             (click)="seekToPlayer(dialogGroup.get('start_time').value)"  [formControl]="getDialogControl('subtitles')" type="text"></textarea>
         </mat-form-field>
         <div fxLayout="column" fxLayoutGap="10px" fxFlex="30">

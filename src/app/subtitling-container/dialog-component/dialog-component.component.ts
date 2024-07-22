@@ -80,7 +80,7 @@ export class DialogComponentComponent implements OnInit {
         if (url) {
           this.storage.fetchSubtitleFile(url).subscribe((res: string) => {
             this.subtitles$.next(res);
-            this.handleFileUpload({data: this.subtitles$, format: 'sbv'});
+            this.handleFileUpload({data: this.subtitles$, format: this.subtitleName.split(".")[1]});
           })
         }
       });
@@ -133,7 +133,7 @@ export class DialogComponentComponent implements OnInit {
     this.formStatusChange.emit(isDirty);
   }
 
-  addDialogBox(value: ImportModel = null): void {
+  addDialogBox(value: ImportModel = null, fromClick: boolean): void {
     this.dialogBoxId ++;
     this.form.addControl(((this.dialogBoxId + '-dialogBox')), this.fb.group({
       subtitles: this.fb.control((value?.subtitleText) ? value.subtitleText : ''),
@@ -147,6 +147,10 @@ export class DialogComponentComponent implements OnInit {
       start_time: value?.start_time,
       end_time: value?.end_time
     });
+
+    if(fromClick){
+      this.formStatusChange.emit(true);
+    }
   }
 
   batchAddDialogBox(): void {
@@ -161,9 +165,8 @@ export class DialogComponentComponent implements OnInit {
             start_time: this.form.get(i + '-dialogBox').get('end_time').value,
             end_time: this.intervalAddition(this.form.get(i + '-dialogBox').get('end_time').value, interval),
             subtitleText: ''
-          });
-        };
-
+          }, true);
+        }
       }
     });
   }
@@ -185,9 +188,7 @@ export class DialogComponentComponent implements OnInit {
     const newMilliseconds = newTotalMilliseconds % 1000;
 
     // Format the result as "00:00.000"
-    const formattedResult = `${String(newMinutes).padStart(2, '0')}:${String(newSeconds).padStart(2, '0')}.${String(newMilliseconds).padStart(3, '0')}`;
-
-    return formattedResult;
+    return `${String(newMinutes).padStart(2, '0')}:${String(newSeconds).padStart(2, '0')}.${String(newMilliseconds).padStart(3, '0')}`;
   }
 
   parseISOtoSeconds(ISOdate: any): number {
@@ -440,7 +441,7 @@ export class DialogComponentComponent implements OnInit {
       this.dialogBoxId = 0;
 
       for (let individualSub of cleanArray) {
-        this.addDialogBox(individualSub);
+        this.addDialogBox(individualSub, false);
       }
     }
   }

@@ -1,109 +1,118 @@
 .mat-mdc-form-field {
-    flex-grow:1;
-    padding-right:15px;
+  flex-grow:1;
+  padding-right:15px;
 }
 
 .mat-mdc-card-content {
-    display: flex;
-    min-width:600px;
+  display: flex;
+  min-width:600px;
+}
+
+.sub-text-area{
+  min-height: 100px !important;
 }
 
 .mat-mdc-card-header {
-    padding:8px 16px;
-    align-items: center;
-    gap:15px;
+  padding:8px 16px;
+  align-items: center;
+  gap:15px;
 }
 
 .delete-action {
-    margin-left: auto;
+  margin-left: auto;
 }
 
 .mat-mdc-card {
-    margin-bottom:15px;
+  margin-bottom:15px;
 }
 
 .mat-mdc-card-subtitle {
-    padding-top:4px;
-    padding-left:16px;
-    padding-bottom:4px;
+  padding-top:4px;
+  padding-left:16px;
+  padding-bottom:4px;
 }
 
 .mat-mdc-card-subtitle {
-    padding-top:4px;
-    padding-left:16px;
-    padding-bottom:4px;
+  padding-top:4px;
+  padding-left:16px;
+  padding-bottom:4px;
 }
+
 .mat-icon {
-    width:24px;
-    height:24px;
-    font-size:24px;
+  width:24px;
+  height:24px;
+  font-size:24px;
 }
 
 .span-color span {
-    width:24px;
-    height:24px;
+  width:24px;
+  height:24px;
 }
+
 .person-menu-item {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
+
 .person-menu-item span{
-    display: inline-block;
-    width:24px;
-    height:24px;
-    border-radius: 5px;
+  display: inline-block;
+  width:24px;
+  height:24px;
+  border-radius: 5px;
 }
 
 .person-item{
-    display: inline-block;
-    width:20px;
-    height:20px;
-    border-radius: 5px;
+  display: inline-block;
+  width:20px;
+  height:20px;
+  border-radius: 5px;
 }
 
 .mat-typography {
-    margin-bottom: 0
-} 
+  margin-bottom: 0
+}
 
 .mat-icon {
-    width:24px;
-    height:24px;
-    font-size:24px;
+  width:24px;
+  height:24px;
+  font-size:24px;
 }
 
 .span-color span {
-    width:24px;
-    height:24px;
+  width:24px;
+  height:24px;
 }
+
 .person-menu-item {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
+
 .person-menu-item span{
-    display: inline-block;
-    width:24px;
-    height:24px;
-    border-radius: 5px;
+  display: inline-block;
+  width:24px;
+  height:24px;
+  border-radius: 5px;
 }
 
 .person-item{
-    display: inline-block;
-    width:20px;
-    height:20px;
-    border-radius: 5px;
+  display: inline-block;
+  width:20px;
+  height:20px;
+  border-radius: 5px;
 }
 
 .header-assigment-ribbon {
-    display:inline-block;
-    width:100%;
-    height: 4px;
-    border-radius: 90%;
+  display:inline-block;
+  width:100%;
+  height: 4px;
+  border-radius: 90%;
 }
 
 .mat-typography {
-    margin-bottom: 0
+  margin-bottom: 0
 }
 
 .focused-box {
-    border: 2px solid #4d68f147;;
+  border: 2px solid #4d68f147;;
 }

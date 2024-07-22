@@ -13,8 +13,9 @@
   </mat-dialog-content>
   <div class="input-container" *ngIf="langIsSelected">
       <mat-form-field>
-          <mat-label>Choose name</mat-label>
-          <input matInput type="text" formControlName="name">
+        <mat-label>Choose name</mat-label>
+        <input matInput type="text" formControlName="name">
+        <mat-error *ngIf="newSubForm.get('name')?.hasError('pattern')">The name contains one or more unaccepted special characters</mat-error>
       </mat-form-field>
       <mat-form-field class="format-selector">
         <mat-label>Format</mat-label>

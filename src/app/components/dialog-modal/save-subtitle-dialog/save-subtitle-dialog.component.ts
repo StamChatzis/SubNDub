@@ -21,7 +21,7 @@ export class SaveSubtitleDialogComponent implements OnInit{
   constructor(private translateService: GoogleTranslateService, private fb: FormBuilder) {
     this.newSubForm = new FormGroup({
       language: new FormControl('', Validators.required),
-      name: new FormControl('', Validators.required),
+      name: new FormControl('', [Validators.pattern('^[a-zA-Z0-9_\\[\\]()]+$')]),
       format: new FormControl('', Validators.required),
     })
   }

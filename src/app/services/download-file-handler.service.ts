@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFireStorage } from "@angular/fire/compat/storage";
-import {combineLatest, filter, lastValueFrom, Observable, switchMap} from "rxjs";
-import { saveAs } from 'file-saver';
+import { lastValueFrom } from "rxjs";
 import * as JSZip from "jszip";
 
 @Injectable({
@@ -9,50 +8,46 @@ import * as JSZip from "jszip";
 })
 export class DownloadFileHandlerService {
 
-  constructor(private storage: AngularFireStorage) {
-  }
+  constructor(private storage: AngularFireStorage) {}
 
   async getLanguages(videoId: string, userId: string) {
-    const ref = this.storage.ref(`subtitles/${userId}/${videoId}`);
-    const allLang$ = ref.listAll()
-    const result_1 = await lastValueFrom(allLang$);
-    return result_1.items.map(item => item.name);
+    // const ref = this.storage.ref(`subtitles/${userId}/${videoId}`);
+    // const allLang$ = ref.listAll()
+    // const result_1 = await lastValueFrom(allLang$);
+    // return result_1.items.map(item => item.name);
   }
 
-  async downloadSubtitleFile(videoId: string, userId: string, languageIsoCode: string): Promise<Blob> {
-    const ref = this.storage.ref(`subtitles/${userId}/${videoId}/${languageIsoCode}`);
-    const url = ref.getDownloadURL();
-    const result_1 = await lastValueFrom(url);
-    const response = await fetch(result_1);
-    return await response.blob();
+  async downloadSubtitleFile(videoId: string, userId: string, languageIsoCode: string) {
+    // const ref = this.storage.ref(`subtitles/${userId}/${videoId}/${languageIsoCode}`);
+    // const url = ref.getDownloadURL();
+    // const result_1 = await lastValueFrom(url);
+    // const response = await fetch(result_1);
+    // return await response.blob();
   }
 
-  async massExportSubtitles(videoId: string, userId: string): Promise<void> {
-    const languages = await this.getLanguages(videoId, userId);
-    const zip = new JSZip();
-    const promises = languages.map(async language => {
-      const blob = await this.downloadSubtitleFile(videoId, userId, language);
-      console.log('Blob:', blob); // Check if the blob is valid
-      return await new Promise<void>(resolve => {
-        const reader = new FileReader();
-        reader.onload = () => {
-          const fileContent = reader.result as string;
-          console.log('File content:', fileContent); // Check if the file content is valid
-          zip.file(`${videoId}_${language}.srt`, fileContent);
-          console.log('Zip:', zip); // Check if the file is added to the zip archive
-          resolve();
-        };
-        reader.readAsText(blob);
-      });
-    });
-    await Promise.all(promises);
-    const blob_2 = await zip.generateAsync({type: 'blob'});
-    const url = window.URL.createObjectURL(blob_2);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${videoId}_subtitles.zip`;
-    a.click();
-    window.URL.revokeObjectURL(url);
+  massExportSubtitles(videoId: string, userId: string) {
+    // const languages = await this.getLanguages(videoId, userId);
+    // const zip = new JSZip();
+    // const promises = languages.map(async language => {
+    //   const blob = await this.downloadSubtitleFile(videoId, userId, language);
+    //   return await new Promise<void>(resolve => {
+    //     const reader = new FileReader();
+    //     reader.onload = () => {
+    //       const fileContent = reader.result as string;
+    //       zip.file(`${videoId}_${language}.srt`, fileContent);
+    //       resolve();
+    //     };
+    //     reader.readAsText(blob);
+    //   });
+    // });
+    // await Promise.all(promises);
+    // const blob_2 = await zip.generateAsync({type: 'blob'});
+    // const url = window.URL.createObjectURL(blob_2);
+    // const a = document.createElement('a');
+    // a.href = url;
+    // a.download = `${videoId}_subtitles.zip`;
+    // a.click();
+    // window.URL.revokeObjectURL(url);
   }
 
 }
