@@ -9,7 +9,6 @@
 
 .dashboard-navigation {
   display: flex;
-  justify-content: space-between;
   padding-top: 20px;
 }
 
@@ -18,8 +17,16 @@
 }
 
 .sub-details-wrapper{
+  margin-left: 100px;
   display: flex;
   margin-top: 10px;
+}
+
+.sub-name-wrapper h3{
+}
+
+.lang-wrapper {
+  margin-left: 20px;
 }
 
 .back-button {

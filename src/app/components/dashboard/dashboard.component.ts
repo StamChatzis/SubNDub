@@ -1,20 +1,19 @@
-import { ChangeDetectionStrategy, Component, ElementRef, OnInit, Renderer2, SecurityContext, ViewChild, inject } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { GmailUser, Video } from 'src/app/models/firestore-schema/user.model';
-import { AuthService } from 'src/app/services/auth.service';
-import { DashboardService } from 'src/app/services/dashboard.service';
-import { VideoInitFormComponent } from '../video-add-form/video-init-form.component';
-import { YoutubeService } from 'src/app/services/youtube.service';
-import { YoutubeVideoDetails } from 'src/app/models/youtube/youtube-response.model';
-import { Router } from '@angular/router';
-import { DialogConfirmationComponent } from 'src/app/shared/components/dialog-confirmation/dialog-confirmation.component';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { NoopScrollStrategy } from '@angular/cdk/overlay';
-import { BehaviorSubject, Observable, combineLatest, distinctUntilChanged, of, switchMap, take, tap } from 'rxjs';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { CommunityHelpService } from 'src/app/services/community-help.service';
-import { CommunityHelpRequest } from 'src/app/models/firestore-schema/help-request.model';
-import { OpenAIService } from 'src/app/services/open-ai.service';
+import {ChangeDetectionStrategy, Component, ElementRef, OnInit, Renderer2, ViewChild} from '@angular/core';
+import {MatDialog} from '@angular/material/dialog';
+import {GmailUser, Video} from 'src/app/models/firestore-schema/user.model';
+import {AuthService} from 'src/app/services/auth.service';
+import {DashboardService} from 'src/app/services/dashboard.service';
+import {VideoInitFormComponent} from '../video-add-form/video-init-form.component';
+import {YoutubeService} from 'src/app/services/youtube.service';
+import {YoutubeVideoDetails} from 'src/app/models/youtube/youtube-response.model';
+import {Router} from '@angular/router';
+import {DialogConfirmationComponent} from 'src/app/shared/components/dialog-confirmation/dialog-confirmation.component';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {NoopScrollStrategy} from '@angular/cdk/overlay';
+import {BehaviorSubject, combineLatest, distinctUntilChanged, Observable, of, switchMap} from 'rxjs';
+import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
+import {CommunityHelpService} from 'src/app/services/community-help.service';
+import {CommunityHelpRequest} from 'src/app/models/firestore-schema/help-request.model';
 import {SharedVideo} from 'src/app/models/firestore-schema/shared-video.model';
 
 @Component({
@@ -30,7 +29,8 @@ export class DashboardComponent implements OnInit {
   userSharedVideos$: Observable<SharedVideo[]> = new Observable<SharedVideo[]>;
   communityVideos$: Observable<Video[]> = new Observable<Video[]>;
   loading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
-  youtubeVideoDetails: YoutubeVideoDetails[];
+  allYouTubeVideoDetails: YoutubeVideoDetails[];
+  youTubeVideoDetails: YoutubeVideoDetails;
   userId$: BehaviorSubject<string> = new BehaviorSubject<string>('');
   isFormOpen: boolean = false;
   listView: boolean = false;
@@ -81,11 +81,11 @@ export class DashboardComponent implements OnInit {
         const uniqueVideoIds = new Set([...userVideoIds, ...userSharedVideoIds, ...communityVideoIds]);
 
         const allVideoIds = Array.from(uniqueVideoIds).join(',');
-        return this.youtubeService.getVideoDetails(allVideoIds);
+        return this.youtubeService.getAllVideoDetails(allVideoIds);
       })
     ).subscribe((res: YoutubeVideoDetails[]) => {
       if (res) {
-        this.youtubeVideoDetails = res;
+        this.allYouTubeVideoDetails = res;
         this.loading$.next(false);
       }
     });
@@ -124,7 +124,7 @@ export class DashboardComponent implements OnInit {
   openDialog(): void {
     const dialogRef = this.dialog.open(VideoInitFormComponent, {height: '200px'});
     dialogRef.afterClosed().subscribe((result: string) => {
-      if (this.youtubeVideoDetails.map(details=> details.id).includes(result)) {
+      if (this.allYouTubeVideoDetails.map(details=> details.id).includes(result)) {
         this.snackbar.open('Video already exists in Collection.', 'DISMISS', {duration:5000});
         return;
       }
@@ -135,11 +135,22 @@ export class DashboardComponent implements OnInit {
   }
 
   getVideoDetailsById(videoId: string): YoutubeVideoDetails {
-    return this.youtubeVideoDetails.find(videoDetail => videoDetail.id === videoId);
+    return this.allYouTubeVideoDetails.find(videoDetail => videoDetail.id === videoId);
   }
 
-  addVideoToUserCollection(videoDetails: string): void {
-    this.dashboardService.addVideo(videoDetails, this.userId$.value);
+  addVideoToUserCollection(videoId: string): void {
+    this.youtubeService.getVideoDetails(videoId).subscribe({
+      next: res => {
+        if(res){
+          this.youTubeVideoDetails = res;
+          this.dashboardService.addVideo(this.youTubeVideoDetails, this.userId$.value);
+        }
+      },
+      error: err =>{
+        console.log("Error getting video details: Error: " + err.message())
+      }
+    })
+
   }
 
   previewVideo(videoId: string): void {
@@ -147,8 +158,7 @@ export class DashboardComponent implements OnInit {
   }
 
   iframeURL(): SafeResourceUrl {
-    const url = this.sanitizer.bypassSecurityTrustResourceUrl('https://www.youtube.com/embed/' + this.videoSelectedId + '?autoplay=1');
-    return url;
+    return this.sanitizer.bypassSecurityTrustResourceUrl('https://www.youtube.com/embed/' + this.videoSelectedId + '?autoplay=1');
   }
 
   changeToListView(): void {

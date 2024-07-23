@@ -78,7 +78,7 @@ export class DetailsViewComponent implements OnInit {
   }
 
   getVideoDetails(): void {
-    this.youtubeService.getVideoDetails(this.videoId).pipe(
+    this.youtubeService.getAllVideoDetails(this.videoId).pipe(
       tap(() => {
         this.loading$.next(true);
       })).subscribe((res) => {

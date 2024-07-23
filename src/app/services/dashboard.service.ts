@@ -6,7 +6,10 @@ import { AuthService } from './auth.service';
 import { YoutubeVideoDetails } from '../models/youtube/youtube-response.model';
 import {SharedVideo} from 'src/app/models/firestore-schema/shared-video.model';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
+
 export class DashboardService {
   userVideos$: Observable<Video[]>;
   sharedVideos$: Observable<SharedVideo[]>;
@@ -26,11 +29,11 @@ export class DashboardService {
 
   constructor(private firestore: AngularFirestore, private auth: AuthService) {}
 
-  getVideos(userId): Observable<Video[]> {
+  getVideos(userId: any): Observable<Video[]> {
     return this.userVideos$ = this.firestore.collection<Video>(`users/${userId}/videos/`).valueChanges();
   }
 
-  getSharedVideos(email): Observable<SharedVideo[]> {
+  getSharedVideos(email: any): Observable<SharedVideo[]> {
     return this.firestore.collection<SharedVideo>('sharedVideos').snapshotChanges().pipe(
       map(actions => {
         return actions.map(a => {
@@ -42,7 +45,7 @@ export class DashboardService {
           return video.usersRights.some(right => right.userEmail === email);
         });
       }),
-      map(videos => [...new Map(videos.map(video => [video.videoId, video])).values()]) 
+      map(videos => [...new Map(videos.map(video => [video.videoId, video])).values()])
     );
   }
 
@@ -58,9 +61,9 @@ export class DashboardService {
               // Assuming you need to fetch additional data related to the video
               return this.firestore.collection('videos').doc(videoId).snapshotChanges().pipe(
                 map(() => {
-                  return { 
-                    requestId, 
-                    ...request.payload.doc.data(), 
+                  return {
+                    requestId,
+                    ...request.payload.doc.data(),
                   };
                 })
               );
@@ -74,10 +77,14 @@ export class DashboardService {
     );
   }
 
-  addVideo(videoId: string, userUid: string): void {
-    const userRef: AngularFirestoreDocument<GmailUser> = this.firestore.doc(`users/${userUid}`);
+  addVideo(video: any, userUid: string): void {
+    const userRef: AngularFirestoreDocument<Video> = this.firestore.doc(`users/${userUid}/videos/${video.items[0].id}`);
+    const videoData = {
+      videoId: video.items[0].id,
+      title: video.items[0].snippet.title
+    }
 
-    userRef.collection('videos').doc(videoId).set({videoId});
+    userRef.set(videoData);
     this.userVideos$ = this.firestore.collection<Video>(`users/${userUid}/videos/`).valueChanges();
   }
 

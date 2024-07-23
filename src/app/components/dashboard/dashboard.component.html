@@ -21,11 +21,12 @@
             </div>
             <ng-template #videos>
                 <div class="video" *ngFor="let video of userVideos$ | async | filter: searchInput.value">
-                    <video-card *ngIf="youtubeVideoDetails" [videoId]="video.videoId"
+                  <video-card *ngIf="allYouTubeVideoDetails" [videoId]="video.videoId"
                     (editVideoEmitter)="navigateToDetailsView($event)"
                     (deleteVideoEmitter)="deleteVideoPrompt($event)"
                     (videoIdEmitter)="previewVideo($event)"
-                    [videoDetails]="getVideoDetailsById(video.videoId)"></video-card>
+                    [videoDetails]="getVideoDetailsById(video.videoId)">
+                  </video-card>
                 </div>
             </ng-template>
         </div>
@@ -50,11 +51,11 @@
     </div>
     <div class="video-container">
         <div class="" *ngFor="let sharedVideo of userSharedVideos$ | async">
-            <app-shared-video-card *ngIf="youtubeVideoDetails" [videoId]="sharedVideo.videoId"
-                (editVideoEmitter)="navigateToSharedEdit($event)"
-                [sharedVideoDetails] = "sharedVideo"
-                (videoIdEmitter)="previewVideo($event)"
-                [videoDetails]="getVideoDetailsById(sharedVideo.videoId)">
+            <app-shared-video-card *ngIf="allYouTubeVideoDetails" [videoId]="sharedVideo.videoId"
+                                   (editVideoEmitter)="navigateToSharedEdit($event)"
+                                   [sharedVideoDetails] = "sharedVideo"
+                                   (videoIdEmitter)="previewVideo($event)"
+                                   [videoDetails]="getVideoDetailsById(sharedVideo.videoId)">
             </app-shared-video-card>
         </div>
     </div>
@@ -65,11 +66,11 @@
     </div>
     <div class="video-container">
             <div class="" *ngFor="let video of communityVideos$ | async">
-                <community-video-card *ngIf="youtubeVideoDetails" [videoId]="video.videoId"
-                    (editVideoEmitter)="navigateToCommunityEdit($event)"
-                    [communityRequestDetails] = "video"
-                    [videoDetails]="getVideoDetailsById(video.videoId)"
-                    [userEmail]="userEmail">
+                <community-video-card *ngIf="allYouTubeVideoDetails" [videoId]="video.videoId"
+                                      (editVideoEmitter)="navigateToCommunityEdit($event)"
+                                      [communityRequestDetails] = "video"
+                                      [videoDetails]="getVideoDetailsById(video.videoId)"
+                                      [userEmail]="userEmail">
                 </community-video-card>
             </div>
     </div>

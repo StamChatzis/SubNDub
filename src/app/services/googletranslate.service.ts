@@ -3,7 +3,10 @@ import { Injectable } from '@angular/core';
 import { GoogleTranslateRequestObject } from 'src/app/models/google/google-translate-request';
 import { GOOGLE_API_KEY } from 'src/environments/environment';
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+  }
+)
 export class GoogleTranslateService {
   constructor(private http: HttpClient) { }
 

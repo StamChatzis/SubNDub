@@ -6,18 +6,18 @@
         </button>
       </div>
       <div class="sub-details-wrapper">
-        <div class="sub-name-h2">
-          <h3>Subtitle: {{fileName}}</h3>
+        <div class="sub-name-wrapper">
+          <h2>{{fileName}}</h2>
         </div>
-        <div class="lang-h2">
-          <h3>Language: {{currentLanguage}}</h3>
+        <div class="lang-wrapper">
+          <h2>Language: {{(currentLanguage$ | async)}}</h2>
         </div>
       </div>
     </div>
     <div class="wrapper">
         <video-player [videoId]="videoId" [captionsPreview]="(youtube.getCurrentCaption() | async)"></video-player>
         <dialog-component
-          [isoCode]="currentLanguage"
+          [isoCode]="languageIsoCode"
           [videoId]="videoId"
           [subtitleName]="fileName"
           [videoDuration]="videoDuration | async"
@@ -28,6 +28,6 @@
           >
         </dialog-component>
     </div>
-<!-- <sub-timeline [videoDurationISO]="videoDuration"></sub-timeline> -->
+<!-- <sub-timeline [videoDurationISO]="videoDuration"></sub-timeline>-->
 </div>
 
