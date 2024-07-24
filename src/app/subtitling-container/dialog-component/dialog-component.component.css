@@ -20,3 +20,11 @@
 .button-wrapper > input {
     display: none;
 }
+
+.button-wrapper button{
+  transition: scale 0.14s ease
+}
+
+.button-wrapper button:hover{
+  scale: 118%;
+}

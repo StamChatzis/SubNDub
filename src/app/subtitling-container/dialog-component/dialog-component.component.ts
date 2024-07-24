@@ -39,6 +39,7 @@ export class DialogComponentComponent implements OnInit {
   public form: FormGroup;
   public persons: PersonAssign[];
   public focusedDialogBox: number;
+  protected isDirty: boolean = false;
   @Input() canOnlyView: boolean;
   @Input() initSubtitles: boolean = true;
   @Input() subtitleName: string;
@@ -96,9 +97,9 @@ export class DialogComponentComponent implements OnInit {
 
     // Subscribe to form status changes
     this.form.statusChanges.pipe().subscribe(() => {
-      const isDirty = this.form.dirty;
-      if (isDirty) {
-        this.formStatusChange.emit(isDirty);
+      this.isDirty = this.form.dirty;
+      if (this.isDirty) {
+        this.formStatusChange.emit(this.isDirty);
       }
     });
 
@@ -125,12 +126,17 @@ export class DialogComponentComponent implements OnInit {
     this.focusedDialogBox = dialogBoxItemId;
   }
 
+  setFormDirtyStatus(isDirty: boolean){
+    this.formStatusChange.emit(isDirty);
+  }
+
   getDialogControl(dialogBoxId: number): FormGroup {
     return this.form.get(dialogBoxId + '-dialogBox') as FormGroup
   }
 
   setIsFormDirty(isDirty: boolean){
     this.formStatusChange.emit(isDirty);
+    this.isDirty = isDirty
   }
 
   addDialogBox(value: ImportModel = null, fromClick: boolean): void {
@@ -150,11 +156,15 @@ export class DialogComponentComponent implements OnInit {
 
     if(fromClick){
       this.formStatusChange.emit(true);
+      this.isDirty = true;
     }
   }
 
   batchAddDialogBox(): void {
-    this.dialog.open(BatchDialogModalComponent).afterClosed().pipe(take(1)).subscribe((interval: number) => {
+    this.dialog.open(BatchDialogModalComponent)
+      .afterClosed()
+      .pipe(take(1))
+      .subscribe((interval: number) => {
       if (interval > 0) {
         const seconds = this.parseISOtoSeconds(this.videoDuration);
         const controlNames = Object.keys(this.form.controls);
@@ -340,6 +350,7 @@ export class DialogComponentComponent implements OnInit {
         }
       });
       this.formStatusChange.emit(true)
+      this.isDirty = true;
     }
   }
 
@@ -353,6 +364,7 @@ export class DialogComponentComponent implements OnInit {
       if (response) {
         this.form.get(targetLanguage.id + '-dialogBox').get('subtitles').setValue(response.data.translations[0].translatedText);
         this.formStatusChange.emit(true);
+        this.isDirty = true;
       }
     })
 
@@ -383,14 +395,19 @@ export class DialogComponentComponent implements OnInit {
   }
 
   openPersonCreationModal(): void {
-    this.dialog.open(PersonCreationDialogComponent, {'width': '500px', data: this.persons}).afterClosed()
+    this.dialog.open(PersonCreationDialogComponent, {'width': '600px', data: this.persons}).afterClosed()
     .subscribe((data: PersonAssign[]) => {
-      if (data) this.persons = data;
+      if (data) {
+        this.persons = data;
+        this.formStatusChange.emit(true);
+        this.isDirty = true
+      }
     });
   }
 
   uploadSubtitle(): void {
     this.subtitleUploadEmitter.emit(this.createSubtitleBlob());
+    this.isDirty = false
   }
 
   createSubtitleBlob(): Blob {
@@ -446,28 +463,35 @@ export class DialogComponentComponent implements OnInit {
     }
   }
 
-  generateSpeechInit(): void {
-    this.dialog.open(GenerateVoiceDialogComponent,{width:'500px'}).afterClosed().subscribe((res: boolean)=> {
-      if (res) {
-        let contentToSpeech: TextContentToSSML[] = [];
-        Object.keys(this.form.controls).forEach(control => {
-        const startTime = parseTimestamp(this.form.get(control).get('start_time').value)
-        const endTime = parseTimestamp(this.form.get(control).get('end_time').value)
-
-        const controlContent: TextContentToSSML = {
-          text: this.form.get(control).get('subtitles').value,
-          totalDuration: Math.floor((calculateSeconds(endTime) - calculateSeconds(startTime)) * 1000) + 'ms',
-          start_time: this.form.get(control).get('start_time').value,
-          end_time: this.form.get(control).get('end_time').value
-        };
-        contentToSpeech.push(controlContent);
-        });
-        this.ttsService.set_initContentSSML(contentToSpeech);
-        this.navigateTTS.emit();
-      }
-    });
+  checkIfChangesToGenerateSpeech(): void {
+    if(this.isDirty){
+      this.dialog.open(GenerateVoiceDialogComponent,{width:'500px'}).afterClosed().subscribe((res: boolean)=> {
+        if (res) {
+          this.generateSpeechInit()
+        }
+      });
+    }else{
+      this.generateSpeechInit()
+    }
   }
 
+  generateSpeechInit(){
+    let contentToSpeech: TextContentToSSML[] = [];
+    Object.keys(this.form.controls).forEach(control => {
+      const startTime = parseTimestamp(this.form.get(control).get('start_time').value)
+      const endTime = parseTimestamp(this.form.get(control).get('end_time').value)
+
+      const controlContent: TextContentToSSML = {
+        text: this.form.get(control).get('subtitles').value,
+        totalDuration: Math.floor((calculateSeconds(endTime) - calculateSeconds(startTime)) * 1000) + 'ms',
+        start_time: this.form.get(control).get('start_time').value,
+        end_time: this.form.get(control).get('end_time').value
+      };
+      contentToSpeech.push(controlContent);
+    });
+    this.ttsService.set_initContentSSML(contentToSpeech);
+    this.navigateTTS.emit();
+  }
 }
 
 export interface UploadSubtitle {

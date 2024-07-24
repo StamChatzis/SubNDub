@@ -1,13 +1,13 @@
-import { Component, Input, OnInit, inject } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { YoutubeService } from '../services/youtube.service';
-import {BehaviorSubject, map, Observable, take, tap} from 'rxjs';
+import { BehaviorSubject, map, Observable, take, tap } from 'rxjs';
 import { YoutubeVideoDetails } from '../models/youtube/youtube-response.model';
 import { StorageService } from '../services/storage.service';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { UnsavedChangesDialogComponent } from '../components/dialog-modal/unsaved-changes-dialog/unsaved-changes-dialog.component';
-import {Language, Languages, SupportedLanguages} from "../models/google/google-supported-languages";
+import { SupportedLanguages} from "../models/google/google-supported-languages";
 import { GoogleTranslateService } from "../services/googletranslate.service";
 
 @Component({

@@ -7,7 +7,7 @@
       </div>
       <div class="sub-details-wrapper">
         <div class="sub-name-wrapper">
-          <h2>{{fileName}}</h2>
+          <h2>Name: {{fileName}}</h2>
         </div>
         <div class="lang-wrapper">
           <h2>Language: {{(currentLanguage$ | async)}}</h2>
@@ -15,7 +15,11 @@
       </div>
     </div>
     <div class="wrapper">
-        <video-player [videoId]="videoId" [captionsPreview]="(youtube.getCurrentCaption() | async)"></video-player>
+        <video-player
+          [videoId]="videoId"
+          [captionsPreview]="(youtube.getCurrentCaption() | async)">
+        </video-player>
+
         <dialog-component
           [isoCode]="languageIsoCode"
           [videoId]="videoId"
@@ -24,8 +28,7 @@
           (subtitleUploadEmitter)="uploadToFirestorage($event)"
           (navigateTTS)="navigateTTS()"
           (formStatusChange)="setFormDirtyStatus($event)"
-          [canOnlyView]="canOnlyView"
-          >
+          [canOnlyView]="canOnlyView">
         </dialog-component>
     </div>
 <!-- <sub-timeline [videoDurationISO]="videoDuration"></sub-timeline>-->

@@ -21,7 +21,8 @@ export class DialogContentComponent implements OnChanges {
   @Output() deleteDialogBoxEvent: EventEmitter<number> = new EventEmitter();
   @Output() dialogEmitter: EventEmitter<TimeEmitterObject> = new EventEmitter();
   @Output() translateSubtitle: EventEmitter<{lang: string, id: number}> = new EventEmitter();
-  @Output() chatGPTEventEmmiter: EventEmitter<ChatGPTACtion> = new EventEmitter();
+  @Output() chatGPTEventEmitter: EventEmitter<ChatGPTACtion> = new EventEmitter();
+  @Output() isDirty: EventEmitter<boolean> = new EventEmitter()
 
   @ViewChild("cardElement") cardElement: ElementRef;
   @ViewChild('translateMenu') translateMenu;
@@ -56,6 +57,7 @@ export class DialogContentComponent implements OnChanges {
 
   deleteDialogBox(dialogId: number): void {
     this.deleteDialogBoxEvent.emit(dialogId);
+    this.isDirty.emit(true)
   }
 
   emitDialogId(originControl: string): void {
@@ -68,6 +70,7 @@ export class DialogContentComponent implements OnChanges {
 
   assignPerson(person: PersonAssign): void {
     this.assignedPerson = person;
+    this.isDirty.emit(true)
   }
 
   translateSub(lang: string): void {
@@ -80,12 +83,11 @@ export class DialogContentComponent implements OnChanges {
       text: this.dialogGroup.get('subtitles').value,
       action: action
     }
-    if (gptAction.text) this.chatGPTEventEmmiter.emit(gptAction);
+    if (gptAction.text) this.chatGPTEventEmitter.emit(gptAction);
   }
 
   seekToPlayer(value: string): void {
     this.youtube.seekToPoint(calculateSeconds(parseTimestamp(value)));
-    
   }
 
   wordCounter(): void {

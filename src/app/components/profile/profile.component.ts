@@ -48,7 +48,7 @@ export class ProfileComponent implements OnInit{
               private snackbar: MatSnackBar,
               public dialog: MatDialog) {
     this.userInfoForm = new FormGroup({
-      displayName: new FormControl( '', [Validators.required, Validators.pattern(/^[A-Za-zΑ-Ωα-ωΆ-Ώά-ώ\s]*$/)]),
+      displayName: new FormControl( '', [Validators.required, Validators.pattern(/^[A-Za-zΑ-Ωα-ωΆ-Ώά-ώ0-9\s]*$/)]),
       email: new FormControl( {value: '', disabled: true}, [Validators.required, Validators.email]),
       ethnicity: new FormControl(''),
       bio: new FormControl('')

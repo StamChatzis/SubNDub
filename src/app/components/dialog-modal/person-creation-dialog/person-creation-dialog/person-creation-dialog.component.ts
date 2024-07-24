@@ -2,6 +2,7 @@ import { Component, ElementRef, Inject, ViewChild } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { PersonAssign } from 'src/app/models/general/person-assign.model';
 import { ColorPickerModule } from 'ngx-color-picker';
+import {FormControl, FormGroup, Validators} from "@angular/forms";
 
 @Component({
   selector: 'app-person-creation-dialog',
@@ -9,27 +10,36 @@ import { ColorPickerModule } from 'ngx-color-picker';
   styleUrls: ['./person-creation-dialog.component.css'],
 })
 export class PersonCreationDialogComponent {
-  @ViewChild('personName') personName: ElementRef;
+  //@ViewChild('personName') personName: ElementRef;
+  private readonly defaultColor = '#2889e9'; //default color
   persons: PersonAssign[];
-  private readonly defaultcolor = '#2889e9'; //default color
-  color: string = this.defaultcolor; 
+  color: string = this.defaultColor;
+  personForm: FormGroup;
+
   constructor(@Inject(MAT_DIALOG_DATA) public data: PersonAssign[]) {
-    if (this.data) this.persons = this.data;
-    else this.persons = [];
+    if (this.data) {
+      this.persons = this.data;
+    } else {
+      this.persons = [];
+    }
+
+    this.personForm = new FormGroup({
+      name: new FormControl('', [Validators.required, Validators.pattern(/^[A-Za-zΑ-Ωα-ωΆ-Ώά-ώ0-9\s]*$/)])
+    })
    }
 
   addPerson(): void {
-    if (this.personName.nativeElement.value) {
+    if (this.personForm.value.name) {
       const Person: PersonAssign = {
-        name: this.personName.nativeElement.value,
+        name: this.personForm.value.name,
         color : this.color
       }
       this.persons.push(Person);
       this.data = this.persons
 
       //reset fields
-      this.personName.nativeElement.value = '';
-      this.color = this.defaultcolor;
+      this.personForm.controls['name'].setValue('');
+      this.color = this.defaultColor;
     }
   }
 

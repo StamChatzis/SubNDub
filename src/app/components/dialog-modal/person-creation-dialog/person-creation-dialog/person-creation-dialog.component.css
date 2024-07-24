@@ -1,9 +1,13 @@
 .input-container {
-    padding-left:24px;
-    padding-right:5px;
-    gap:25px;
-    display:flex;
-    align-items: center;
+  padding-left:24px;
+  padding-right:5px;
+  gap:25px;
+  display:flex;
+  align-items: center;
+}
+
+.input-container mat-form-field {
+  margin-bottom: 8px;
 }
 
 ::ng-deep .mat-mdc-form-field-subscript-wrapper {
@@ -16,4 +20,20 @@
 
 .mdc-dialog__actions {
     padding-top:16px;
+}
+
+.add-person-btn{
+  border-radius: 25px;
+}
+
+.add-icon{
+  margin-bottom: 2px;
+}
+
+.delete-person-btn:hover{
+  color: red;
+}
+
+.select-color-picker:hover{
+  cursor: pointer;
 }

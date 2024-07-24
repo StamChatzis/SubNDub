@@ -3,29 +3,35 @@
     <mat-card-header>
       <mat-card-title #cardElement>Subtitle {{index + 1}}</mat-card-title>
       <mat-icon class="estimation-icon" [matTooltip]="estimationTooltip">{{estimationIcon}}</mat-icon>
+
       <button [disabled]="canOnlyView" mat-icon-button matTooltip="ChatGPT Helper"
+        class="gpt-sub-btn"
         [matMenuTriggerFor]="openAIMenu">
-        <img width="48" height="48" src="https://img.icons8.com/material-outlined/48/chatgpt.png" alt="chatgpt"/>
+        <img width="48" height="48" src="assets/images/chat_gpt_logo.svg" alt="chatgpt"/>
       </button>
-        <mat-menu #openAIMenu="matMenu">
+      <mat-menu #openAIMenu="matMenu">
         <p mat-menu-item *ngFor="let item of openAIMenuMap | keyvalue"
           (click)="chatGPTevent(item.key)">
           {{item.value}}
         </p>
       </mat-menu>
+
       <button [disabled]="canOnlyView" mat-icon-button matTooltip="Translate this subtitle"
+        class="translate-sub-btn"
         [matMenuTriggerFor]="translateMenu">
         <mat-icon>g_translate</mat-icon>
       </button>
       <mat-menu #translateMenu="matMenu">
-            <p mat-menu-item *ngFor="let language of (supportedLanguages)"
-            (click)="translateSub(language.language)">
-                {{language.name}}
-            </p>
-    </mat-menu>
+        <p mat-menu-item *ngFor="let language of (supportedLanguages)"
+        (click)="translateSub(language.language)">
+          {{language.name}}
+        </p>
+      </mat-menu>
+
       <button [disabled]="canOnlyView" mat-icon-button matTooltip="Assign Person to this subtitle"
+        class="assign-person-btn"
         [matMenuTriggerFor]="assignPersonMenu">
-        <mat-icon>person</mat-icon>
+        <mat-icon>person_add</mat-icon>
       </button>
       <mat-menu #assignPersonMenu="matMenu">
         <ng-container *ngIf="persons; else noPersons">
@@ -42,20 +48,24 @@
         <h3 class="mat-typography">{{assignedPerson.name}}</h3>
         <span class="person-item" [style.background]="assignedPerson.color"></span>
       </ng-container>
+
       <button [disabled]="canOnlyView" (click)="deleteDialogBox(dialogId)" class="delete-action" mat-icon-button matTooltip="Delete Subtitle">
         <mat-icon>delete</mat-icon>
       </button>
+
     </mat-card-header>
     <mat-card-content>
         <mat-form-field subscriptSizing="dynamic">
           <textarea class="sub-text-area" [readonly]="canOnlyView" matInput (input)="wordCounter(); characterCounter(); subtitlingTimingEstimation();"
             (click)="seekToPlayer(dialogGroup.get('start_time').value)"  [formControl]="getDialogControl('subtitles')" type="text"></textarea>
         </mat-form-field>
+
         <div fxLayout="column" fxLayoutGap="10px" fxFlex="30">
           <mat-form-field subscriptSizing="dynamic" (click)="seekToPlayer(dialogGroup.get('start_time').value)">
             <mat-label>From:</mat-label>
             <input [readonly]="canOnlyView" matInput (input)="emitDialogId('start_time'); subtitlingTimingEstimation();" [formControl]="getDialogControl('start_time')" [maxlength]="9" matTooltip="mm:ss:ms" type="text">
           </mat-form-field>
+
           <mat-form-field subscriptSizing="dynamic" (click)="seekToPlayer(dialogGroup.get('end_time').value)">
             <mat-label>To:</mat-label>
             <input [readonly]="canOnlyView" matInput (input)="emitDialogId('end_time'); subtitlingTimingEstimation();" [formControl]="getDialogControl('end_time')" [maxlength]="9" matTooltip="mm:ss:ms" type="text">
@@ -63,7 +73,9 @@
           </mat-form-field>
         </div>
     </mat-card-content>
+
     <mat-card-subtitle>
       <span>{{wordCount}} words, {{characterCount}} characters, {{timingEstimation}} ms estimated reading time.</span>
     </mat-card-subtitle>
+
 </mat-card>

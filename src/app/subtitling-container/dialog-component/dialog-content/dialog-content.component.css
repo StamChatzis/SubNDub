@@ -22,6 +22,10 @@
   margin-left: auto;
 }
 
+.delete-action:hover{
+  color:red;
+}
+
 .mat-mdc-card {
   margin-bottom:15px;
 }
@@ -114,5 +118,17 @@
 }
 
 .focused-box {
-  border: 2px solid #4d68f147;;
+  border: 2px solid #4d68f147;
+}
+
+.gpt-sub-btn:hover{
+  filter: invert(17%) sepia(52%) saturate(4775%) hue-rotate(99deg) brightness(96%) contrast(103%);
+}
+
+.translate-sub-btn:hover{
+  color: rgb(0, 22, 161);
+}
+
+.assign-person-btn:hover{
+  color: rgb(147, 0, 134);
 }
