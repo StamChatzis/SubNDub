@@ -56,7 +56,6 @@ export class PlaceABidComponent {
       querySnapshot.forEach((doc) => {
         this.requestorEmail = doc.get('email');
   
-        // Add message after getting the requestorEmail
         const data = { 
           sender: this.data.userEmail,
           recipient: this.requestorEmail,

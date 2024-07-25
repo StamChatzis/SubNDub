@@ -37,8 +37,11 @@ export class DetailsViewServiceService {
     );
   }
 
-  requestCommunityHelp(user: GmailUser, videoId: string, language:string, iso: string, filename: string, format: string, deadline: string): void {
+  requestCommunityHelp(user: GmailUser, videoId: string, language:string, iso: string, filename: string, format: string, deadline: string, subtitleId: string): void {
     const helpRequestRef: AngularFirestoreCollection = this.firestore.collection(`helpRequests`);
+
+    if (subtitleId == undefined)
+        subtitleId ="";
 
     const data = {
       requestedBy: user.displayName,
@@ -52,17 +55,38 @@ export class DetailsViewServiceService {
       format: format,
       deadline: deadline,
       offerList: [],
-      currentBid: 0
+      currentBid: 0,
+      subtitleId: subtitleId
     }
  
-    this.firestore.collection(`helpRequests`, ref => ref.where('filename', '==', filename).where('status', '==','open').where('language', '==', language).where('format', '==', format)
-      .where('requestedByID', '==', user.uid))
+    let helpRef;
+    if (subtitleId == ""){
+      helpRef = this.firestore.collection(`helpRequests`, ref => ref.where('filename', '==', filename).where('language', '==', language).where('format', '==', format)
+      .where('requestedByID', '==', user.uid));
+    }else {
+      helpRef = this.firestore.collection(`helpRequests`, ref => ref.where('filename', '==', filename).where('language', '==', language).where('format', '==', format)
+      .where('requestedByID', '==', user.uid).where('subtitleId', "==", subtitleId));
+    }
+    helpRef
     .get()
-    .subscribe(subRequest => {
+    .subscribe((subRequest) => {
       if (!subRequest.empty) {
-        console.log('Filename exists in at least one document in the collection.');
-        // Perform actions if filename exists
-        this.notifier.showNotification("Subtitle has been already requested for a bid.","DIMISS");
+        helpRef.get().toPromise().then(helpdoc => {
+          let status = helpdoc.docs[0].data().status;
+          console.log("status: "+status);
+          if(status == "closed"){
+            const helprequestRef = helpdoc.docs[0].ref;
+            helprequestRef.update({
+              status: "open",
+              deadline: deadline,
+              currentBid: 0,
+              offerList: []
+            }).then(() => {this.notifier.showNotification("Subtitle has been successfully requested for a bid.","OK");});
+            
+          }
+          // Perform actions if filename exists
+          else  this.notifier.showNotification("Subtitle has been already requested for a bid.","DIMISS");
+        });
         return;
       } else {
         console.log('Filename does not exist in any document in the collection.');
@@ -194,7 +218,6 @@ export class DetailsViewServiceService {
 
   transferOwnership(from_email: string, to_email: string, filename: string, videoId:string, ISOcode:string, language:string, format: string, videoTitle: string, subtitleId: any): void {
     //this.emailService.sendEmail(from_email, to_email);
-
     const sharedRef = this.firestore.collection(`sharedVideos`, ref => ref.where('videoId', '==', videoId).where('iso', '==', ISOcode).where('language', '==', language)
       .where('fileName', '==', filename).where("id", "==", subtitleId));
 
@@ -279,7 +302,7 @@ export class DetailsViewServiceService {
   addUserRightOnSub(videoId: string, ISOcode: string, language: string, userUid: string, name: string, format: string, email: string, right: string, subtitleId: any): void {
     const sharedVideoRef: AngularFirestoreCollection = this.firestore.collection('sharedVideos');
     const id = this.firestore.createId();
-
+  
     const data = {
       id: id,
       lastUpdated: Date.now(),
@@ -299,7 +322,8 @@ export class DetailsViewServiceService {
     subtitleRef.get().toPromise().then((docSnapshot) => {
 
       const currentRights = docSnapshot.exists ? docSnapshot.data().usersRights || [] : [];
-      const existingRight = currentRights.find((right) => right.email === email);
+      const existingRight = currentRights.find((right) => right.userEmail === email);
+      const substitleSharedId = docSnapshot.data().subtitleSharedId;
 
       if (!existingRight) {
         currentRights.push({
@@ -311,13 +335,19 @@ export class DetailsViewServiceService {
           data.usersRights = currentRights;
           var sharedQuery;
 
-            if(subtitleId == undefined)
-              subtitleId = "";
+            if(subtitleId == undefined){
+              if(substitleSharedId != undefined){
+                subtitleId = substitleSharedId; 
+              } else {
+                subtitleId = "";
+              }
+            }
+              
             sharedQuery = this.firestore.collection(`sharedVideos`, ref => ref.where('videoId', '==', videoId).where('iso', '==', ISOcode).where('language', '==', language)
               .where('fileName', '==', name).where("id","==", subtitleId));
           sharedQuery.get()
             .subscribe((querySnapshot) => {
-
+              
               if (!querySnapshot.empty) {
 
                 const sharedVideoRef = querySnapshot.docs[0].ref;

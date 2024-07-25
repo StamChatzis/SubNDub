@@ -11,6 +11,7 @@ export interface CommunityHelpRequest {
     status: RequestStatus
     timestamp: number;
     videoId: string;
+    subtitleId?: string;
 }
 
 export enum RequestStatus {
