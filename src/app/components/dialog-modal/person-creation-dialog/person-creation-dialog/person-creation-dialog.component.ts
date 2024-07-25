@@ -1,6 +1,6 @@
 import { Component, ElementRef, Inject, ViewChild } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { PersonAssign } from 'src/app/models/general/person-assign.model';
+import { CharacterAssign } from 'src/app/models/general/person-assign.model';
 import { ColorPickerModule } from 'ngx-color-picker';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 
@@ -10,17 +10,19 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
   styleUrls: ['./person-creation-dialog.component.css'],
 })
 export class PersonCreationDialogComponent {
-  //@ViewChild('personName') personName: ElementRef;
-  private readonly defaultColor = '#2889e9'; //default color
-  persons: PersonAssign[];
+  private readonly defaultColor = '#2889e9';
+  characters: CharacterAssign[];
+  private readonly backUpPersons: CharacterAssign[];
   color: string = this.defaultColor;
   personForm: FormGroup;
+  isDirty: boolean = false;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: PersonAssign[]) {
-    if (this.data) {
-      this.persons = this.data;
+  constructor(@Inject(MAT_DIALOG_DATA) private data: CharacterAssign[]) {
+    if(this.data) {
+      this.characters = [...this.data];
+      this.backUpPersons = [...this.data];
     } else {
-      this.persons = [];
+      this.characters = [];
     }
 
     this.personForm = new FormGroup({
@@ -30,21 +32,35 @@ export class PersonCreationDialogComponent {
 
   addPerson(): void {
     if (this.personForm.value.name) {
-      const Person: PersonAssign = {
+      const Person: CharacterAssign = {
         name: this.personForm.value.name,
         color : this.color
       }
-      this.persons.push(Person);
-      this.data = this.persons
+
+      this.characters.push(Person);
 
       //reset fields
       this.personForm.controls['name'].setValue('');
       this.color = this.defaultColor;
+      this.personForm.reset()
+      this.isDirty = true
+    }
+  }
+
+  getNameError(){
+    if(this.personForm.get('name')?.hasError('required')) {
+      return `This field is required`;
+    }else if(this.personForm.get('name')?.hasError('pattern')){
+      return `Field's format is not supported`
     }
   }
 
   deletePerson(index: number): void {
-    this.persons.splice(index,1);
-    this.data = this.persons;
+    this.characters.splice(index,1);
+    this.isDirty = true
+  }
+
+  resetCharacters(){
+    this.characters = [...this.backUpPersons]
   }
 }

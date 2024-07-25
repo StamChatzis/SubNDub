@@ -8,11 +8,8 @@
 
     <mat-form-field>
       <mat-label>Enter your character's name</mat-label>
-      <input formControlName="name"  matInput type="text">
-<!--      #personName-->
-      <mat-error *ngIf="personForm.get('name')?.hasError('required') || personForm.get('name')?.hasError('pattern')">
-        Please fill out name correctly
-      </mat-error>
+      <input matInput formControlName="name" type="text">
+      <mat-error *ngIf="personForm.get('name')?.invalid">{{getNameError()}}</mat-error>
     </mat-form-field>
 
     <label>Color:</label>
@@ -21,7 +18,7 @@
              [cpPresetColors]="['#2889e9', '#e920e9','#b3eda0','#fff500', 'rgb(236,64,64)']" class="select-color-picker"/>
     </div>
 
-    <button class="add-person-btn" (click)="addPerson()" mat-raised-button color="primary" matTooltip="Click to add new character">
+    <button class="add-person-btn" [disabled]="personForm.get('name')?.invalid" (click)="addPerson()" mat-raised-button color="primary" matTooltip="Click to add new character">
       <mat-icon class="add-icon">add</mat-icon>
       <span>Add</span>
     </button>
@@ -29,12 +26,12 @@
 
 <mat-dialog-content class="mat-typography">
     <h3>Your characters/voice actors:</h3>
-    <ng-container *ngIf="persons.length === 0">
+    <ng-container *ngIf="characters.length === 0">
         <h5><i>None created yet.</i></h5>
     </ng-container>
 </mat-dialog-content>
 
-<div class="input-container created" *ngFor="let person of persons; let i = index">
+<div class="input-container created" *ngFor="let person of characters; let i = index">
   <mat-form-field>
       <input matInput [(ngModel)]="person.name">
   </mat-form-field>
@@ -50,6 +47,6 @@
 </div>
 
 <mat-dialog-actions align="end">
-  <button mat-raised-button color="warn" [mat-dialog-close]="null">Cancel</button>
-  <button mat-raised-button color="primary" [disabled]="!data" [mat-dialog-close]="data">Save</button>
+  <button mat-raised-button color="warn" (click)="resetCharacters()" [mat-dialog-close]=null>Cancel</button>
+  <button mat-raised-button color="primary" [disabled]="!isDirty" [mat-dialog-close]="characters">Save</button>
 </mat-dialog-actions>

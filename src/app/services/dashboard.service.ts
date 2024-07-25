@@ -4,7 +4,7 @@ import { Observable, combineLatest, map, of, switchMap, take } from 'rxjs';
 import { GmailUser, Video } from '../models/firestore-schema/user.model';
 import { AuthService } from './auth.service';
 import { YoutubeVideoDetails } from '../models/youtube/youtube-response.model';
-import {SharedVideo} from 'src/app/models/firestore-schema/shared-video.model';
+import { SharedVideo } from 'src/app/models/firestore-schema/shared-video.model';
 
 @Injectable({
   providedIn: 'root'

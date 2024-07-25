@@ -1,6 +1,6 @@
 import { Component, ElementRef, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { PersonAssign } from 'src/app/models/general/person-assign.model';
+import { CharacterAssign } from 'src/app/models/general/person-assign.model';
 import { Language} from 'src/app/models/google/google-supported-languages';
 import { YoutubeService } from 'src/app/services/youtube.service';
 import { calculateSeconds, parseTimestamp } from 'src/app/shared/functions/shared-functions';
@@ -14,7 +14,7 @@ export class DialogContentComponent implements OnChanges {
   @Input() dialogGroup: FormGroup;
   @Input() index: number;
   @Input() dialogId: number;
-  @Input() persons: PersonAssign[];
+  @Input() persons: CharacterAssign[];
   @Input() supportedLanguages: Language[];
   @Input() hasFocus: boolean;
   @Input() canOnlyView: boolean;
@@ -29,7 +29,7 @@ export class DialogContentComponent implements OnChanges {
   @ViewChild('assingPersonMenu') assignPersonMenu;
   @ViewChild('openAIMenu') openAIMenu;
 
-  assignedPerson: PersonAssign;
+  assignedPerson: CharacterAssign;
   wordCount: number = 0;
   characterCount: number = 0;
   timingEstimation: number = 0;
@@ -68,7 +68,7 @@ export class DialogContentComponent implements OnChanges {
     this.dialogEmitter.emit(EmitObject);
   }
 
-  assignPerson(person: PersonAssign): void {
+  assignPerson(person: CharacterAssign): void {
     this.assignedPerson = person;
     this.isDirty.emit(true)
   }

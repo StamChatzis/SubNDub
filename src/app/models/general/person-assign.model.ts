@@ -1,4 +1,4 @@
-export interface PersonAssign {
+export interface CharacterAssign {
     name: string;
     color: string;
 }
