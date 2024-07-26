@@ -3,6 +3,7 @@ import { Message} from 'src/app/models/firestore-schema/message.model';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from '@angular/fire/compat/firestore';
 import { DetailsViewServiceService, SubtitleFormat } from './details-view-service.service';
 import { Observable, take } from 'rxjs';
+import { NotifierService } from './notifier.service';
 
 
 @Injectable({
@@ -10,7 +11,7 @@ import { Observable, take } from 'rxjs';
 })
 export class MessagesService {
 
-  constructor(private firestore: AngularFirestore, private detailsService: DetailsViewServiceService) { }
+  constructor(private firestore: AngularFirestore,private notifier: NotifierService, private detailsService: DetailsViewServiceService) { }
 
   getUserMessages(userid: string): AngularFirestoreCollection {
     return this.firestore.collection('users').doc(userid).collection('messages');
@@ -157,10 +158,11 @@ export class MessagesService {
     if (message.subject.startsWith('Offer')) message.subtitleId = '';
     
     const offerMessageRef: AngularFirestoreCollection = this.firestore.collection('users').doc(userid).collection('messages', ref => ref.where('subtitle_name', '==', message.subtitle_name)
-    .where('iso', '==', message.iso).where('language', '==', message.language).where('videoId', '==', message.videoId).where('status', '==', "unread"));
+    .where('iso', '==', message.iso).where('language', '==', message.language).where('videoId', '==', message.videoId).where('status', '==', "unread").where("id","==",message.id));
 
     const messageRef: AngularFirestoreCollection = this.firestore.collection('users').doc(userid).collection('messages', ref => ref.where('subtitle_name', '==', message.subtitle_name)
-      .where('iso', '==', message.iso).where('language', '==', message.language).where('videoId', '==', message.videoId).where("subtitleId","==", message.subtitleId).where('status', '==', "unread"));
+      .where('iso', '==', message.iso).where('language', '==', message.language).where('videoId', '==', message.videoId).where("subtitleId","==", message.subtitleId)
+      .where('status', '==', "unread").where("id","==",message.id));
     
       try {
         let mesRef;
@@ -171,6 +173,202 @@ export class MessagesService {
       if (snapshot.size > 0) {
         await snapshot.docs[0].ref.delete();
       }
+    } catch (error) {
+      console.error("Error deleting message from user messages:", error);
+      throw error;
+    }
+  }
+
+  async checkRequestStatus(message: Message, userId: string): Promise<string> {
+    let subtitleId;
+    if (message.subtitleId == undefined)
+        subtitleId = "";
+    else subtitleId = message.subtitleId;  
+    
+    if (subtitleId != ""){
+      const querySnapshot= await this.firestore.collection('helpRequests', ref => {
+        return ref.where('videoId', '==', message.videoId)
+          .where('filename', '==', message.subtitle_name)
+          .where('language', '==', message.language)
+          .where('requestedByID', '==', userId)
+          .where('subtitleId', "==", subtitleId);
+      }).get().toPromise();
+    
+      let status;
+      querySnapshot.forEach((doc) => {
+        status = doc.get('status');
+      });
+      return status;
+    }else {
+      const querySnapshot= await this.firestore.collection('helpRequests', ref => {
+        return ref.where('videoId', '==', message.videoId)
+          .where('filename', '==', message.subtitle_name)
+          .where('language', '==', message.language)
+          .where('requestedByID', '==', userId);
+      }).get().toPromise();
+    
+      let status;
+      querySnapshot.forEach((doc) => {
+        status = doc.get('status');
+      });
+
+      return status;
+    }
+        
+  }
+
+  async closeRequestStatus(message: Message, userId: string){
+    this.firestore.collection('helpRequests', ref => {
+      return ref.where('videoId', '==', message.videoId)
+            .where('filename', '==', message.subtitle_name) 
+            .where('language', '==', message.language)
+            .where('requestedByID', '==', userId); 
+    })
+  .get()
+  .subscribe((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        if (!querySnapshot.empty) {
+            
+            const statusRef = querySnapshot.docs[0].ref;
+            statusRef.update({
+              status: 'closed'
+            })
+          }
+      })
+    });
+
+    
+
+  }
+
+  async setSubtitleIdToRequest(message: Message, userId: string){
+    let subId = "";
+
+    if(message.subtitleId == undefined || message.subtitleId == ""){
+      const subtitleRef = this.firestore.collection('users').doc(userId).collection('videos').doc(message.videoId)
+       .collection('subtitleLanguages').doc(message.iso).collection('subtitles').doc(message.subtitle_name);
+        
+      const docSnapshot = await subtitleRef.get().toPromise();
+      subId = docSnapshot.exists? docSnapshot.data().subtitleSharedId || "" : "";
+  
+      const querySnapshot = await this.firestore.collection('helpRequests', ref => {
+        return ref.where('videoId', '==', message.videoId)
+         .where('filename', '==', message.subtitle_name) 
+         .where('language', '==', message.language)
+         .where('requestedByID', '==', userId)
+         .where('status',"==", "open"); 
+      })
+     .get()
+     .toPromise();
+  
+      querySnapshot.forEach((doc) => {
+        doc.ref.update({ subtitleId: subId });
+      });
+    }
+  }
+
+  async sendInfoMessage(message: Message, userId: string){
+    this.firestore.collection('users', ref => {
+      return ref.where('email', '==', message.sender);
+    })
+   .get()
+   .subscribe((querySnapshot) => {
+      querySnapshot.forEach(() => {
+        const data = { 
+          sender: message.recipient,
+          recipient: message.sender,
+          subject: "Subtitle: "+message.subtitle_name+"."+message.format,
+          createdAt: Date.now(),
+          status: "unread",
+          subtitle_name: message.subtitle_name,
+          body:message.recipient+" accepted your bid for this subtitle.",
+          videoId: message.videoId,
+          iso: message.iso,
+          language: message.language,
+          format: message.format,
+          videoTitle: message.videoTitle,
+          subtitleId: message.subtitleId
+        }
+
+        let senderId;
+        this.detailsService.getUserIdByEmail(message.sender).subscribe((id) => {
+          senderId=id
+        
+          const messageRef: AngularFirestoreCollection = this.firestore.collection('users').doc(senderId).collection('messages');
+    
+          messageRef.add(data).then((docRef) => {
+            docRef.update({ id: docRef.id });
+          
+          });
+        });
+    });
+  });
+}
+    
+async sendInfoMessageToList(message: Message, userId: string){
+          this.firestore.collection('helpRequests', ref => {
+              return ref.where('videoId', '==', message.videoId)
+                    .where('filename', '==', message.subtitle_name) 
+                    .where('language', '==', message.language)
+                    .where("iso","==",message.iso)
+                    .where('requestedByID', '==', userId)
+                    .where('status',"==", "open"); 
+            })
+          .get().subscribe((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              const offerList = doc.get('offerList');
+              offerList.forEach((offer) => {
+                const userEmail = offer.userEmail;
+                if(userEmail != message.sender){
+                  const dataList = { 
+                    sender: message.recipient,
+                    recipient: userEmail,
+                    subject: "Subtitle: "+message.subtitle_name+"."+message.format,
+                    createdAt: Date.now(),
+                    status: "unread",
+                    subtitle_name: message.subtitle_name,
+                    body:"Bid request for this subtitle has been closed.",
+                    videoId: message.videoId,
+                    iso: message.iso,
+                    language: message.language,
+                    format: message.format,
+                    videoTitle: message.videoTitle,
+                    subtitleId: message.subtitleId
+                  }
+                  
+                  let userEmailId;
+                  this.detailsService.getUserIdByEmail(userEmail).subscribe((id) => {
+                    userEmailId=id
+                    const messageRefList: AngularFirestoreCollection = this.firestore.collection('users').doc(userEmailId).collection('messages');
+      
+                    messageRefList.add(dataList).then((docRef) => {
+                      docRef.update({ id: docRef.id }).catch((err) => this.notifier.showNotification('No info message has been sent', 'DISMISS'));
+                    });
+                  });
+
+                  
+                }
+                  
+              })
+          })
+        }); 
+    
+  }
+
+
+  async deleteInfoMessageFromUserMessages(message: Message, userid: string): Promise<void> {
+    if (!message.subtitle_name || !message.iso || !message.language || !message.videoId || !message.status) {
+      console.error("Message properties are undefined");
+      return;
+    }
+    
+    const infoMessageRef: AngularFirestoreCollection = this.firestore.collection('users').doc(userid).collection('messages', ref => ref.where('subtitle_name', '==', message.subtitle_name)
+    .where('iso', '==', message.iso).where('language', '==', message.language).where('videoId', '==', message.videoId).where('status', '==', "unread").where("id","==",message.id));
+      try {
+        const snapshot = await infoMessageRef.get().toPromise();
+        if (snapshot.size > 0) {
+          await snapshot.docs[0].ref.delete();
+        }
     } catch (error) {
       console.error("Error deleting message from user messages:", error);
       throw error;

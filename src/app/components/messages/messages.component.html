@@ -18,12 +18,12 @@
             </div>
           </div>
           <div>
-              <button class="accept" (click)="message.subject.startsWith('Offer')? handleOffer(message) : acceptTransferOwnership(message)"> 
-                {{ message.subject.startsWith('Offer')? 'Accept Offer' : 'Accept' }}
-              </button>
-              <button class="decline" (click)="message.subject.startsWith('Offer')? declineOffer(message) : declineTransferOwnership(message)"> 
-                {{ message.subject.startsWith('Offer')? 'Decline Offer' : 'Decline' }}
-              </button>
+            <button class="accept" (click)="message.subject.startsWith('Offer')? handleOffer(message) : (message.subject.startsWith('Subtitle') ? deleteMessage(message) : acceptTransferOwnership(message))"> 
+              {{ message.subject.startsWith('Offer')? 'Accept Offer' : (message.subject.startsWith('Subtitle') ? 'OK' : 'Accept') }}
+            </button>
+            <button class="decline" *ngIf="!(message.subject.startsWith('Subtitle'))" (click)="message.subject.startsWith('Offer')? declineOffer(message) : declineTransferOwnership(message)"> 
+              {{ message.subject.startsWith('Offer')? 'Decline Offer' : 'Decline' }}
+            </button>
           </div>
           </mat-card>
         </div>

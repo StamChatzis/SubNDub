@@ -5,6 +5,7 @@ import {BehaviorSubject, pipe, map, switchMap, of} from 'rxjs';
 import { GmailUser } from 'src/app/models/firestore-schema/user.model';
 import { AuthService } from 'src/app/services/auth.service';
 import { DetailsViewServiceService } from 'src/app/services/details-view-service.service';
+import { NotifierService } from 'src/app/services/notifier.service';
 
 @Component({
   selector: 'app-messages',
@@ -18,7 +19,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
   userEmail: string;
   messagesSubscription: any;
 
-  constructor(private messagesService: MessagesService, private authService: AuthService){}
+  constructor(private messagesService: MessagesService,private notifier: NotifierService, private detailsService: DetailsViewServiceService, private authService: AuthService){}
 
   ngOnInit(): void {
     this.authService.user.subscribe((id) => {
@@ -104,7 +105,6 @@ export class MessagesComponent implements OnInit, OnDestroy {
               iso: data.iso,
               language: data.language,
               subtitleId: data.subtitleId
-              // Add other properties required by the Message type
             } as Message;
           }).filter(message => message.recipient === userEmail);
           return of(actions);
@@ -129,15 +129,32 @@ export class MessagesComponent implements OnInit, OnDestroy {
     .catch(error => console.error("Error declining transfer ownership:", error));
    }
 
-   handleOffer(message: Message){
-    console.log("handle offer");
+   handleOffer(message: Message){ 
+    this.messagesService.checkRequestStatus(message, this.useruid).then((check) => {
+      if (check == "open"){
+        this.detailsService.addUserRightOnSub(message.videoId, message.iso, message.language, this.useruid, message.subtitle_name, message.format, message.sender, "Editor", message.subtitleId);
+        setTimeout(() => { this.messagesService.setSubtitleIdToRequest(message, this.useruid)
+          .then(() => this.messagesService.closeRequestStatus(message, this.useruid))
+          .then(() => this.messagesService.sendInfoMessage(message, this.useruid))
+          .then(() => this.messagesService.sendInfoMessageToList(message, this.useruid))
+          .then(() => this.messagesService.deleteMessageFromUserMessages(message, this.useruid));
+        }, 1000);
+      }else{
+        this.messagesService.deleteMessageFromUserMessages(message, this.useruid).then(() => {
+          this.notifier.showNotification("Request has been closed.", "DISMISS");
+        })
+      }
+    })
   }
 
-   declineOffer(message: Message){
+  declineOffer(message: Message){
     this.messagesService.deleteMessageFromUserMessages(message, this.useruid);
     
   }
 
+  deleteMessage(message: Message){
+    this.messagesService.deleteInfoMessageFromUserMessages(message, this.useruid);
+  }
 
 
 }

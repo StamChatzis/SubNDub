@@ -50,7 +50,7 @@ export class DashboardService {
   }
 
   getCommunityVideos(): Observable<Video[]> {
-    return this.firestore.collection<Video>('helpRequests').snapshotChanges().pipe(
+    return this.firestore.collection<Video>('helpRequests', ref => ref.where('status', '==', 'open')).snapshotChanges().pipe(
       switchMap(requests => {
         if (requests.length) {
           return combineLatest(

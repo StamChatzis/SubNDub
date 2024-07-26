@@ -126,12 +126,12 @@ export class DetailsViewComponent implements OnInit {
     this.router.navigate(['edit', this.videoId, ISOcode, name])
   }
 
-  requestCommunityHelp(language:string ,iso: string, filename: string, format: string, videoTitle: string): void {
+  requestCommunityHelp(language:string ,iso: string, filename: string, format: string, videoTitle: string, subtitleId: string): void {
     this.dialog.open(RequestCommunityHelpComponent,{width:'400px', data: { videoTitle, subtitleTitle:filename+"."+format, language}}).afterClosed().pipe(take(1)).subscribe(dialog => {
       if (dialog === (null || undefined )){
         this.dialog.closeAll();
       }else if (dialog){
-        this.detailsViewService.requestCommunityHelp(this.user$.value, this.videoId,language, iso, filename, format, dialog);
+        this.detailsViewService.requestCommunityHelp(this.user$.value, this.videoId,language, iso, filename, format, dialog, subtitleId);
       }});
   }
 
