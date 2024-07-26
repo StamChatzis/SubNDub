@@ -2,7 +2,9 @@
   <span class="header-assigment-ribbon" *ngIf="assignedPerson" [style.background]="assignedPerson.color" #card></span>
     <mat-card-header>
       <mat-card-title #cardElement>Subtitle {{index + 1}}</mat-card-title>
-      <mat-icon class="estimation-icon" [matTooltip]="estimationTooltip">{{estimationIcon}}</mat-icon>
+      <div [className]="'estimation-icon-' + estimationIcon">
+        <mat-icon [matTooltip]="estimationTooltip">{{estimationIcon}}</mat-icon>
+      </div>
 
       <button [disabled]="canOnlyView" mat-icon-button matTooltip="ChatGPT Helper"
         class="gpt-sub-btn"
@@ -64,7 +66,7 @@
         <div fxLayout="column" fxLayoutGap="10px" fxFlex="30">
           <mat-form-field subscriptSizing="dynamic" (click)="seekToPlayer(dialogGroup.get('start_time').value)">
             <mat-label>From:</mat-label>
-            <input [readonly]="canOnlyView" matInput (input)="emitDialogId('start_time'); subtitlingTimingEstimation();" [formControl]="getDialogControl('start_time')" [maxlength]="9" matTooltip="mm:ss:ms" type="text">
+            <input  matInput (input)="emitDialogId('start_time'); subtitlingTimingEstimation();" [formControl]="getDialogControl('start_time')" [maxlength]="9" matTooltip="mm:ss:ms" type="text">
           </mat-form-field>
 
           <mat-form-field subscriptSizing="dynamic" (click)="seekToPlayer(dialogGroup.get('end_time').value)">

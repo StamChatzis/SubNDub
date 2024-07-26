@@ -5,7 +5,7 @@
 
 .mat-mdc-card-content {
   display: flex;
-  min-width:600px;
+  min-width:650px;
 }
 
 .sub-text-area{
@@ -149,4 +149,14 @@
   display: block;
   background-color: #efefef;
   color: #b20000;
+}
+
+.estimation-icon-report mat-icon:hover{
+  cursor: help;
+  color:red;
+}
+
+.estimation-icon-done mat-icon:hover{
+  cursor: help;
+  color: green;
 }

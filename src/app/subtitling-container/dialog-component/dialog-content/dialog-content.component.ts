@@ -23,7 +23,6 @@ export class DialogContentComponent implements OnChanges {
   @Output() translateSubtitle: EventEmitter<{lang: string, id: number}> = new EventEmitter();
   @Output() chatGPTEventEmitter: EventEmitter<ChatGPTACtion> = new EventEmitter();
   @Output() isDirty: EventEmitter<boolean> = new EventEmitter()
-
   @ViewChild("cardElement") cardElement: ElementRef;
   @ViewChild('translateMenu') translateMenu;
   @ViewChild('assingPersonMenu') assignPersonMenu;
@@ -35,6 +34,7 @@ export class DialogContentComponent implements OnChanges {
   timingEstimation: number = 0;
   estimationTooltip: string;
   estimationIcon: string;
+
   readonly openAIMenuMap = new Map([
     ['translate','Translate this sentence'],
     ['sad','Give this sentence a sadder tone'],
@@ -49,6 +49,9 @@ export class DialogContentComponent implements OnChanges {
     if (changes?.hasFocus?.currentValue === true) {
       this.cardElement?.nativeElement?.scrollIntoView({behavior: 'smooth', block: 'center'})
     }
+    this.wordCounter();
+    this.characterCounter();
+    this.subtitlingTimingEstimation()
   }
 
   getDialogControl(control: string): FormControl {

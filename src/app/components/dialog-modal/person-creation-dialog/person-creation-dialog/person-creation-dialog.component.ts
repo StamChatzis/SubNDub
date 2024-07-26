@@ -1,8 +1,7 @@
-import { Component, ElementRef, Inject, ViewChild } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CharacterAssign } from 'src/app/models/general/person-assign.model';
-import { ColorPickerModule } from 'ngx-color-picker';
-import {FormControl, FormGroup, Validators} from "@angular/forms";
+import { FormControl, FormGroup, Validators } from "@angular/forms";
 
 @Component({
   selector: 'app-person-creation-dialog',

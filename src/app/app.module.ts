@@ -71,6 +71,7 @@ import { ShareSubtitlingContainerComponent } from './share-subtitling-container/
 import { SharedVideoCardComponent } from './components/shared-video-card/shared-video-card.component';
 import { RequestCommunityHelpComponent } from './components/dialog-modal/request-community-help/request-community-help.component';
 import { PlaceABidComponent } from './components/dialog-modal/place-a-bid/place-a-bid.component';
+import { DownloadOptionsDialogComponent } from './components/dialog-modal/download-options-dialog/download-options-dialog.component';
 
 @NgModule({
   declarations: [
@@ -111,7 +112,8 @@ import { PlaceABidComponent } from './components/dialog-modal/place-a-bid/place-
     ShareSubtitlingContainerComponent,
     SharedVideoCardComponent,
     RequestCommunityHelpComponent,
-    PlaceABidComponent
+    PlaceABidComponent,
+    DownloadOptionsDialogComponent
   ],
     imports: [
         BrowserModule,
