@@ -18,7 +18,6 @@ export class CharactersService {
 
   saveCharacters(uid: any, videoId: any, langIso: any, subName: any, data: CharacterAssign[]) {
     subName = subName.split(".")[0]
-
     for(let i = 0; i < data.length; i++) {
       let charRef = this.firestore.doc(`users/${uid}/videos/${videoId}/subtitleLanguages/${langIso}/subtitles/${subName}/characters/${data[i].name}`);
       charRef.set(data[i], {merge: true})
@@ -31,8 +30,18 @@ export class CharactersService {
     return true
   }
 
-  deleteCharacter(uid: any, videoId: any, langIso: any, subName: any){
-
+  deleteCharacter(uid: any, videoId: any, langIso: any, subName: any, data: any){
+    subName = subName.split(".")[0]
+    for(let i = 0; i < data.length; i++) {
+      let charRef = this.firestore.doc(`users/${uid}/videos/${videoId}/subtitleLanguages/${langIso}/subtitles/${subName}/characters/${data[i].name}`);
+      charRef.delete()
+        .then(() => {})
+        .catch(err => {
+          console.error(err)
+          return false
+        })
+    }
+    return true
   }
 
 }

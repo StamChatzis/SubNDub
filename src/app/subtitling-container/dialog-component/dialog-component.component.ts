@@ -6,34 +6,22 @@ import {GoogleTranslateRequestObject} from 'src/app/models/google/google-transla
 import {ImportModel} from 'src/app/models/general/import-sbv.model';
 import {GoogleTranslateService} from 'src/app/services/googletranslate.service';
 import {UploadFileHandlerService} from 'src/app/services/upload-file-handler.service';
-import {
-  GoogleTranslateResponse,
-  GoogleTranslations,
-  ResponseObject
-} from 'src/app/models/google/google-translate-response'
+import {GoogleTranslateResponse, GoogleTranslations, ResponseObject} from 'src/app/models/google/google-translate-response'
 import {SupportedLanguages} from 'src/app/models/google/google-supported-languages';
 import {TimeFormat} from 'src/app/models/general/time-format.model';
 import {ChatGPTACtion, TimeEmitterObject} from './dialog-content/dialog-content.component';
 import {calculateSeconds, parseTimestamp} from 'src/app/shared/functions/shared-functions';
 import {CharacterAssign} from 'src/app/models/general/person-assign.model';
 import {MatDialog} from '@angular/material/dialog';
-import {
-  PersonCreationDialogComponent
-} from 'src/app/components/dialog-modal/person-creation-dialog/person-creation-dialog/person-creation-dialog.component';
+import {PersonCreationDialogComponent} from 'src/app/components/dialog-modal/person-creation-dialog/person-creation-dialog/person-creation-dialog.component';
 import {TextContentToSSML} from 'src/app/models/general/gpt-feed.model';
-import {
-  GenerateVoiceDialogComponent
-} from 'src/app/components/dialog-modal/generate-voice-modal/genereate-voice-modal.component';
+import {GenerateVoiceDialogComponent} from 'src/app/components/dialog-modal/generate-voice-modal/genereate-voice-modal.component';
 import {TextToSpeechService} from 'src/app/services/text-to-speech-service.service';
 import {StorageService} from 'src/app/services/storage.service';
 import {OpenAIService} from 'src/app/services/open-ai.service';
-import {
-  ConfirmationModalComponent
-} from 'src/app/components/dialog-modal/confirmation-modal/confirmation-modal.component';
+import {ConfirmationModalComponent} from 'src/app/components/dialog-modal/confirmation-modal/confirmation-modal.component';
 import {YoutubeService} from 'src/app/services/youtube.service';
-import {
-  BatchDialogModalComponent
-} from 'src/app/components/dialog-modal/batch-dialog-modal/batch-dialog-modal.component';
+import {BatchDialogModalComponent} from 'src/app/components/dialog-modal/batch-dialog-modal/batch-dialog-modal.component';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {CharactersService} from "../../services/characters.service";
 import {GmailUser} from "../../models/firestore-schema/user.model";
@@ -54,7 +42,8 @@ export class DialogComponentComponent implements OnInit {
   public uid: string;
   protected loading: boolean;
   public form: FormGroup;
-  public persons: CharacterAssign[];
+  public characters: CharacterAssign[];
+  public newCharacters: CharacterAssign[];
   public focusedDialogBox: number;
   protected isDirty: boolean = false;
   @Input() canOnlyView: boolean;
@@ -103,7 +92,8 @@ export class DialogComponentComponent implements OnInit {
           this.charService.getCharactersOfSubtitle(this.uid, this.videoId, this.isoCode, this.subtitleName)
             .subscribe((data) => {
               if (data){
-                this.persons = data;
+                this.characters = data;
+                this.newCharacters = [...this.characters]
               }
             })
         }
@@ -427,12 +417,13 @@ export class DialogComponentComponent implements OnInit {
   }
 
   openPersonCreationModal(): void {
-    this.dialog.open(PersonCreationDialogComponent, {'width': '600px', data: this.persons}).afterClosed()
+    this.dialog.open(PersonCreationDialogComponent, {'width': '600px', data: this.characters}).afterClosed()
     .subscribe({
       next: receivedData => {
         if (receivedData) {
-          this.persons = receivedData;
+          this.newCharacters = receivedData;
           this.saveCharacters();
+          this.characters = [...this.newCharacters]
           this.formStatusChange.emit(true);
           this.isDirty = true
         }
@@ -441,8 +432,14 @@ export class DialogComponentComponent implements OnInit {
   }
 
   saveCharacters(){
-    if(this.charService.saveCharacters(this.uid, this.videoId, this.isoCode, this.subtitleName, this.persons)){
-      this.snackbar.open('Your characters have been saved!', 'OK', {duration:3500});
+    //first clear the old data
+    if(this.charService.deleteCharacter(this.uid, this.videoId, this.isoCode, this.subtitleName, this.characters)){
+      //then save the new data
+      if(this.charService.saveCharacters(this.uid, this.videoId, this.isoCode, this.subtitleName, this.newCharacters)){
+        this.snackbar.open('Your characters have been saved!', 'OK', {duration:3500});
+      }else{
+        this.snackbar.open('There was a problem saving your characters', 'OK', {duration:3500});
+      }
     }else{
       this.snackbar.open('There was a problem saving your characters', 'OK', {duration:3500});
     }

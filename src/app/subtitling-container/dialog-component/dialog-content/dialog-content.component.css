@@ -132,3 +132,21 @@
 .assign-person-btn:hover{
   color: rgb(147, 0, 134);
 }
+
+.remove-person-btn{
+  border-radius: 50%;
+  text-align: center;
+  height: 32px;
+  width: 32px;
+}
+
+.remove-person-btn mat-icon{
+  margin-top: 5px;
+}
+
+.remove-person-btn:hover{
+  cursor: pointer;
+  display: block;
+  background-color: #efefef;
+  color: #b20000;
+}

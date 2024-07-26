@@ -1,52 +1,59 @@
-<h2 mat-dialog-title>Manage Characters/Voice Actors</h2>
+<main>
+  <h2 mat-dialog-title>Manage Characters/Voice Actors</h2>
 
-<mat-dialog-content class="mat-typography">
-  <h3>Assign a person to a subtitle to help you recognize who it is voiced by. You can also choose color in order to distinguish your character</h3>
-</mat-dialog-content>
+  <mat-dialog-content class="mat-typography">
+    <h3>Assign a person to a subtitle to help you recognize who it is voiced by. You can also choose color in order to distinguish your character</h3>
+  </mat-dialog-content>
 
-<div class="input-container" [formGroup]="personForm">
+  <div class="input-container" [formGroup]="personForm">
+      <mat-form-field>
+        <mat-label>Enter your character's name</mat-label>
+        <input matInput formControlName="name" type="text">
+        <mat-error *ngIf="personForm.get('name')?.invalid">{{getNameError()}}</mat-error>
+      </mat-form-field>
 
-    <mat-form-field>
-      <mat-label>Enter your character's name</mat-label>
-      <input matInput formControlName="name" type="text">
-      <mat-error *ngIf="personForm.get('name')?.invalid">{{getNameError()}}</mat-error>
-    </mat-form-field>
+      <label>Color:</label>
+      <div class="color-picker-wrapper" matTooltip="Choose color for the character">
+        <input [(colorPicker)]="color" [style.width]="'20px'" [style.height]="'20px'" [style.border-radius]="'5px'" [style.background]="color"
+               [cpPresetColors]="['#2889e9', '#e920e9','#b3eda0','#fff500', 'rgb(236,64,64)']" class="select-color-picker"/>
+      </div>
 
-    <label>Color:</label>
-    <div class="color-picker-wrapper" matTooltip="Choose color for the character">
-      <input [(colorPicker)]="color" [style.width]="'20px'" [style.height]="'20px'" [style.border-radius]="'5px'" [style.background]="color"
-             [cpPresetColors]="['#2889e9', '#e920e9','#b3eda0','#fff500', 'rgb(236,64,64)']" class="select-color-picker"/>
+      <button class="add-person-btn" [disabled]="personForm.get('name')?.invalid" (click)="addPerson()" mat-raised-button color="primary" matTooltip="Click to add new character">
+        <mat-icon class="add-icon">add</mat-icon>
+        <span>Add</span>
+      </button>
+  </div>
+
+  <div class="char-btn-wrapper">
+    <div class="saved-characters-wrappers">
+      <mat-dialog-content class="mat-typography">
+        <h3>Your characters/voice actors:</h3>
+        <ng-container *ngIf="characters.length === 0">
+          <h5><i>No characters created yet.</i></h5>
+        </ng-container>
+      </mat-dialog-content>
+
+      <div class="input-container created" *ngFor="let person of characters; let i = index">
+        <mat-form-field>
+          <input matInput [(ngModel)]="person.name" (keydown)="onType()">
+        </mat-form-field>
+
+        <div class="color-picker-wrapper" matTooltip="Choose color for the character">
+          <input [(colorPicker)]="person.color" [style.width]="'20px'" [style.height]="'20px'" [style.border-radius]="'5px'" [style.background]="person.color"
+            [cpOutputFormat]="'hex'" [cpPresetColors]="['#2889e9','#7fe1df', '#e920e9','#b3eda0','#fff500','#ec4040']" class="select-color-picker"/>
+        </div>
+        <button class="delete-person-btn" (click)="deletePerson(i)" mat-icon-button matTooltip="Delete the character">
+          <mat-icon>delete</mat-icon>
+        </button>
+
+      </div>
     </div>
 
-    <button class="add-person-btn" [disabled]="personForm.get('name')?.invalid" (click)="addPerson()" mat-raised-button color="primary" matTooltip="Click to add new character">
-      <mat-icon class="add-icon">add</mat-icon>
-      <span>Add</span>
-    </button>
+    <div class="btn-options">
+      <mat-dialog-actions align="end">
+        <button mat-raised-button color="warn" (click)="resetCharacters()" [mat-dialog-close]=null>Cancel</button>
+        <button mat-raised-button color="primary" [disabled]="!isDirty" [mat-dialog-close]="characters">Save</button>
+      </mat-dialog-actions>
+    </div>
 </div>
-
-<mat-dialog-content class="mat-typography">
-    <h3>Your characters/voice actors:</h3>
-    <ng-container *ngIf="characters.length === 0">
-        <h5><i>None created yet.</i></h5>
-    </ng-container>
-</mat-dialog-content>
-
-<div class="input-container created" *ngFor="let person of characters; let i = index">
-  <mat-form-field>
-      <input matInput [(ngModel)]="person.name">
-  </mat-form-field>
-
-  <div class="color-picker-wrapper" matTooltip="Choose color for the character">
-    <input [(colorPicker)]="person.color" [style.width]="'20px'" [style.height]="'20px'" [style.border-radius]="'5px'" [style.background]="person.color"
-      [cpOutputFormat]="'hex'" [cpPresetColors]="['#2889e9','#7fe1df', '#e920e9','#b3eda0','#fff500','#ec4040']" class="select-color-picker"/>
-  </div>
-  <button class="delete-person-btn" (click)="deletePerson(i)" mat-icon-button matTooltip="Delete the character">
-    <mat-icon>delete</mat-icon>
-  </button>
-
-</div>
-
-<mat-dialog-actions align="end">
-  <button mat-raised-button color="warn" (click)="resetCharacters()" [mat-dialog-close]=null>Cancel</button>
-  <button mat-raised-button color="primary" [disabled]="!isDirty" [mat-dialog-close]="characters">Save</button>
-</mat-dialog-actions>
+</main>

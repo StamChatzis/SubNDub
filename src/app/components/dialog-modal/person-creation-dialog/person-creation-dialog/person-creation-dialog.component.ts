@@ -11,16 +11,22 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
 })
 export class PersonCreationDialogComponent {
   private readonly defaultColor = '#2889e9';
-  characters: CharacterAssign[];
-  private readonly backUpPersons: CharacterAssign[];
+  characters: CharacterAssign[] = [];
+  private backUpPersons: CharacterAssign[] = [];
   color: string = this.defaultColor;
   personForm: FormGroup;
   isDirty: boolean = false;
 
   constructor(@Inject(MAT_DIALOG_DATA) private data: CharacterAssign[]) {
     if(this.data) {
-      this.characters = [...this.data];
-      this.backUpPersons = [...this.data];
+      for(let data of this.data){
+        const char ={
+          name: data['name'],
+          color: data['color'],
+        }
+        this.characters.push(char)
+        this.backUpPersons.push(char)
+      }
     } else {
       this.characters = [];
     }
@@ -53,6 +59,10 @@ export class PersonCreationDialogComponent {
     }else if(this.personForm.get('name')?.hasError('pattern')){
       return `Field's format is not supported`
     }
+  }
+
+  onType(){
+    this.isDirty = true
   }
 
   deletePerson(index: number): void {

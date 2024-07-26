@@ -41,12 +41,13 @@
           </div>
         </ng-container>
         <ng-template #noPersons>
-          <p class="mat-typography" [style.padding]="'5px'">No persons created yet.</p>
+          <p class="mat-typography" [style.padding]="'5px'">No characters created yet.</p>
         </ng-template>
       </mat-menu>
-      <ng-container *ngIf="assignedPerson">
+      <ng-container *ngIf="assignedPerson" class="sub-character-wrapper">
         <h3 class="mat-typography">{{assignedPerson.name}}</h3>
         <span class="person-item" [style.background]="assignedPerson.color"></span>
+        <div class="remove-person-btn" matTooltip="Remove Assigned Character" (click)="removePerson()"><mat-icon>remove</mat-icon></div>
       </ng-container>
 
       <button [disabled]="canOnlyView" (click)="deleteDialogBox(dialogId)" class="delete-action" mat-icon-button matTooltip="Delete Subtitle">

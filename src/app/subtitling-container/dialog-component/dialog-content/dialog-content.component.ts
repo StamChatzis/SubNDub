@@ -73,6 +73,10 @@ export class DialogContentComponent implements OnChanges {
     this.isDirty.emit(true)
   }
 
+  removePerson(){
+    this.assignedPerson = null;
+  }
+
   translateSub(lang: string): void {
     this.translateSubtitle.emit({lang: lang, id: this.dialogId });
   }

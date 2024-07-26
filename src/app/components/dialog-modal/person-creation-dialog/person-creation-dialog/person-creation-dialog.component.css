@@ -1,3 +1,6 @@
+main{
+}
+
 .input-container {
   padding-left:24px;
   padding-right:5px;
@@ -36,4 +39,20 @@
 
 .select-color-picker:hover{
   cursor: pointer;
+}
+
+.char-btn-wrapper{
+  display: flex;
+  flex-direction: column;
+  height: auto;
+}
+
+.saved-characters-wrappers {
+  flex-grow: 1;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.btn-options{
+  margin-top: 10px;
 }
