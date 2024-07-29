@@ -26,6 +26,10 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 import {CharactersService} from "../../services/characters.service";
 import {GmailUser} from "../../models/firestore-schema/user.model";
 import {AuthService} from "../../services/auth.service";
+import {
+  DownloadOptionsDialogComponent
+} from "../../components/dialog-modal/download-options-dialog/download-options-dialog.component";
+import {DownloadFileHandlerService} from "../../services/download-file-handler.service";
 
 @Component({
   selector: 'dialog-component',
@@ -80,7 +84,8 @@ export class DialogComponentComponent implements OnInit {
     private youtube: YoutubeService,
     private snackbar: MatSnackBar,
     private charService: CharactersService,
-    private auth: AuthService
+    private auth: AuthService,
+    private downService: DownloadFileHandlerService
     ) {}
 
   ngOnInit(): void {
@@ -446,26 +451,64 @@ export class DialogComponentComponent implements OnInit {
   }
 
   uploadSubtitle(): void {
-    this.subtitleUploadEmitter.emit(this.createSubtitleBlob());
+    this.subtitleUploadEmitter.emit(this.createSubtitleBlob(this.subtitleName.split('.')[1]));
     this.isDirty = false
   }
 
-  createSubtitleBlob(): Blob {
+  createSubtitleBlob(type: string): Blob {
     let subtitleContent = ''
     Object.keys(this.form.controls).forEach((control) => {
       const currentGroup = this.form.get(control);
       subtitleContent += `${'00:'+ currentGroup.get('start_time').value},${'00:' + currentGroup.get('end_time').value}\n${currentGroup.get('subtitles').value}\n\n`;
     });
-    return new Blob([subtitleContent], {type: 'text/sbv;charset=utf8'});
+    return new Blob([subtitleContent], {type: 'text/'+ type +';charset=utf8'});
   }
 
-  downloadSubtitle(): void {
-    const blob = this.createSubtitleBlob()
+  openDownloadDialog(): void {
+    this.dialog.open(DownloadOptionsDialogComponent, {'width': '500px'}).afterClosed()
+      .subscribe({
+        next: receivedData => {
+          if(receivedData){
+            switch (receivedData){
+              case('srt'):
+                this.handleFileDownload('.srt');
+                break;
+              case('sbv'):
+                this.handleFileDownload('.sbv');
+                break;
+              case('both'):
+                this.handleMultipleFilesDownload()
+                break;
+            }
+          }
+        },
+        error: err => {
+          console.error('Error: ' + err.message)
+        }
+      })
+  }
+
+  handleMultipleFilesDownload() {
+    let fileBlobs: Blob[] = []
+    let fileNames: string[] = []
+
+    fileBlobs.push(this.createSubtitleBlob('srt'))
+    fileBlobs.push(this.createSubtitleBlob('sbv'))
+    fileNames.push(this.subtitleName.split('.')[1] + '.srt')
+    fileNames.push(this.subtitleName.split('.')[1] + '.sbv')
+
+    this.downService.downloadSubtitleFiles(fileBlobs, fileNames);
+  }
+
+  handleFileDownload(type: string){
+    let subtitle = this.subtitleName.split(".")[0]
+
+    const blob = this.createSubtitleBlob(type)
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = this.subtitleName;
     document.body.appendChild(a);
+    a.download = subtitle + type
     a.click();
     window.URL.revokeObjectURL(url);
     document.body.removeChild(a);

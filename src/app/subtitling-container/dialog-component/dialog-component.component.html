@@ -26,7 +26,7 @@
           (isFormDirty)="setIsFormDirty($event)"
           [acceptedFiles]="'.sbv, .srt, .txt'">
         </import-button>
-        <button (click)="downloadSubtitle()" mat-icon-button color="primary" matTooltip="Download Subtitles">
+        <button (click)="openDownloadDialog()" mat-icon-button color="primary" matTooltip="Download Subtitles">
             <mat-icon>file_download</mat-icon>
         </button>
         <button (click)="uploadSubtitle()" mat-icon-button color="primary" matTooltip="Save">

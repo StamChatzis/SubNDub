@@ -4,6 +4,7 @@ import { CharacterAssign } from 'src/app/models/general/person-assign.model';
 import { Language} from 'src/app/models/google/google-supported-languages';
 import { YoutubeService } from 'src/app/services/youtube.service';
 import { calculateSeconds, parseTimestamp } from 'src/app/shared/functions/shared-functions';
+import {BehaviorSubject} from "rxjs";
 
 @Component({
   selector: 'dialog-content',
@@ -34,6 +35,7 @@ export class DialogContentComponent implements OnChanges {
   timingEstimation: number = 0;
   estimationTooltip: string;
   estimationIcon: string;
+  loading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
 
   readonly openAIMenuMap = new Map([
     ['translate','Translate this sentence'],
@@ -46,12 +48,14 @@ export class DialogContentComponent implements OnChanges {
   constructor(private youtube: YoutubeService) {}
 
   ngOnChanges(changes: SimpleChanges): void {
+    this.loading$.next(true)
     if (changes?.hasFocus?.currentValue === true) {
       this.cardElement?.nativeElement?.scrollIntoView({behavior: 'smooth', block: 'center'})
     }
     this.wordCounter();
     this.characterCounter();
     this.subtitlingTimingEstimation()
+    this.loading$.next(false)
   }
 
   getDialogControl(control: string): FormControl {

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { AngularFireStorage } from "@angular/fire/compat/storage";
 import { lastValueFrom } from "rxjs";
 import * as JSZip from "jszip";
+import {saveAs} from "file-saver";
 
 @Injectable({
   providedIn: 'root'
@@ -9,6 +10,22 @@ import * as JSZip from "jszip";
 export class DownloadFileHandlerService {
 
   constructor(private storage: AngularFireStorage) {}
+
+  downloadSubtitleFiles(fileBlobs: Blob[], subtitleName: string[]){
+    const zip = new JSZip();
+
+    fileBlobs.forEach((blob, index) => {
+      zip.file(subtitleName[index], blob);
+    });
+
+    zip.generateAsync({type: "blob"})
+      .then(c => {
+        saveAs(c, 'subtitles.zip');
+      })
+      .catch(err => {
+        console.error('Error downloading subtitle files: ' + err.message())
+      });
+  }
 
   async getLanguages(videoId: string, userId: string) {
     // const ref = this.storage.ref(`subtitles/${userId}/${videoId}`);

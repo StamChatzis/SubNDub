@@ -1,1 +1,19 @@
-<p>download-options-dialog works!</p>
+<main>
+  <h2 mat-dialog-title>Download subtitle options</h2>
+
+  <mat-dialog-content class="mat-typography">
+    <h3>Please select one or both types for your subtitle file to download</h3>
+  </mat-dialog-content>
+
+  <div class="type-checkboxes">
+    <mat-checkbox (change)="onChecked('srt')">.SRT (Most common subtitle file type)</mat-checkbox>
+    <mat-checkbox (change)="onChecked('sbv')">.SBV (YouTube subtitle file type)</mat-checkbox>
+  </div>
+
+  <div class="options-sub-btn">
+    <mat-dialog-actions align="end">
+      <button mat-raised-button color="warn" [mat-dialog-close]=null>Cancel</button>
+      <button mat-raised-button color="primary" [disabled]="!atLeastOne" [mat-dialog-close]="returnValue">Download</button>
+    </mat-dialog-actions>
+  </div>
+</main>

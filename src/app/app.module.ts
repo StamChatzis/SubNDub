@@ -72,6 +72,7 @@ import { SharedVideoCardComponent } from './components/shared-video-card/shared-
 import { RequestCommunityHelpComponent } from './components/dialog-modal/request-community-help/request-community-help.component';
 import { PlaceABidComponent } from './components/dialog-modal/place-a-bid/place-a-bid.component';
 import { DownloadOptionsDialogComponent } from './components/dialog-modal/download-options-dialog/download-options-dialog.component';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @NgModule({
   declarations: [
@@ -149,7 +150,8 @@ import { DownloadOptionsDialogComponent } from './components/dialog-modal/downlo
         MatSelectModule,
         NgOptimizedImage,
         MatGridListModule,
-        MatSortModule
+        MatSortModule,
+        MatCheckboxModule
     ],
   providers: [DetailsViewServiceService],
   bootstrap: [AppComponent]
