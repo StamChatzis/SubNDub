@@ -55,7 +55,6 @@ export class DetailsViewServiceService {
       format: format,
       deadline: deadline,
       offerList: [],
-      currentBid: 0,
       subtitleId: subtitleId
     }
  
@@ -79,7 +78,6 @@ export class DetailsViewServiceService {
             helprequestRef.update({
               status: "open",
               deadline: deadline,
-              currentBid: 0,
               offerList: []
             }).then(() => {this.notifier.showNotification("Subtitle has been successfully requested for a bid.","OK");});
             

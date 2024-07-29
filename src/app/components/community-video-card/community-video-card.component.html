@@ -21,7 +21,7 @@
 		</div>
 	</div>
 	<div class="actions">
-		<mat-icon (click)="openPlaceABid(communityRequestDetails, videoDetails?.snippet?.title, communityRequestDetails.filename)" matTooltip="Place a BID">group</mat-icon>
+		<mat-icon [class.faded]="communityRequestDetails.requestedByID=== userId" [style.pointer-events]="(communityRequestDetails.requestedByID=== userId ? 'none' : 'auto')" (click)="openPlaceABid(communityRequestDetails, videoDetails?.snippet?.title, communityRequestDetails.filename)" matTooltip="Place a BID">group</mat-icon>
 	</div>
 </div>
 

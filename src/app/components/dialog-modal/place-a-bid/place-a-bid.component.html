@@ -16,18 +16,15 @@
             
           </div>
         </div>
-
-        <p>Current Minimum Bid:</p>
-        <p class="current-bid">€ {{ currentBidAmount }}</p>
       
         <p>Offer Bid: </p>
         <div class="input-container">
-          <input #bidInput class="mybid" matInput type="number" [(ngModel)]="yourBidAmount" placeholder="Enter your bid" min="1">
+          <input #bidInput class="mybid" matInput type="number" [(ngModel)]="yourBidAmount" placeholder="Enter your bid" min="1" step="0.5" lang="en">
         </div>
         
       </div>
   
-      <mat-dialog-actions class="button-container">
+      <mat-dialog-actions [class.right-bottom]="deadline === 'No'">
         <button mat-button [mat-dialog-close]="null">Cancel</button>
         <button mat-raised-button [disabled]="!(deadline === 'No' && bidInput.value) && !(bidInput.value && bidDeadline)" [mat-dialog-close]="{yourBidAmount}" (click)="placeBid(yourBidAmount, deadline === 'No' ? 'No' : bidDeadline)" color="primary">Place Bid</button>
       </mat-dialog-actions>

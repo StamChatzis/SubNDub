@@ -78,3 +78,9 @@
     border-radius:0px;
     transition: 0.3s;
   }
+
+  .faded {
+    opacity: 0.5; 
+    pointer-events: none;
+    cursor: not-allowed; 
+  }

@@ -59,3 +59,11 @@ button {
     opacity: 1;
   }
   
+  .right-bottom {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 16px; /* adjust the margin to your liking */
+    position: absolute;
+    bottom: 0;
+    right: 0;
+  } 

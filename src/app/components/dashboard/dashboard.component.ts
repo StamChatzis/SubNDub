@@ -37,6 +37,7 @@ export class DashboardComponent implements OnInit {
   videoSelectedId: string;
   apiLoaded = false;
   userEmail: string;
+  userId: string;
   @ViewChild('userVideosContainer') userVideosContainer: ElementRef
 
   constructor(private auth: AuthService,
@@ -59,6 +60,7 @@ export class DashboardComponent implements OnInit {
         switchMap(user => {
           if (user) {
             this.userId$.next(user.uid);
+            this.userId = user.uid;
             this.userEmail = user.email;
             this.userVideos$ = this.dashboardService.getVideos(user.uid);
             this.userSharedVideos$ = this.dashboardService.getSharedVideos(user.email);

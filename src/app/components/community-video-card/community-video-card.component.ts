@@ -13,6 +13,7 @@ import { take } from 'rxjs';
 export class CommunityVideoCardComponent implements OnInit {
   @Input() videoId: string;
   @Input() userEmail: string;
+  @Input() userId: string;
   @Input() videoDetails: YoutubeVideoDetails;
   @Input() communityRequestDetails: any;
   @Output() editVideoEmitter: EventEmitter<any> = new EventEmitter<any>;
@@ -32,7 +33,7 @@ export class CommunityVideoCardComponent implements OnInit {
   }
 
   openPlaceABid(requestDetails: any, videoTitle: string, filename: string): void {
-    this.dialog.open(PlaceABidComponent,{width:'550px', height: '480px', data: { language:requestDetails.language, videoTitle, videoId: this.videoId, requestedByID: requestDetails.requestedByID, filename, requestDetails, userEmail:this.userEmail}}).afterClosed().pipe(take(1)).subscribe(dialog => {
+    this.dialog.open(PlaceABidComponent,{width:'550px', height: '430px', data: { language:requestDetails.language, videoTitle, videoId: this.videoId, requestedByID: requestDetails.requestedByID, filename, requestDetails, userEmail:this.userEmail}}).afterClosed().pipe(take(1)).subscribe(dialog => {
       if (dialog === (null || undefined )){ 
         this.dialog.closeAll();
       }else if (dialog && dialog.yourBidAmount>0) {

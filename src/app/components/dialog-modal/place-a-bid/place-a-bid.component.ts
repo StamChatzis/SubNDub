@@ -14,7 +14,6 @@ export class PlaceABidComponent {
   fileName: string;
   requestedByID: string;
   languageRequested: string;
-  currentBidAmount: number;
   yourBidAmount: number;
   deadline: any;
   requestorEmail: string;
@@ -41,7 +40,6 @@ export class PlaceABidComponent {
    .get()
    .subscribe((querySnapshot) => {
       querySnapshot.forEach((doc) => {
-        this.currentBidAmount = doc.get('currentBid');
         this.deadline = doc.get('deadline');
       });
     });
@@ -63,7 +61,7 @@ export class PlaceABidComponent {
           createdAt: Date.now(),
           status: "unread",
           subtitle_name: this.fileName,
-          body:this.data.userEmail+" place the below bid for this subtitle.\nBid: "+userBidAmount+"\nDeadline: "+deadline,
+          body:this.data.userEmail+" place the below bid for this subtitle.\nBid: "+userBidAmount + " €"+"\nDeadline: "+deadline,
           videoId: this.videoId,
           iso: this.data.requestDetails.iso,
           language: this.languageRequested,
@@ -85,12 +83,6 @@ export class PlaceABidComponent {
          .get()
          .subscribe((querySnapshot) => {
             querySnapshot.forEach((doc) => {
-              if(doc.get('currentBid') == 0){
-                doc.ref.update({currentBid: userBidAmount});
-              }
-              if (userBidAmount < doc.get('currentBid')){
-                doc.ref.update({currentBid: userBidAmount});
-              }
               const offerList = doc.get('offerList');
               if (Array.isArray(offerList)) {
                 const existingOffer = offerList.find(offer => offer.userEmail === this.data.userEmail);
