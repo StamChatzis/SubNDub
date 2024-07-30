@@ -1,5 +1,5 @@
 <mat-stepper [linear]="true">
-    <mat-step [editable]="false" label="Review your Subtitles" (selectionChange)="generateSSML()">
+    <mat-step [editable]="false" label="Review your Subtitles" (selectionchange)="generateSSML()">
         <div fxLayoutAlign="center center" fxLayout="column">
             <mat-card *ngFor="let subtitle of textContentSSML; let index = index">
                 <mat-card-header>

@@ -8,8 +8,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { HttpClient } from '@angular/common/http';
 import { CommunityHelpRequest } from '../models/firestore-schema/help-request.model';
 import { GmailUser } from '../models/firestore-schema/user.model';
-import {Language} from "../models/google/google-supported-languages";
-import {ForeignLanguage} from "../models/general/language-skills";
+import { ForeignLanguage } from "../models/general/language-skills";
 
 @Injectable({
   providedIn: 'root'

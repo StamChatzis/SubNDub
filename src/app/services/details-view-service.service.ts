@@ -6,6 +6,8 @@ import { GmailUser } from '../models/firestore-schema/user.model';
 import { NotifierService } from './notifier.service';
 import { EmailService } from './email.service';
 import { MatSnackBar } from "@angular/material/snack-bar";
+import {AngularFireStorage} from "@angular/fire/compat/storage";
+import {AngularFireStorageReference} from "@angular/fire/compat/storage/ref";
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +17,7 @@ export class DetailsViewServiceService {
 
   constructor(private firestore: AngularFirestore,
               private notifier: NotifierService,
-              private emailService: EmailService,
+              private storage: AngularFireStorage,
               private snackbar: MatSnackBar) {}
 
   getSubtitleLanguages(userUid: string, videoId: string): Observable<Language[]> {
@@ -57,7 +59,7 @@ export class DetailsViewServiceService {
       offerList: [],
       subtitleId: subtitleId
     }
- 
+
     let helpRef;
     if (subtitleId == ""){
       helpRef = this.firestore.collection(`helpRequests`, ref => ref.where('filename', '==', filename).where('language', '==', language).where('format', '==', format)
@@ -80,7 +82,7 @@ export class DetailsViewServiceService {
               deadline: deadline,
               offerList: []
             }).then(() => {this.notifier.showNotification("Subtitle has been successfully requested for a bid.","OK");});
-            
+
           }
           // Perform actions if filename exists
           else  this.notifier.showNotification("Subtitle has been already requested for a bid.","DIMISS");
@@ -121,6 +123,34 @@ export class DetailsViewServiceService {
 
       subtitleRef.set(data);
     })
+    this.createEmptyFileToStorage(userUid, videoId, language.language, (name + '.' + format))
+  }
+
+  createEmptyFileToStorage(uid: any, videoId: any, isoCode: any, filePath: any){
+    const pathString = `subtitles/${uid}/${videoId}/${isoCode}/${filePath}`;
+    let pathRef: AngularFireStorageReference;
+    pathRef = this.storage.ref(pathString);
+
+    const emptySub = new Blob([''], {type: 'text; charset=utf8'});
+
+    pathRef.put(emptySub).then(() => {
+      console.log('Success')
+      const subRef: AngularFirestoreDocument = this.firestore.doc(`users/${uid}/videos/${videoId}/subtitleLanguages/${isoCode}/subtitles/${filePath.split('.')[0]}`);
+      pathRef.getDownloadURL().pipe(take(1)).subscribe((url: URL) => {
+        subRef.update({
+          storageUrl: url,
+          lastUpdated: Date.now()
+        }).then(() => {
+          this.snackbar.open('Subtitle Created!','OK', {duration:3000});
+        }).catch(err => {
+          this.snackbar.open('Problem creating subtitle','DISMISS', {duration:4000});
+        });
+
+      })
+    },(reject) => {
+      this.snackbar.open(reject.message);
+    })
+
   }
 
   deleteSubtitle(videoId:any, uid:any, ISOcode:any, subName: any){
@@ -300,7 +330,7 @@ export class DetailsViewServiceService {
   addUserRightOnSub(videoId: string, ISOcode: string, language: string, userUid: string, name: string, format: string, email: string, right: string, subtitleId: any): void {
     const sharedVideoRef: AngularFirestoreCollection = this.firestore.collection('sharedVideos');
     const id = this.firestore.createId();
-  
+
     const data = {
       id: id,
       lastUpdated: Date.now(),
@@ -335,17 +365,17 @@ export class DetailsViewServiceService {
 
             if(subtitleId == undefined){
               if(substitleSharedId != undefined){
-                subtitleId = substitleSharedId; 
+                subtitleId = substitleSharedId;
               } else {
                 subtitleId = "";
               }
             }
-              
+
             sharedQuery = this.firestore.collection(`sharedVideos`, ref => ref.where('videoId', '==', videoId).where('iso', '==', ISOcode).where('language', '==', language)
               .where('fileName', '==', name).where("id","==", subtitleId));
           sharedQuery.get()
             .subscribe((querySnapshot) => {
-              
+
               if (!querySnapshot.empty) {
 
                 const sharedVideoRef = querySnapshot.docs[0].ref;

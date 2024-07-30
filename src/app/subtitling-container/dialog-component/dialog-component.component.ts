@@ -46,7 +46,7 @@ export class DialogComponentComponent implements OnInit {
   public uid: string;
   protected loading: boolean;
   public form: FormGroup;
-  public characters: CharacterAssign[];
+  public characters: CharacterAssign[] = [];
   public newCharacters: CharacterAssign[];
   public focusedDialogBox: number;
   protected isDirty: boolean = false;
@@ -503,7 +503,7 @@ export class DialogComponentComponent implements OnInit {
   handleFileDownload(type: string){
     let subtitle = this.subtitleName.split(".")[0]
 
-    const blob = this.createSubtitleBlob(type)
+    const blob = this.createSubtitleBlob(type.split('.')[1]);
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;

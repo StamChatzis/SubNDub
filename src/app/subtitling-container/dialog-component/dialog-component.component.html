@@ -44,7 +44,7 @@
           [dialogGroup] = "getDialogControl(dialogBox.id)"
           [index] = "dialogIndex"
           [dialogId] = "dialogBox.id"
-          [persons] = "characters"
+          [persons] = "characters.length <= 0 ? null : characters"
           [hasFocus] = "focusedDialogBox === dialogBox.id"
           [supportedLanguages] = "(supportedLanguages$ | async)?.data?.languages"
           (translateSubtitle) = "translateSingleSubtitle($event)"
