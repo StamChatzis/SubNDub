@@ -5,9 +5,9 @@
     <h3>Please select one or both types for your subtitle file to download</h3>
   </mat-dialog-content>
 
-  <div class="type-checkboxes">
-    <mat-checkbox (change)="onChecked('srt')">.SRT (Most common subtitle file type)</mat-checkbox>
-    <mat-checkbox (change)="onChecked('sbv')">.SBV (YouTube subtitle file type)</mat-checkbox>
+  <div class="type-checkboxes" [formGroup]="typeForm">
+    <mat-checkbox formControlName="srt" (change)="onChecked('srt')">.SRT (Most common subtitle file type)</mat-checkbox>
+    <mat-checkbox formControlName="sbv" (change)="onChecked('sbv')">.SBV (YouTube subtitle file type)</mat-checkbox>
   </div>
 
   <div class="options-sub-btn">

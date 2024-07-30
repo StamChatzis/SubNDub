@@ -30,6 +30,9 @@ import {
   DownloadOptionsDialogComponent
 } from "../../components/dialog-modal/download-options-dialog/download-options-dialog.component";
 import {DownloadFileHandlerService} from "../../services/download-file-handler.service";
+import {
+  TranslateSubsDialogComponent
+} from "../../components/dialog-modal/translate-subs-dialog/translate-subs-dialog.component";
 
 @Component({
   selector: 'dialog-component',
@@ -346,39 +349,46 @@ export class DialogComponentComponent implements OnInit {
     return minutes * 60 + seconds;
   }
 
-  translateAllSubtitles(targetLanguage: string): void {
-    let translationObject: GoogleTranslateRequestObject = {
-      q: [],
-      target: targetLanguage
-    };
-
-    let controllersToChange = {
-      controlsName : []
-    };
-
-    Object.keys(this.form.controls).forEach(control=> {
-      const controlValue = this.form.get(control).get('subtitles').value;
-      if (controlValue) {
-        translationObject.q.push(controlValue)
-        controllersToChange.controlsName.push(control)
-      }
-    });
-
-    if (translationObject.q) {
-      this.google.translate(translationObject).subscribe((response: GoogleTranslateResponse) => {
-        this._translatedText$.next(response);
-        let translationArray: GoogleTranslations[] = this._translatedText$.value.data['translations'];
-
-        if (translationArray) {
-          for (let i = 0; i < controllersToChange.controlsName.length; i++) {
-            const control = this.form.get(controllersToChange.controlsName[i]).get('subtitles');
-            control.setValue(translationArray[i].translatedText);
+  translateAllSubtitles(): void {
+    this.dialog.open(TranslateSubsDialogComponent, {'width': '600px'}).afterClosed()
+      .subscribe({
+        next: receivedData => {
+          if (receivedData) {
           }
         }
       });
-      this.formStatusChange.emit(true)
-      this.isDirty = true;
-    }
+    // let translationObject: GoogleTranslateRequestObject = {
+    //   q: [],
+    //   target: targetLanguage
+    // };
+    //
+    // let controllersToChange = {
+    //   controlsName : []
+    // };
+    //
+    // Object.keys(this.form.controls).forEach(control=> {
+    //   const controlValue = this.form.get(control).get('subtitles').value;
+    //   if (controlValue) {
+    //     translationObject.q.push(controlValue)
+    //     controllersToChange.controlsName.push(control)
+    //   }
+    // });
+    //
+    // if (translationObject.q) {
+    //   this.google.translate(translationObject).subscribe((response: GoogleTranslateResponse) => {
+    //     this._translatedText$.next(response);
+    //     let translationArray: GoogleTranslations[] = this._translatedText$.value.data['translations'];
+    //
+    //     if (translationArray) {
+    //       for (let i = 0; i < controllersToChange.controlsName.length; i++) {
+    //         const control = this.form.get(controllersToChange.controlsName[i]).get('subtitles');
+    //         control.setValue(translationArray[i].translatedText);
+    //       }
+    //     }
+    //   });
+    //   this.formStatusChange.emit(true)
+    //   this.isDirty = true;
+    // }
   }
 
   translateSingleSubtitle(targetLanguage: {lang: string, id: number}): void {
@@ -465,7 +475,7 @@ export class DialogComponentComponent implements OnInit {
   }
 
   openDownloadDialog(): void {
-    this.dialog.open(DownloadOptionsDialogComponent, {'width': '500px'}).afterClosed()
+    this.dialog.open(DownloadOptionsDialogComponent, {'width': '500px', data: this.subtitleName}).afterClosed()
       .subscribe({
         next: receivedData => {
           if(receivedData){

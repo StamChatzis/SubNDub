@@ -1,5 +1,6 @@
 import {Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA} from "@angular/material/dialog";
+import {FormControl, FormGroup} from "@angular/forms";
 
 @Component({
   selector: 'app-download-options-dialog',
@@ -12,8 +13,30 @@ export class DownloadOptionsDialogComponent {
   sbvChecked = false;
   atLeastOne = false;
   returnValue= ''
+  format: string
+  typeForm: FormGroup;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any) {}
+  constructor(@Inject(MAT_DIALOG_DATA) private subName: string) {
+    this.typeForm = new FormGroup({
+      srt: new FormControl(false),
+      sbv: new FormControl(false)
+    })
+
+    if(subName){
+      this.format = subName.split('.')[1]
+      switch (this.format){
+        case 'srt':
+          this.typeForm.controls['srt'].setValue(true)
+          this.srtChecked = !this.srtChecked;
+          break
+        case 'sbv':
+          this.typeForm.controls['sbv'].setValue(true)
+          this.sbvChecked = !this.sbvChecked;
+          break
+      }
+      this.atLeastOne = this.srtChecked || this.sbvChecked;
+    }
+  }
 
   onChecked(type: string){
     switch (type){
@@ -24,7 +47,6 @@ export class DownloadOptionsDialogComponent {
         this.sbvChecked = !this.sbvChecked;
         break
     }
-
     this.atLeastOne = this.srtChecked || this.sbvChecked;
 
     this.setUpReturnValue();

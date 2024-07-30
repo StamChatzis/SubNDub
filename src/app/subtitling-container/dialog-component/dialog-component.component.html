@@ -8,19 +8,19 @@
         (click)="batchAddDialogBox()"
         matTooltip="Batch Add Dialog Boxes"><mat-icon>library_add</mat-icon>
         </button>
-        <button mat-icon-button color="primary"
-            matTooltip="Translate all subtitles"
-            [matMenuTriggerFor]="translateMenu">
+        <button mat-icon-button color="primary" matTooltip="Translate all subtitles" (click)="translateAllSubtitles()">
+<!--            [matMenuTriggerFor]="translateMenu"-->
+
             <mat-icon>g_translate</mat-icon>
         </button>
-        <mat-menu #translateMenu="matMenu">
-            <sd-loader *ngIf="loading; else loadingComplete"></sd-loader>
-            <ng-template #loadingComplete>
-                <p mat-menu-item *ngFor="let language of (supportedLanguages$ | async)?.data?.languages" (click)="translateAllSubtitles(language.language)">
-                    {{language.name}}
-                </p>
-            </ng-template>
-        </mat-menu>
+<!--        <mat-menu #translateMenu="matMenu">-->
+<!--            <sd-loader *ngIf="loading; else loadingComplete"></sd-loader>-->
+<!--            <ng-template #loadingComplete>-->
+<!--                <p mat-menu-item *ngFor="let language of (supportedLanguages$ | async)?.data?.languages" (click)="translateAllSubtitles(language.language)">-->
+<!--                    {{language.name}}-->
+<!--                </p>-->
+<!--            </ng-template>-->
+<!--        </mat-menu>-->
         <import-button
           (fileContentEmit)="handleFileUpload($event)"
           (isFormDirty)="setIsFormDirty($event)"
@@ -29,14 +29,14 @@
         <button (click)="openDownloadDialog()" mat-icon-button color="primary" matTooltip="Download Subtitles">
             <mat-icon>file_download</mat-icon>
         </button>
-        <button (click)="uploadSubtitle()" mat-icon-button color="primary" matTooltip="Save">
-           <mat-icon>save</mat-icon>
-       </button>
        <button [disabled]="canOnlyView" (click)="openPersonCreationModal()" mat-icon-button color="primary" matTooltip="Manage Characters/Voice actors to assign them to subtitles">
             <mat-icon>person</mat-icon>
         </button>
         <button [disabled]="canOnlyView" (click)="checkIfChangesToGenerateSpeech()" mat-icon-button color="primary" matTooltip="Generete Voices/Speech for your subtitles">
           <mat-icon>record_voice_over</mat-icon>
+        </button>
+        <button (click)="uploadSubtitle()" mat-icon-button color="primary" matTooltip="Save">
+          <mat-icon>save</mat-icon>
         </button>
     </div>
     <div class="main-content_wrapper" #scrollContainer>

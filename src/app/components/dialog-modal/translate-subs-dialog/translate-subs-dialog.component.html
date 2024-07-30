@@ -1,0 +1,26 @@
+<h3 mat-dialog-title>Translate Subtitle</h3>
+
+<div class="radio-btn-wrapper" [formGroup]="radioBtnForm">
+  <mat-radio-group (change)="onSelection()" aria-label="Select an option" formControlName="radioBtn">
+    <div mat-dialog-content class="mat-typography">
+      <h3>Translate subtitles to target language</h3>
+    </div>
+    <div class="target-lang">
+      <mat-radio-button value = "1">Target Language</mat-radio-button>
+      <h3></h3>
+    </div>
+
+    <div mat-dialog-content class="mat-typography">
+      <h3>Or translate it to another language</h3>
+    </div>
+    <div class="another-lang">
+      <mat-radio-button value = "2">Another Language</mat-radio-button>
+
+    </div>
+  </mat-radio-group>
+</div>
+
+<div mat-dialog-actions align="end">
+  <button mat-raised-button color="warn" [mat-dialog-close]="null">Cancel</button>
+  <button mat-raised-button color="primary" [mat-dialog-close]="">Translate</button>
+</div>

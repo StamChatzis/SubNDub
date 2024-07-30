@@ -73,6 +73,8 @@ import { RequestCommunityHelpComponent } from './components/dialog-modal/request
 import { PlaceABidComponent } from './components/dialog-modal/place-a-bid/place-a-bid.component';
 import { DownloadOptionsDialogComponent } from './components/dialog-modal/download-options-dialog/download-options-dialog.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { TranslateSubsDialogComponent } from './components/dialog-modal/translate-subs-dialog/translate-subs-dialog.component';
+import { MatRadioModule } from '@angular/material/radio';
 
 @NgModule({
   declarations: [
@@ -114,7 +116,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     SharedVideoCardComponent,
     RequestCommunityHelpComponent,
     PlaceABidComponent,
-    DownloadOptionsDialogComponent
+    DownloadOptionsDialogComponent,
+    TranslateSubsDialogComponent
   ],
     imports: [
         BrowserModule,
@@ -151,7 +154,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
         NgOptimizedImage,
         MatGridListModule,
         MatSortModule,
-        MatCheckboxModule
+        MatCheckboxModule,
+        MatRadioModule
     ],
   providers: [DetailsViewServiceService],
   bootstrap: [AppComponent]
