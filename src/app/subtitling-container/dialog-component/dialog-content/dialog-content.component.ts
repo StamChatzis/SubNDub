@@ -4,7 +4,11 @@ import { CharacterAssign } from 'src/app/models/general/person-assign.model';
 import { Language} from 'src/app/models/google/google-supported-languages';
 import { YoutubeService } from 'src/app/services/youtube.service';
 import { calculateSeconds, parseTimestamp } from 'src/app/shared/functions/shared-functions';
-import {BehaviorSubject} from "rxjs";
+import {BehaviorSubject, Observable} from "rxjs";
+import {
+  TranslateSubsDialogComponent
+} from "../../../components/dialog-modal/translate-subs-dialog/translate-subs-dialog.component";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
   selector: 'dialog-content',
@@ -19,6 +23,7 @@ export class DialogContentComponent implements OnChanges {
   @Input() supportedLanguages: Language[];
   @Input() hasFocus: boolean;
   @Input() canOnlyView: boolean;
+  @Input() currentLanguage$: Observable<Language>
   @Output() deleteDialogBoxEvent: EventEmitter<number> = new EventEmitter();
   @Output() dialogEmitter: EventEmitter<TimeEmitterObject> = new EventEmitter();
   @Output() translateSubtitle: EventEmitter<{lang: string, id: number}> = new EventEmitter();
@@ -45,7 +50,8 @@ export class DialogContentComponent implements OnChanges {
     ['longer','Make this sentence longer']
   ])
 
-  constructor(private youtube: YoutubeService) {}
+  constructor(private youtube: YoutubeService,
+              public dialog: MatDialog) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     this.loading$.next(true)
@@ -84,8 +90,15 @@ export class DialogContentComponent implements OnChanges {
     this.assignedPerson = null;
   }
 
-  translateSub(lang: string): void {
-    this.translateSubtitle.emit({lang: lang, id: this.dialogId });
+  translateSub(): void {
+    this.dialog.open(TranslateSubsDialogComponent, {'width': '600px', data: this.currentLanguage$}).afterClosed()
+      .subscribe({
+        next: receivedData => {
+          if (receivedData) {
+            this.translateSubtitle.emit({lang: receivedData, id: this.dialogId });
+          }
+        }
+      });
   }
 
   chatGPTevent(action: string): void {

@@ -7,7 +7,7 @@ import {ImportModel} from 'src/app/models/general/import-sbv.model';
 import {GoogleTranslateService} from 'src/app/services/googletranslate.service';
 import {UploadFileHandlerService} from 'src/app/services/upload-file-handler.service';
 import {GoogleTranslateResponse, GoogleTranslations, ResponseObject} from 'src/app/models/google/google-translate-response'
-import {SupportedLanguages} from 'src/app/models/google/google-supported-languages';
+import {Language, SupportedLanguages} from 'src/app/models/google/google-supported-languages';
 import {TimeFormat} from 'src/app/models/general/time-format.model';
 import {ChatGPTACtion, TimeEmitterObject} from './dialog-content/dialog-content.component';
 import {calculateSeconds, parseTimestamp} from 'src/app/shared/functions/shared-functions';
@@ -59,6 +59,7 @@ export class DialogComponentComponent implements OnInit {
   @Input() videoId: string;
   @Input() isoCode: string;
   @Input() videoDuration: any;
+  @Input() currentLanguage$: Observable<Language>
   @Output() subtitleUploadEmitter: EventEmitter<Blob> = new EventEmitter<Blob>();
   @Output() formStatusChange: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() navigateTTS: EventEmitter<any> = new EventEmitter<any>();
@@ -350,45 +351,46 @@ export class DialogComponentComponent implements OnInit {
   }
 
   translateAllSubtitles(): void {
-    this.dialog.open(TranslateSubsDialogComponent, {'width': '600px'}).afterClosed()
+    this.dialog.open(TranslateSubsDialogComponent, {'width': '600px', data: this.currentLanguage$}).afterClosed()
       .subscribe({
         next: receivedData => {
           if (receivedData) {
+            let translationObject: GoogleTranslateRequestObject = {
+              q: [],
+              target: receivedData
+            };
+
+            let controllersToChange = {
+              controlsName : []
+            };
+
+            Object.keys(this.form.controls).forEach(control=> {
+              const controlValue = this.form.get(control).get('subtitles').value;
+              if (controlValue) {
+                translationObject.q.push(controlValue)
+                controllersToChange.controlsName.push(control)
+              }
+            });
+
+            if (translationObject.q) {
+              this.google.translate(translationObject).subscribe((response: GoogleTranslateResponse) => {
+                this._translatedText$.next(response);
+                let translationArray: GoogleTranslations[] = this._translatedText$.value.data['translations'];
+
+                if (translationArray) {
+                  for (let i = 0; i < controllersToChange.controlsName.length; i++) {
+                    const control = this.form.get(controllersToChange.controlsName[i]).get('subtitles');
+                    control.setValue(translationArray[i].translatedText);
+                  }
+                }
+              });
+              this.formStatusChange.emit(true)
+              this.isDirty = true;
+              this.snackbar.open('Subtitles translated successfully', 'OK', {duration:3500});
+            }
           }
         }
       });
-    // let translationObject: GoogleTranslateRequestObject = {
-    //   q: [],
-    //   target: targetLanguage
-    // };
-    //
-    // let controllersToChange = {
-    //   controlsName : []
-    // };
-    //
-    // Object.keys(this.form.controls).forEach(control=> {
-    //   const controlValue = this.form.get(control).get('subtitles').value;
-    //   if (controlValue) {
-    //     translationObject.q.push(controlValue)
-    //     controllersToChange.controlsName.push(control)
-    //   }
-    // });
-    //
-    // if (translationObject.q) {
-    //   this.google.translate(translationObject).subscribe((response: GoogleTranslateResponse) => {
-    //     this._translatedText$.next(response);
-    //     let translationArray: GoogleTranslations[] = this._translatedText$.value.data['translations'];
-    //
-    //     if (translationArray) {
-    //       for (let i = 0; i < controllersToChange.controlsName.length; i++) {
-    //         const control = this.form.get(controllersToChange.controlsName[i]).get('subtitles');
-    //         control.setValue(translationArray[i].translatedText);
-    //       }
-    //     }
-    //   });
-    //   this.formStatusChange.emit(true)
-    //   this.isDirty = true;
-    // }
   }
 
   translateSingleSubtitle(targetLanguage: {lang: string, id: number}): void {

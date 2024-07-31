@@ -10,7 +10,7 @@
           <h2>Name: {{fileName}}</h2>
         </div>
         <div class="lang-wrapper">
-          <h2>Language: {{(currentLanguage$ | async)}}</h2>
+          <h2>Language: {{(langName$ | async)}}</h2>
         </div>
       </div>
     </div>
@@ -25,6 +25,7 @@
           [videoId]="videoId"
           [subtitleName]="fileName"
           [videoDuration]="videoDuration | async"
+          [currentLanguage$]="currentLanguage$"
           (subtitleUploadEmitter)="uploadToFirestorage($event)"
           (navigateTTS)="navigateTTS()"
           (formStatusChange)="setFormDirtyStatus($event)"

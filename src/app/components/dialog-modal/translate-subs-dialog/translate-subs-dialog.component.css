@@ -1,0 +1,29 @@
+.radio-btn-wrapper{
+  height: auto;
+}
+
+.radio-btn{
+  margin-left:40px;
+}
+
+.target-lang{
+  display: flex;
+}
+
+.target-lang h3{
+  margin-left: 15px;
+  margin-top: 6px;
+}
+
+.another-lang{
+  display: flex;
+}
+
+.select-lang-menu{
+  margin-left: 15px;
+  margin-bottom: 5px;
+}
+
+.radio-btn.another{
+  margin-top: 10px;
+}

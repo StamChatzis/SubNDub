@@ -7,7 +7,7 @@ import { StorageService } from '../services/storage.service';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { MatDialog } from '@angular/material/dialog';
 import { UnsavedChangesDialogComponent } from '../components/dialog-modal/unsaved-changes-dialog/unsaved-changes-dialog.component';
-import { SupportedLanguages} from "../models/google/google-supported-languages";
+import {Language, SupportedLanguages} from "../models/google/google-supported-languages";
 import { GoogleTranslateService } from "../services/googletranslate.service";
 
 @Component({
@@ -20,7 +20,8 @@ export class SubtitlingContainerComponent implements OnInit {
 
   videoId: string;
   languageIsoCode: string;
-  currentLanguage$: Observable<string>;
+  _currentLanguage$: Observable<Language>
+  langName$: Observable<string>
   fileName: string;
   subFormat: string;
   isFormDirty: boolean = false;
@@ -38,7 +39,7 @@ export class SubtitlingContainerComponent implements OnInit {
     private storage: AngularFireStorage,
     private googleLangService: GoogleTranslateService,
     public dialog: MatDialog,
-    protected youtube: YoutubeService) { }
+    protected youtube: YoutubeService) {}
 
   ngOnInit(): void {
     this.videoId = this.route.snapshot.paramMap.get('id');
@@ -57,8 +58,11 @@ export class SubtitlingContainerComponent implements OnInit {
         this.loading$.next(false);
       }
     })
-
     this.getAvailableLanguages();
+  }
+
+  get currentLanguage$(): Observable<Language>{
+    return this._currentLanguage$
   }
 
   setFormDirtyStatus(isDirty: boolean): void {
@@ -82,9 +86,14 @@ export class SubtitlingContainerComponent implements OnInit {
       .subscribe((response: SupportedLanguages) => {
         this.availableLanguages$.next(response);
         this.loading$.next(false)
-        this.currentLanguage$ = this.availableLanguages$.pipe(
-          map(lang => lang!.data!.languages.find(language => language.language === this.languageIsoCode)?.name)
-        )
+        this._currentLanguage$ = this.availableLanguages$
+          .pipe(map(lang => lang!.data!.languages
+            .find(language => language.language === this.languageIsoCode))
+        );
+        this.langName$ = this.availableLanguages$
+          .pipe(map(lang => lang!.data!.languages
+            .find(language => language.language === this.languageIsoCode)?.name)
+          )
       });
   }
 

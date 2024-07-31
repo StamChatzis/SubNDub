@@ -4,41 +4,39 @@
             (click)="addDialogBox(null,true)"
             matTooltip="Add Dialog Box"><mat-icon>add</mat-icon>
         </button>
+
         <button mat-icon-button color="primary"
         (click)="batchAddDialogBox()"
         matTooltip="Batch Add Dialog Boxes"><mat-icon>library_add</mat-icon>
         </button>
-        <button mat-icon-button color="primary" matTooltip="Translate all subtitles" (click)="translateAllSubtitles()">
-<!--            [matMenuTriggerFor]="translateMenu"-->
 
+        <button mat-icon-button color="primary" matTooltip="Translate all subtitles" (click)="translateAllSubtitles()">
             <mat-icon>g_translate</mat-icon>
         </button>
-<!--        <mat-menu #translateMenu="matMenu">-->
-<!--            <sd-loader *ngIf="loading; else loadingComplete"></sd-loader>-->
-<!--            <ng-template #loadingComplete>-->
-<!--                <p mat-menu-item *ngFor="let language of (supportedLanguages$ | async)?.data?.languages" (click)="translateAllSubtitles(language.language)">-->
-<!--                    {{language.name}}-->
-<!--                </p>-->
-<!--            </ng-template>-->
-<!--        </mat-menu>-->
+
         <import-button
           (fileContentEmit)="handleFileUpload($event)"
           (isFormDirty)="setIsFormDirty($event)"
           [acceptedFiles]="'.sbv, .srt, .txt'">
         </import-button>
+
         <button (click)="openDownloadDialog()" mat-icon-button color="primary" matTooltip="Download Subtitles">
             <mat-icon>file_download</mat-icon>
         </button>
+
        <button [disabled]="canOnlyView" (click)="openPersonCreationModal()" mat-icon-button color="primary" matTooltip="Manage Characters/Voice actors to assign them to subtitles">
             <mat-icon>person</mat-icon>
         </button>
+
         <button [disabled]="canOnlyView" (click)="checkIfChangesToGenerateSpeech()" mat-icon-button color="primary" matTooltip="Generete Voices/Speech for your subtitles">
           <mat-icon>record_voice_over</mat-icon>
         </button>
+
         <button (click)="uploadSubtitle()" mat-icon-button color="primary" matTooltip="Save">
           <mat-icon>save</mat-icon>
         </button>
     </div>
+
     <div class="main-content_wrapper" #scrollContainer>
         <dialog-content *ngFor="let dialogBox of dialogBoxes; let dialogIndex = index"
           [dialogGroup] = "getDialogControl(dialogBox.id)"
@@ -47,6 +45,7 @@
           [persons] = "characters.length <= 0 ? null : characters"
           [hasFocus] = "focusedDialogBox === dialogBox.id"
           [supportedLanguages] = "(supportedLanguages$ | async)?.data?.languages"
+          [currentLanguage$]="currentLanguage$"
           (translateSubtitle) = "translateSingleSubtitle($event)"
           (chatGPTEventEmitter) = "chatGPTEventDispatcher($event)"
           (deleteDialogBoxEvent) = "deleteDialogBox($event)"

@@ -18,17 +18,9 @@
         </p>
       </mat-menu>
 
-      <button [disabled]="canOnlyView" mat-icon-button matTooltip="Translate this subtitle"
-        class="translate-sub-btn"
-        [matMenuTriggerFor]="translateMenu">
+      <button [disabled]="canOnlyView" mat-icon-button matTooltip="Translate this subtitle" class="translate-sub-btn" (click)="translateSub()">
         <mat-icon>g_translate</mat-icon>
       </button>
-      <mat-menu #translateMenu="matMenu">
-        <p mat-menu-item *ngFor="let language of (supportedLanguages)"
-        (click)="translateSub(language.language)">
-          {{language.name}}
-        </p>
-      </mat-menu>
 
       <button [disabled]="canOnlyView" mat-icon-button matTooltip="Assign Person to this subtitle"
         class="assign-person-btn"
