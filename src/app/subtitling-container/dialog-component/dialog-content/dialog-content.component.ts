@@ -1,9 +1,9 @@
-import { Component, ElementRef, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
-import { CharacterAssign } from 'src/app/models/general/person-assign.model';
-import { Language} from 'src/app/models/google/google-supported-languages';
-import { YoutubeService } from 'src/app/services/youtube.service';
-import { calculateSeconds, parseTimestamp } from 'src/app/shared/functions/shared-functions';
+import {Component, ElementRef, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild} from '@angular/core';
+import {FormControl, FormGroup} from '@angular/forms';
+import {CharacterAssign} from 'src/app/models/general/person-assign.model';
+import {Language} from 'src/app/models/google/google-supported-languages';
+import {YoutubeService} from 'src/app/services/youtube.service';
+import {calculateSeconds, parseTimestamp} from 'src/app/shared/functions/shared-functions';
 import {BehaviorSubject, Observable} from "rxjs";
 import {
   TranslateSubsDialogComponent
@@ -141,9 +141,7 @@ export class DialogContentComponent implements OnChanges {
     const estimatedTimeInMsForCharacters = this.characterCount * averageMsPerCharacter;
 
     // Combine word and character estimations
-    const totalEstimatedTime = estimatedTimeInMsForWords + estimatedTimeInMsForCharacters;
-
-    this.timingEstimation = totalEstimatedTime
+    this.timingEstimation = estimatedTimeInMsForWords + estimatedTimeInMsForCharacters
     this.subtitleValidityEstimation();
   }
 

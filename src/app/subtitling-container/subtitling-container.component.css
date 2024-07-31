@@ -19,14 +19,16 @@
 .sub-details-wrapper{
   margin-left: 100px;
   display: flex;
+  gap: 30px;
   margin-top: 10px;
 }
 
-.sub-name-wrapper h3{
+.sub-name-wrapper span, .lang-wrapper span{
+  font-size: 25px;
 }
 
 .lang-wrapper {
-  margin-left: 20px;
+  margin-left: 30px;
 }
 
 .back-button {

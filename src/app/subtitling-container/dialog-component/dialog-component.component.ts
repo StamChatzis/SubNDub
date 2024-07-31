@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output, QueryList, ViewChild, ViewChildren} from '@angular/core';
-import {AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn} from '@angular/forms';
+import {AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators} from '@angular/forms';
 import {BehaviorSubject, Observable, skip, take, tap} from 'rxjs';
 import {DialogBox} from 'src/app/models/general/dialog-box.model';
 import {GoogleTranslateRequestObject} from 'src/app/models/google/google-translate-request';
@@ -122,7 +122,7 @@ export class DialogComponentComponent implements OnInit {
 
     this.form = this.fb.group({
       '1-dialogBox': this.fb.group({
-        subtitles: this.fb.control(''),
+        subtitles: this.fb.control('', [Validators.pattern('')]),
         start_time: this.fb.control('00:00.000'),
         end_time: this.fb.control('00:02.000'),
         })

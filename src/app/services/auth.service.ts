@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { GoogleAuthProvider } from '@angular/fire/auth';
 import { BehaviorSubject, Observable, of, switchMap } from 'rxjs';
 import { GmailUser, Video } from 'src/app/models/firestore-schema/user.model';
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Injectable({
   providedIn: 'root'
@@ -22,8 +23,10 @@ export class AuthService  {
     return this.loggedIn$.value;
   }
 
-  constructor(private fireAuth: AngularFireAuth, private firestore: AngularFirestore,
-    private router: Router) {
+  constructor(private fireAuth: AngularFireAuth,
+              private firestore: AngularFirestore,
+              private router: Router,
+              private snackbar: MatSnackBar) {
     this.user$ = this.fireAuth.authState.pipe(
       switchMap((user) => {
         if (user) {
@@ -48,6 +51,7 @@ export class AuthService  {
           this.router.navigate(['dashboard']);
         }else{
           this.createNewUserData(credential.user);
+          this.snackbar.open('As a new user please set up your account', 'OK', {duration: 6000});
           this.router.navigate(['profile']);
         }
       })
