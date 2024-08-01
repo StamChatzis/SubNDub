@@ -35,6 +35,7 @@ export class DownloadOptionsDialogComponent {
           break
       }
       this.atLeastOne = this.srtChecked || this.sbvChecked;
+      this.setUpReturnValue();
     }
   }
 

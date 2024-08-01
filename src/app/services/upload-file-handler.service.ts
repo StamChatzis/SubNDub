@@ -1,16 +1,24 @@
 import { Injectable } from '@angular/core';
 import { ImportModel } from 'src/app/models/general/import-sbv.model';
+import { GoogleTranslateService } from "./googletranslate.service";
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class UploadFileHandlerService {
 
-  constructor() { }
+  constructor(private googleTranslate: GoogleTranslateService) { }
 
   cleanMultilineString(input: string): ImportModel[] {
     const lines = input.trim().replace(/(\r|\r)/gm, '').split('\n');
-
     const subtitleObjects = [];
-    let currentSubtitle: ImportModel = {start_time: '', end_time:'', subtitleText:''};
+
+    let currentSubtitle: ImportModel = {
+      start_time: '',
+      end_time:'',
+      subtitleText:''
+    };
+
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i].trim();
       const timestampRegex = /^(\d{1,2}:\d{2}:\d{2}\.\d{3}),(\d{1,2}:\d{2}:\d{2}\.\d{3})$/;
@@ -23,6 +31,7 @@ export class UploadFileHandlerService {
           subtitleText: ""
          };
         subtitleObjects.push(currentSubtitle);
+
       } else if (line !== "") {
         currentSubtitle.subtitleText += line + ' ';
       }

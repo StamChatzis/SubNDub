@@ -1,0 +1,18 @@
+<main>
+  <mat-dialog-content>
+    <h2 mat-dialog-title>Different Language detected!</h2>
+
+    <h3>
+      In subtitle file has been detected different language from the target language!<br/>
+      Do you want to translate it to {{langName}} or keep as it is?
+    </h3>
+
+    <div class="options-sub-btn">
+      <mat-dialog-actions align="end">
+        <button mat-raised-button color="warn" [mat-dialog-close]=null>Keep as it is</button>
+        <button mat-raised-button color="primary" [mat-dialog-close]=targetLanguage>Translate it</button>
+      </mat-dialog-actions>
+    </div>
+  </mat-dialog-content>
+
+</main>

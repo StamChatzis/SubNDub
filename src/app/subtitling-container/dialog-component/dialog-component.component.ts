@@ -26,13 +26,10 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 import {CharactersService} from "../../services/characters.service";
 import {GmailUser} from "../../models/firestore-schema/user.model";
 import {AuthService} from "../../services/auth.service";
-import {
-  DownloadOptionsDialogComponent
-} from "../../components/dialog-modal/download-options-dialog/download-options-dialog.component";
+import {DownloadOptionsDialogComponent} from "../../components/dialog-modal/download-options-dialog/download-options-dialog.component";
 import {DownloadFileHandlerService} from "../../services/download-file-handler.service";
-import {
-  TranslateSubsDialogComponent
-} from "../../components/dialog-modal/translate-subs-dialog/translate-subs-dialog.component";
+import {TranslateSubsDialogComponent} from "../../components/dialog-modal/translate-subs-dialog/translate-subs-dialog.component";
+import {DetectLanguageDialogComponent} from "../../components/dialog-modal/detect-language-dialog/detect-language-dialog.component";
 
 @Component({
   selector: 'dialog-component',
@@ -350,47 +347,51 @@ export class DialogComponentComponent implements OnInit {
     return minutes * 60 + seconds;
   }
 
-  translateAllSubtitles(): void {
+  openDialogToTranslateSubtitles(): void {
     this.dialog.open(TranslateSubsDialogComponent, {'width': '600px', data: this.currentLanguage$}).afterClosed()
       .subscribe({
         next: receivedData => {
           if (receivedData) {
-            let translationObject: GoogleTranslateRequestObject = {
-              q: [],
-              target: receivedData
-            };
-
-            let controllersToChange = {
-              controlsName : []
-            };
-
-            Object.keys(this.form.controls).forEach(control=> {
-              const controlValue = this.form.get(control).get('subtitles').value;
-              if (controlValue) {
-                translationObject.q.push(controlValue)
-                controllersToChange.controlsName.push(control)
-              }
-            });
-
-            if (translationObject.q) {
-              this.google.translate(translationObject).subscribe((response: GoogleTranslateResponse) => {
-                this._translatedText$.next(response);
-                let translationArray: GoogleTranslations[] = this._translatedText$.value.data['translations'];
-
-                if (translationArray) {
-                  for (let i = 0; i < controllersToChange.controlsName.length; i++) {
-                    const control = this.form.get(controllersToChange.controlsName[i]).get('subtitles');
-                    control.setValue(translationArray[i].translatedText);
-                  }
-                }
-              });
-              this.formStatusChange.emit(true)
-              this.isDirty = true;
-              this.snackbar.open('Subtitles translated successfully', 'OK', {duration:3500});
-            }
+            this.translateAllSubtitles(receivedData)
           }
         }
       });
+  }
+
+  translateAllSubtitles(lang: any){
+    let translationObject: GoogleTranslateRequestObject = {
+      q: [],
+      target: lang
+    };
+
+    let controllersToChange = {
+      controlsName : []
+    };
+
+    Object.keys(this.form.controls).forEach(control=> {
+      const controlValue = this.form.get(control).get('subtitles').value;
+      if (controlValue) {
+        translationObject.q.push(controlValue)
+        controllersToChange.controlsName.push(control)
+      }
+    });
+
+    if (translationObject.q) {
+      this.google.translate(translationObject).subscribe((response: GoogleTranslateResponse) => {
+        this._translatedText$.next(response);
+        let translationArray: GoogleTranslations[] = this._translatedText$.value.data['translations'];
+
+        if (translationArray) {
+          for (let i = 0; i < controllersToChange.controlsName.length; i++) {
+            const control = this.form.get(controllersToChange.controlsName[i]).get('subtitles');
+            control.setValue(translationArray[i].translatedText);
+          }
+        }
+      });
+      this.formStatusChange.emit(true)
+      this.isDirty = true;
+      this.snackbar.open('Subtitles translated successfully', 'OK', {duration:3500});
+    }
   }
 
   translateSingleSubtitle(targetLanguage: {lang: string, id: number}): void {
@@ -528,7 +529,12 @@ export class DialogComponentComponent implements OnInit {
 
   handleFileUpload(event: any): void {
     let fileContent = event.data.value as string;
-    let cleanArray = [];
+    let cleanArray: ImportModel[] = [];
+    let length = 0;
+    let totalDialogs = 0;
+    let sameLangNo = 0;
+    let percentage: number;
+
     switch (event.format) {
       case ('sbv'):
         cleanArray = this.fileService.cleanMultilineString(fileContent);
@@ -552,9 +558,41 @@ export class DialogComponentComponent implements OnInit {
       this.dialogBoxes = [];
       this.dialogBoxId = 0;
 
+      length = cleanArray.length
+
       for (let individualSub of cleanArray) {
         this.addDialogBox(individualSub, false);
+        if(individualSub.subtitleText.length > 0){
+          this.google.detectLanguage(individualSub.subtitleText).subscribe({
+            next: data => {
+              if(data){(data.data.detections[0]["0"].language === this.isoCode) ? sameLangNo += 1 : sameLangNo += 0}
+            },error: err => {
+              console.error(err)
+            },complete: () => {
+              totalDialogs += 1
+              if(totalDialogs == length){
+                percentage = sameLangNo/totalDialogs * 100
+                this.checkIfSubIsDifferentLang(percentage)
+              }
+            }
+          })
+        }else{
+          length -= 1
+        }
       }
+    }
+  }
+
+  checkIfSubIsDifferentLang(percentage: number){
+    if(percentage < 50){
+      this.dialog.open(DetectLanguageDialogComponent, {'width': '500px', data: this.currentLanguage$}).afterClosed()
+        .subscribe({
+          next: receivedData => {
+            if(receivedData){
+              this.translateAllSubtitles(receivedData)
+            }
+          }
+        })
     }
   }
 
