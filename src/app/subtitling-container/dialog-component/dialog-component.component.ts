@@ -44,7 +44,6 @@ export class DialogComponentComponent implements OnInit {
   public _translatedText$: BehaviorSubject<GoogleTranslateResponse> = new BehaviorSubject<GoogleTranslateResponse>(null);
   public subtitles$: BehaviorSubject<string> = new BehaviorSubject<string>(null);
   public uid: string;
-  protected loading: boolean;
   public form: FormGroup;
   public characters: CharacterAssign[] = [];
   public newCharacters: CharacterAssign[];
@@ -57,6 +56,7 @@ export class DialogComponentComponent implements OnInit {
   @Input() isoCode: string;
   @Input() videoDuration: any;
   @Input() currentLanguage$: Observable<Language>
+  @Output() loading$: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() subtitleUploadEmitter: EventEmitter<Blob> = new EventEmitter<Blob>();
   @Output() formStatusChange: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() navigateTTS: EventEmitter<any> = new EventEmitter<any>();
@@ -91,6 +91,7 @@ export class DialogComponentComponent implements OnInit {
 
   ngOnInit(): void {
     this.user$ = this.auth.user;
+    this.loading$.emit(true)
     this.user$.subscribe({
       next: user => {
         if (user) {
@@ -149,6 +150,11 @@ export class DialogComponentComponent implements OnInit {
       }
     })
     this.getSupportedLanguages();
+    this.loading$.emit(false)
+  }
+
+  setLoading(load: boolean){
+    this.loading$.emit(false)
   }
 
   setFocusToDialogBoxItem(dialogBoxItemId: number) {
@@ -190,24 +196,28 @@ export class DialogComponentComponent implements OnInit {
   }
 
   batchAddDialogBox(): void {
-    this.dialog.open(BatchDialogModalComponent)
+    this.formStatusChange.emit(true);
+    this.dialog.open(BatchDialogModalComponent, {'width': '500px'})
       .afterClosed()
       .pipe(take(1))
       .subscribe((interval: number) => {
-      if (interval > 0) {
-        const seconds = this.parseISOtoSeconds(this.videoDuration);
-        const controlNames = Object.keys(this.form.controls);
-        let lastControlName = controlNames[controlNames.length - 1];
+        if (interval > 0) {
 
-        for (let i = parseInt(lastControlName.split('-')[0]); i < seconds / interval; i ++) {
-          this.addDialogBox({
-            start_time: this.form.get(i + '-dialogBox').get('end_time').value,
-            end_time: this.intervalAddition(this.form.get(i + '-dialogBox').get('end_time').value, interval),
-            subtitleText: ''
-          }, true);
+          const seconds = this.videoDurationToSeconds(this.videoDuration);
+          const controlNames = Object.keys(this.form.controls);
+          let lastControlName = controlNames[controlNames.length - 1];
+
+          for (let i = parseInt(lastControlName.split('-')[0]); i < seconds / interval; i ++) {
+            this.addDialogBox({
+              start_time: this.form.get(i + '-dialogBox').get('end_time').value,
+              end_time: this.intervalAddition(this.form.get(i + '-dialogBox').get('end_time').value, interval),
+              subtitleText: ''
+            }, true);
+          }
+
         }
-      }
     });
+    this.formStatusChange.emit(false);
   }
 
   intervalAddition(inputValue: string, intervalInSeconds: number): string {
@@ -230,8 +240,8 @@ export class DialogComponentComponent implements OnInit {
     return `${String(newMinutes).padStart(2, '0')}:${String(newSeconds).padStart(2, '0')}.${String(newMilliseconds).padStart(3, '0')}`;
   }
 
-  parseISOtoSeconds(ISOdate: any): number {
-    let match = ISOdate.match(/PT(\d+H)?(\d+M)?(\d+S)?/);
+  videoDurationToSeconds(duration: any): number {
+    let match = duration.match(/PT(\d+H)?(\d+M)?(\d+S)?/);
     match = match.slice(1).map(function(x) {
       if (x != null) {
           return x.replace(/\D/, '');
@@ -426,11 +436,9 @@ export class DialogComponentComponent implements OnInit {
   getSupportedLanguages(): void {
     this.google.getSupportedLanguages()
     .pipe(tap(() => {
-      this.loading = true;
     }))
     .subscribe((response: SupportedLanguages) => {
       this._supportedLanguages$.next(response);
-      this.loading = false;
     });
   }
 

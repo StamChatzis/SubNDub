@@ -24,6 +24,7 @@ export class DialogContentComponent implements OnChanges {
   @Input() hasFocus: boolean;
   @Input() canOnlyView: boolean;
   @Input() currentLanguage$: Observable<Language>
+  @Output() loading$: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() deleteDialogBoxEvent: EventEmitter<number> = new EventEmitter();
   @Output() dialogEmitter: EventEmitter<TimeEmitterObject> = new EventEmitter();
   @Output() translateSubtitle: EventEmitter<{lang: string, id: number}> = new EventEmitter();
@@ -40,7 +41,6 @@ export class DialogContentComponent implements OnChanges {
   timingEstimation: number = 0;
   estimationTooltip: string;
   estimationIcon: string;
-  loading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
 
   readonly openAIMenuMap = new Map([
     ['translate','Translate this sentence'],
@@ -54,14 +54,14 @@ export class DialogContentComponent implements OnChanges {
               public dialog: MatDialog) {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.loading$.next(true)
+    this.loading$.emit(true);
     if (changes?.hasFocus?.currentValue === true) {
       this.cardElement?.nativeElement?.scrollIntoView({behavior: 'smooth', block: 'center'})
     }
     this.wordCounter();
     this.characterCounter();
     this.subtitlingTimingEstimation()
-    this.loading$.next(false)
+    this.loading$.emit(false);
   }
 
   getDialogControl(control: string): FormControl {

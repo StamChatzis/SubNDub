@@ -46,6 +46,7 @@
           [hasFocus] = "focusedDialogBox === dialogBox.id"
           [supportedLanguages] = "(supportedLanguages$ | async)?.data?.languages"
           [currentLanguage$]="currentLanguage$"
+          (loading$) = "setLoading($event)"
           (translateSubtitle) = "translateSingleSubtitle($event)"
           (chatGPTEventEmitter) = "chatGPTEventDispatcher($event)"
           (deleteDialogBoxEvent) = "deleteDialogBox($event)"
