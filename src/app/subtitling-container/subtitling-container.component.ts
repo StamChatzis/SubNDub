@@ -69,6 +69,10 @@ export class SubtitlingContainerComponent implements OnInit {
     this.isFormDirty = isDirty;
   }
 
+  setLoading(load: boolean){
+    this.loading$.next(load);
+  }
+
   uploadToFirestorage(subtitle: Blob): void {
     this.isFormDirty = false;
     this.storageService.createFirestorageRef(this.storage, this.languageIsoCode, subtitle, this.videoId, this.fileName);

@@ -11,5 +11,5 @@
 </div>
 <mat-dialog-actions align="end">
   <button mat-raised-button color="warn" [mat-dialog-close]="null">Cancel</button>
-  <button mat-raised-button color="primary" [disabled]="(interval.value == '' || +interval.value <= 0)" [mat-dialog-close]="interval.value" >Create</button>
+  <button mat-raised-button color="primary" (click)="onClickToCreateBatch()" [disabled]="(interval.value == '' || +interval.value <= 0)" [mat-dialog-close]="interval.value" >Create</button>
 </mat-dialog-actions>

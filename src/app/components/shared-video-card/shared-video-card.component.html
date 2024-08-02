@@ -6,7 +6,7 @@
 	</div>
 	<div class="details">
 		<div class="info">
-			<div class="title" > 
+			<div class="title" >
 				{{ (videoDetails?.snippet?.title?.length > 50) ? (videoDetails?.snippet?.title | slice:0:50) + '...' : (videoDetails?.snippet?.title) }}
 			</div>
 			<div class="channel-name">{{videoDetails?.snippet?.channelTitle}}</div>
@@ -17,7 +17,7 @@
 		</div>
 	</div>
 	<div class="actions">
-			<mat-icon (click)="editVideo(sharedVideoDetails)" matTooltip="Go to Video Details">edit</mat-icon>
+			<mat-icon class="go-to-settings-icon" (click)="editVideo(sharedVideoDetails)" matTooltip="Go to Video Details">edit</mat-icon>
 	</div>
 </div>
 

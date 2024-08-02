@@ -34,7 +34,9 @@
           <button mat-mini-fab color="primary" matTooltip="Add new subtitle" (click)="addSubtitle()"><mat-icon>add</mat-icon></button>
           <button mat-mini-fab color="primary" matTooltip="Export all subtitles" (click)="exportAllSubtitles()"><mat-icon>file_upload</mat-icon></button>
         </div>
+
         <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
           <ng-container matColumnDef="Name">
             <th mat-header-cell *matHeaderCellDef> Name </th>
             <td class="mat-cell-name-data" mat-cell *matCellDef="let element"> {{element.fileName}} </td>

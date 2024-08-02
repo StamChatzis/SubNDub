@@ -26,6 +26,7 @@
           [subtitleName]="fileName"
           [videoDuration]="videoDuration | async"
           [currentLanguage$]="currentLanguage$"
+          (loading$)="setLoading($event)"
           (subtitleUploadEmitter)="uploadToFirestorage($event)"
           (navigateTTS)="navigateTTS()"
           (formStatusChange)="setFormDirtyStatus($event)"

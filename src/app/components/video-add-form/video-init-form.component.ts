@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
@@ -7,7 +7,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
   templateUrl: './video-init-form.component.html',
   styleUrls: ['./video-init-form.component.css']
 })
-export class VideoInitFormComponent {
+export class VideoInitFormComponent implements OnInit{
   form: FormGroup;
   youtubeVideoId: string;
 
@@ -25,10 +25,10 @@ export class VideoInitFormComponent {
   onSubmit(): void {
     if (this.form.valid) {
       const controllerValue = this.form?.get('youtubeUrl')?.value as string;
-      var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
-      var match = controllerValue.match(regExp);
+      let regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+      let match = controllerValue.match(regExp);
       this.youtubeVideoId = (match && match[7].length === 11) ? match[7] : null;
-      //exctract the video id from all possible youtube url combinations
+      //extract the video id from all possible YouTube url combinations
 
       this.dialogRef.close(this.youtubeVideoId);
     }

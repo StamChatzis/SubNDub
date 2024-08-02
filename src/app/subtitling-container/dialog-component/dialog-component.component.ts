@@ -30,6 +30,7 @@ import {DownloadOptionsDialogComponent} from "../../components/dialog-modal/down
 import {DownloadFileHandlerService} from "../../services/download-file-handler.service";
 import {TranslateSubsDialogComponent} from "../../components/dialog-modal/translate-subs-dialog/translate-subs-dialog.component";
 import {DetectLanguageDialogComponent} from "../../components/dialog-modal/detect-language-dialog/detect-language-dialog.component";
+import {LoadingService} from "../../services/loading.service";
 
 @Component({
   selector: 'dialog-component',
@@ -48,6 +49,7 @@ export class DialogComponentComponent implements OnInit {
   public characters: CharacterAssign[] = [];
   public newCharacters: CharacterAssign[];
   public focusedDialogBox: number;
+  public loading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null)
   protected isDirty: boolean = false;
   @Input() canOnlyView: boolean;
   @Input() initSubtitles: boolean = true;
@@ -86,7 +88,8 @@ export class DialogComponentComponent implements OnInit {
     private snackbar: MatSnackBar,
     private charService: CharactersService,
     private auth: AuthService,
-    private downService: DownloadFileHandlerService
+    private downService: DownloadFileHandlerService,
+    private loadingService: LoadingService
     ) {}
 
   ngOnInit(): void {
@@ -105,6 +108,10 @@ export class DialogComponentComponent implements OnInit {
             })
         }
       }
+    })
+
+    this.loadingService.loading$.subscribe(isLoading => {
+      this.loading.next(isLoading)
     })
 
     if (this.initSubtitles) {
@@ -154,7 +161,7 @@ export class DialogComponentComponent implements OnInit {
   }
 
   setLoading(load: boolean){
-    this.loading$.emit(false)
+    this.loading$.emit(load)
   }
 
   setFocusToDialogBoxItem(dialogBoxItemId: number) {
@@ -195,29 +202,36 @@ export class DialogComponentComponent implements OnInit {
     }
   }
 
-  batchAddDialogBox(): void {
-    this.formStatusChange.emit(true);
+  openDialogForBatchDialogCreation(): void {
     this.dialog.open(BatchDialogModalComponent, {'width': '500px'})
       .afterClosed()
       .pipe(take(1))
-      .subscribe((interval: number) => {
-        if (interval > 0) {
-
-          const seconds = this.videoDurationToSeconds(this.videoDuration);
-          const controlNames = Object.keys(this.form.controls);
-          let lastControlName = controlNames[controlNames.length - 1];
-
-          for (let i = parseInt(lastControlName.split('-')[0]); i < seconds / interval; i ++) {
-            this.addDialogBox({
-              start_time: this.form.get(i + '-dialogBox').get('end_time').value,
-              end_time: this.intervalAddition(this.form.get(i + '-dialogBox').get('end_time').value, interval),
-              subtitleText: ''
-            }, true);
+      .subscribe({
+        next: interval => {
+          if (interval > 0) {
+            this.batchCreateDialog(interval);
           }
-
+        },
+        error: err => {
+          console.error(err)
         }
-    });
-    this.formStatusChange.emit(false);
+      });
+  }
+
+  batchCreateDialog(interval: number){
+    this.formStatusChange.emit(true);
+    const seconds = this.videoDurationToSeconds(this.videoDuration);
+    const controlNames = Object.keys(this.form.controls);
+    let lastControlName = controlNames[controlNames.length - 1];
+
+    for (let i = parseInt(lastControlName.split('-')[0]); i < seconds / interval; i ++) {
+      this.addDialogBox({
+        start_time: this.form.get(i + '-dialogBox').get('end_time').value,
+        end_time: this.intervalAddition(this.form.get(i + '-dialogBox').get('end_time').value, interval),
+        subtitleText: ''
+      }, true);
+    }
+    this.loadingService.setLoading(false)
   }
 
   intervalAddition(inputValue: string, intervalInSeconds: number): string {
