@@ -1,0 +1,36 @@
+button {
+    margin-right: 8px;
+  }
+  
+  h4 {
+    font-weight: 600;
+  }
+  
+  p {
+    font-weight: 500;
+  }
+  
+  mat-dialog-actions {
+    justify-content: flex-end;
+    margin-top: 16px; 
+  }
+  
+  .commentArea {
+    display: inline-block;
+    width: 416px; 
+    min-height: 50px !important; 
+    padding: 5px;
+    font-size: 16px;
+    vertical-align: middle;
+    margin: 0 5px; 
+    margin-top: 10px;
+  }
+ 
+  .right-bottom {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 16px; /* adjust the margin to your liking */
+    position: absolute;
+    bottom: 0;
+    right: 0;
+  }

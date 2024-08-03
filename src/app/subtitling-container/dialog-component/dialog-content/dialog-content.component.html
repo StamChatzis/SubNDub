@@ -50,8 +50,13 @@
 
     </mat-card-header>
     <mat-card-content>
+        <div *ngIf="!canOnlyView">
+          <button matTooltip="Add comment" subscriptSizing="dynamic" mat-icon-button (click)="openCommentDialog()">
+            <mat-icon>comment</mat-icon>
+          </button>
+        </div>
         <mat-form-field subscriptSizing="dynamic">
-          <textarea class="sub-text-area" [readonly]="canOnlyView" matInput (input)="wordCounter(); characterCounter(); subtitlingTimingEstimation();"
+          <textarea #textarea class="sub-text-area" [readonly]="canOnlyView" matInput (input)="wordCounter(); characterCounter(); subtitlingTimingEstimation();"
             (click)="seekToPlayer(dialogGroup.get('start_time').value)"  [formControl]="getDialogControl('subtitles')" type="text"></textarea>
         </mat-form-field>
 

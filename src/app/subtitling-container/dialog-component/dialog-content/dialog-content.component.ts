@@ -9,6 +9,7 @@ import {
   TranslateSubsDialogComponent
 } from "../../../components/dialog-modal/translate-subs-dialog/translate-subs-dialog.component";
 import {MatDialog} from "@angular/material/dialog";
+import { CommentDialogComponent } from 'src/app/components/dialog-modal/comment-dialog/comment-dialog.component';
 
 @Component({
   selector: 'dialog-content',
@@ -34,6 +35,7 @@ export class DialogContentComponent implements OnChanges {
   @ViewChild('translateMenu') translateMenu;
   @ViewChild('assingPersonMenu') assignPersonMenu;
   @ViewChild('openAIMenu') openAIMenu;
+  @ViewChild('textarea') textarea: ElementRef;
 
   assignedPerson: CharacterAssign;
   wordCount: number = 0;
@@ -41,6 +43,7 @@ export class DialogContentComponent implements OnChanges {
   timingEstimation: number = 0;
   estimationTooltip: string;
   estimationIcon: string;
+
 
   readonly openAIMenuMap = new Map([
     ['translate','Translate this sentence'],
@@ -63,6 +66,20 @@ export class DialogContentComponent implements OnChanges {
     this.subtitlingTimingEstimation()
     this.loading$.emit(false);
   }
+
+  openCommentDialog(): void {
+    const dialogRef = this.dialog.open(CommentDialogComponent, {
+      width: '440px', height:'250px'
+    });
+  
+    dialogRef.afterClosed().subscribe(comment => {
+      if (comment) {
+        const newComment = `#${comment}#`;
+        const control = this.getDialogControl('subtitles');
+        control.setValue(`${newComment}\n${control.value}`);
+      }
+    });
+  }  
 
   getDialogControl(control: string): FormControl {
     return this.dialogGroup.get(control) as FormControl

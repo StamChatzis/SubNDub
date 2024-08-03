@@ -76,6 +76,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { TranslateSubsDialogComponent } from './components/dialog-modal/translate-subs-dialog/translate-subs-dialog.component';
 import { MatRadioModule } from '@angular/material/radio';
 import { DetectLanguageDialogComponent } from './components/dialog-modal/detect-language-dialog/detect-language-dialog.component';
+import { CommentDialogComponent } from './components/dialog-modal/comment-dialog/comment-dialog.component';
 
 @NgModule({
   declarations: [
@@ -119,7 +120,8 @@ import { DetectLanguageDialogComponent } from './components/dialog-modal/detect-
     PlaceABidComponent,
     DownloadOptionsDialogComponent,
     TranslateSubsDialogComponent,
-    DetectLanguageDialogComponent
+    DetectLanguageDialogComponent,
+    CommentDialogComponent
   ],
     imports: [
         BrowserModule,
