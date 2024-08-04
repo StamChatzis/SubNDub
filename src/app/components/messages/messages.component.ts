@@ -117,6 +117,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
       this.messagesService.updateSub(message)
       .then(() => this.messagesService.resetRequestOwnerEmail(message))
       .catch(error => console.error(error))
+      .then(() => this.messagesService.sendInfoMessage(message, this.useruid))
       .then(() => this.messagesService.deleteMessageFromUserMessages(message, this.useruid))
       .catch(error => console.error("Error accepting transfer ownership:", error));
       

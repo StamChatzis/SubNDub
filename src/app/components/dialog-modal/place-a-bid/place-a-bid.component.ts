@@ -2,6 +2,7 @@ import { Component, Inject } from '@angular/core';
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/compat/firestore';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { CommunityHelpService } from 'src/app/services/community-help.service';
 
 @Component({
   selector: 'app-place-a-bid',
@@ -20,7 +21,7 @@ export class PlaceABidComponent {
   bidDeadline: any;
   today: string;
 
-  constructor(private firestore: AngularFirestore, public dialogRef: MatDialogRef<PlaceABidComponent>,  @Inject(MAT_DIALOG_DATA) public data: any,private snackbar: MatSnackBar)
+  constructor(private firestore: AngularFirestore, private communityService: CommunityHelpService, public dialogRef: MatDialogRef<PlaceABidComponent>,  @Inject(MAT_DIALOG_DATA) public data: any,private snackbar: MatSnackBar)
   {
     this.videoTitle = data.videoTitle;
     this.languageRequested = data.language;
@@ -46,6 +47,13 @@ export class PlaceABidComponent {
   }
 
   placeBid(userBidAmount: number, deadline: any) {
+    let userName;
+    this.communityService.getUserNameFromEmail(this.data.userEmail).subscribe((email) => {
+        userName =email;
+    });
+
+    
+
     this.firestore.collection('users', ref => {
       return ref.where('uid', '==', this.requestedByID);
     })
@@ -53,7 +61,7 @@ export class PlaceABidComponent {
    .subscribe((querySnapshot) => {
       querySnapshot.forEach((doc) => {
         this.requestorEmail = doc.get('email');
-  
+        
         const data = { 
           sender: this.data.userEmail,
           recipient: this.requestorEmail,
@@ -61,7 +69,7 @@ export class PlaceABidComponent {
           createdAt: Date.now(),
           status: "unread",
           subtitle_name: this.fileName,
-          body:this.data.userEmail+" place the below bid for this subtitle.\nBid: "+userBidAmount + " €"+"\nDeadline: "+deadline,
+          body:userName+" place the below bid for this subtitle.\nBid: "+userBidAmount+"\nDeadline: "+deadline,
           videoId: this.videoId,
           iso: this.data.requestDetails.iso,
           language: this.languageRequested,

@@ -4,6 +4,7 @@ import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument 
 import { DetailsViewServiceService, SubtitleFormat } from './details-view-service.service';
 import { Observable, take } from 'rxjs';
 import { NotifierService } from './notifier.service';
+import { CommunityHelpService } from './community-help.service';
 
 
 @Injectable({
@@ -11,7 +12,7 @@ import { NotifierService } from './notifier.service';
 })
 export class MessagesService {
 
-  constructor(private firestore: AngularFirestore,private notifier: NotifierService, private detailsService: DetailsViewServiceService) { }
+  constructor(private firestore: AngularFirestore,private communityService: CommunityHelpService, private notifier: NotifierService, private detailsService: DetailsViewServiceService) { }
 
   getUserMessages(userid: string): AngularFirestoreCollection {
     return this.firestore.collection('users').doc(userid).collection('messages');
@@ -42,7 +43,6 @@ export class MessagesService {
        .where('iso', '==', message.iso).where('language', '==', message.language).where('fileName', '==', message.subtitle_name).where('format', '==', message.format).where("id", "==", message.subtitleId));
        this.detailsService.getUserIdByEmail(message.sender).subscribe((id) => {
          ownerId = id;
-         console.log("owner: "+ ownerId);
          this.firestore.collection('users').doc(ownerId).collection('videos').doc(message.videoId)
         .collection('subtitleLanguages').doc(message.iso).collection('subtitles', ref=> ref.where('fileName', '==', message.subtitle_name).where("subtitleSharedId","==",message.subtitleId)).get()
         .toPromise()
@@ -102,8 +102,6 @@ export class MessagesService {
                 }
               });
             });
-            }).then(() => {
-              console.log("Subtitle has been created for new owner");
             }).catch((error) => { 
               console.error(error);
             }); 
@@ -268,42 +266,53 @@ export class MessagesService {
   }
 
   async sendInfoMessage(message: Message, userId: string){
-    this.firestore.collection('users', ref => {
-      return ref.where('email', '==', message.sender);
-    })
-   .get()
-   .subscribe((querySnapshot) => {
-      querySnapshot.forEach(() => {
-        const data = { 
-          sender: message.recipient,
-          recipient: message.sender,
-          subject: "Subtitle: "+message.subtitle_name+"."+message.format,
-          createdAt: Date.now(),
-          status: "unread",
-          subtitle_name: message.subtitle_name,
-          body:message.recipient+" accepted your bid for this subtitle.",
-          videoId: message.videoId,
-          iso: message.iso,
-          language: message.language,
-          format: message.format,
-          videoTitle: message.videoTitle,
-          subtitleId: message.subtitleId
-        }
+    let userName;
+      let emailBody;
+      this.communityService.getUserNameFromEmail(message.recipient).subscribe((email) => {
+          userName =email;
 
-        let senderId;
-        this.detailsService.getUserIdByEmail(message.sender).subscribe((id) => {
-          senderId=id
-        
-          const messageRef: AngularFirestoreCollection = this.firestore.collection('users').doc(senderId).collection('messages');
+          if (message.subject.startsWith('Offer')){
+              emailBody=userName+" accepted your bid.\nYou are now an Editor on this subtitle.";
+          }else 
+            emailBody=userName+" accepted ownership for this subtitle.";
+
+        this.firestore.collection('users', ref => {
+          return ref.where('email', '==', message.sender);
+        })
+      .get()
+      .subscribe((querySnapshot) => {
+          querySnapshot.forEach(() => {
+            const data = { 
+              sender: message.recipient,
+              recipient: message.sender,
+              subject: "Subtitle: "+message.subtitle_name+"."+message.format,
+              createdAt: Date.now(),
+              status: "unread",
+              subtitle_name: message.subtitle_name,
+              body:emailBody,
+              videoId: message.videoId,
+              iso: message.iso,
+              language: message.language,
+              format: message.format,
+              videoTitle: message.videoTitle,
+              subtitleId: message.subtitleId
+            }
     
-          messageRef.add(data).then((docRef) => {
-            docRef.update({ id: docRef.id });
-          
-          });
+            let senderId;
+            this.detailsService.getUserIdByEmail(message.sender).subscribe((id) => {
+              senderId=id
+            
+              const messageRef: AngularFirestoreCollection = this.firestore.collection('users').doc(senderId).collection('messages');
+        
+              messageRef.add(data).then((docRef) => {
+                docRef.update({ id: docRef.id });
+              
+              });
+            });
         });
+      });
     });
-  });
-}
+  }
     
 async sendInfoMessageToList(message: Message, userId: string){
           this.firestore.collection('helpRequests', ref => {
@@ -327,7 +336,7 @@ async sendInfoMessageToList(message: Message, userId: string){
                     createdAt: Date.now(),
                     status: "unread",
                     subtitle_name: message.subtitle_name,
-                    body:"Bid request for this subtitle has been closed.",
+                    body:"Bid request for this subtitle has been closed.\nThank you for your participation!",
                     videoId: message.videoId,
                     iso: message.iso,
                     language: message.language,

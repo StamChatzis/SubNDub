@@ -77,6 +77,7 @@ import { TranslateSubsDialogComponent } from './components/dialog-modal/translat
 import { MatRadioModule } from '@angular/material/radio';
 import { DetectLanguageDialogComponent } from './components/dialog-modal/detect-language-dialog/detect-language-dialog.component';
 import { CommentDialogComponent } from './components/dialog-modal/comment-dialog/comment-dialog.component';
+import { CommunityHelpService } from './services/community-help.service';
 
 @NgModule({
   declarations: [
@@ -161,7 +162,7 @@ import { CommentDialogComponent } from './components/dialog-modal/comment-dialog
         MatCheckboxModule,
         MatRadioModule
     ],
-  providers: [DetailsViewServiceService],
+  providers: [DetailsViewServiceService, CommunityHelpService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

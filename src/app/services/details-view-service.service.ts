@@ -8,6 +8,7 @@ import { EmailService } from './email.service';
 import { MatSnackBar } from "@angular/material/snack-bar";
 import {AngularFireStorage} from "@angular/fire/compat/storage";
 import {AngularFireStorageReference} from "@angular/fire/compat/storage/ref";
+import { CommunityHelpService } from './community-help.service';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +19,8 @@ export class DetailsViewServiceService {
   constructor(private firestore: AngularFirestore,
               private notifier: NotifierService,
               private storage: AngularFireStorage,
-              private snackbar: MatSnackBar) {}
+              private snackbar: MatSnackBar,
+               private communityService: CommunityHelpService) {}
 
   getSubtitleLanguages(userUid: string, videoId: string): Observable<Language[]> {
     const videoRef = this.firestore.collection('users').doc(userUid).collection('videos').doc(videoId);
@@ -74,7 +76,6 @@ export class DetailsViewServiceService {
       if (!subRequest.empty) {
         helpRef.get().toPromise().then(helpdoc => {
           let status = helpdoc.docs[0].data().status;
-          console.log("status: "+status);
           if(status == "closed"){
             const helprequestRef = helpdoc.docs[0].ref;
             helprequestRef.update({
@@ -89,7 +90,6 @@ export class DetailsViewServiceService {
         });
         return;
       } else {
-        console.log('Filename does not exist in any document in the collection.');
         // Perform actions if filename does not exist
         helpRequestRef.add(data);
         this.notifier.showNotification("Subtitle has been successfully requested for a bid.","OK");
@@ -246,59 +246,62 @@ export class DetailsViewServiceService {
 
   transferOwnership(from_email: string, to_email: string, filename: string, videoId:string, ISOcode:string, language:string, format: string, videoTitle: string, subtitleId: any): void {
     //this.emailService.sendEmail(from_email, to_email);
-    const sharedRef = this.firestore.collection(`sharedVideos`, ref => ref.where('videoId', '==', videoId).where('iso', '==', ISOcode).where('language', '==', language)
-      .where('fileName', '==', filename).where("id", "==", subtitleId));
+    let userName;
+      this.communityService.getUserNameFromEmail(from_email).subscribe((email) => {
+          userName =email;
+      const sharedRef = this.firestore.collection(`sharedVideos`, ref => ref.where('videoId', '==', videoId).where('iso', '==', ISOcode).where('language', '==', language)
+        .where('fileName', '==', filename).where("id", "==", subtitleId));
 
-      let requestOwnerEmail='';
+        let requestOwnerEmail='';
 
-      const NewRequestOnwerEmail = to_email;
+        const NewRequestOnwerEmail = to_email;
 
-      sharedRef.get()
-            .subscribe((querySnapshot) => {
-              if (!querySnapshot.empty) {
-                requestOwnerEmail = querySnapshot.docs[0].data()['requestOwnerEmail'];
-                const sharedVideoRef = querySnapshot.docs[0].ref;
-                sharedVideoRef.update({
-                  requestOwnerEmail: NewRequestOnwerEmail
-                })
-              }});
+        sharedRef.get()
+              .subscribe((querySnapshot) => {
+                if (!querySnapshot.empty) {
+                  requestOwnerEmail = querySnapshot.docs[0].data()['requestOwnerEmail'];
+                  const sharedVideoRef = querySnapshot.docs[0].ref;
+                  sharedVideoRef.update({
+                    requestOwnerEmail: NewRequestOnwerEmail
+                  })
+                }});
 
-      const data = {
-        sender: from_email,
-        recipient: to_email,
-        subject: "Invitation to accept ownership for subtitle: "+filename+"."+format,
-        createdAt: Date.now(),
-        status: "unread",
-        subtitle_name: filename ,
-        body:from_email+" invited you to own a subtitle.\nPlease click the button below to accept or decline the transfer ownership invitation",
-        videoId: videoId,
-        iso: ISOcode,
-        language: language,
-        format: format,
-        videoTitle: videoTitle,
-        subtitleId: subtitleId
-      }
-
-      //Add message to user's messages
-      this.getUserIdByEmail(to_email).subscribe((userid) => {
-        if (userid != ("" || null || undefined)){
-          const messageRef: AngularFirestoreCollection = this.firestore.collection('users').doc(userid).collection('messages');
-
-
-          messageRef.add(data).then((docRef) => {
-            docRef.update({ id: docRef.id });
-            this.notifier.showNotification("Invitation has been sent", "OK")
-          })
-          .catch((err) => this.notifier.showNotification("There was an error trying to send the invitation " + err, "DISMISS"));
-
+        const data = {
+          sender: from_email,
+          recipient: to_email,
+          subject: "Invitation to accept ownership for subtitle: "+filename+"."+format,
+          createdAt: Date.now(),
+          status: "unread",
+          subtitle_name: filename ,
+          body:userName+" invited you to own a subtitle.\nPlease click the button below to accept or decline the transfer ownership invitation",
+          videoId: videoId,
+          iso: ISOcode,
+          language: language,
+          format: format,
+          videoTitle: videoTitle,
+          subtitleId: subtitleId
         }
-          //Delete message from previous requestOwnerEmail if exists
-          if (requestOwnerEmail != ""){
-            this.getUserIdByEmail(requestOwnerEmail).subscribe((id) => {
-              console.log(id);
-              this.removeMessageFromUser(id, videoId, ISOcode, language, filename, subtitleId);
-          })
+
+        //Add message to user's messages
+        this.getUserIdByEmail(to_email).subscribe((userid) => {
+          if (userid != ("" || null || undefined)){
+            const messageRef: AngularFirestoreCollection = this.firestore.collection('users').doc(userid).collection('messages');
+
+
+            messageRef.add(data).then((docRef) => {
+              docRef.update({ id: docRef.id });
+              this.notifier.showNotification("Invitation has been sent", "OK")
+            })
+            .catch((err) => this.notifier.showNotification("There was an error trying to send the invitation " + err, "DISMISS"));
+
           }
+            //Delete message from previous requestOwnerEmail if exists
+            if (requestOwnerEmail != ""){
+              this.getUserIdByEmail(requestOwnerEmail).subscribe((id) => {
+                this.removeMessageFromUser(id, videoId, ISOcode, language, filename, subtitleId);
+            })
+            }
+        });
       });
   }
 
@@ -422,7 +425,6 @@ export class DetailsViewServiceService {
         const emailToCheck = querySnapshot.docs[0].data()['requestOwnerEmail'];
 
         if (emailsToRemove.includes(emailToCheck)){
-          console.log()
           sharedVideoRef.update({
             requestOwnerEmail: ""
           });
