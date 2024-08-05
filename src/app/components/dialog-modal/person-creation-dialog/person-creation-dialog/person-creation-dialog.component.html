@@ -2,13 +2,15 @@
   <h2 class="title-dialog-header" mat-dialog-title>
     <span>Manage Characters/Voice Actors</span>
     <div class="export-import-btn">
+      <button mat-mini-fab color="primary" matTooltip="Import actors" (click)="uploadFile.click()"><mat-icon>file_upload</mat-icon></button>
+      <input #uploadFile (change)="importActors($event)" hidden="hidden" id="uploadFile" type="file" [accept]="acceptedFiles"/>
       <button mat-mini-fab color="primary" matTooltip="Export actors" (click)="exportActors()"><mat-icon>file_download</mat-icon></button>
-      <button mat-mini-fab color="primary" matTooltip="Import actors" (click)="importActors()"><mat-icon>file_upload</mat-icon></button>
     </div>
   </h2>
 
   <mat-dialog-content class="mat-typography">
     <h3>Assign a person to a subtitle to help you recognize who it is voiced by. You can also choose color in order to distinguish your character</h3>
+    <h3>You can also export all your actors that you have created in a JSON file. Or you can import them from a JSON file.</h3>
   </mat-dialog-content>
 
   <div class="input-container" [formGroup]="personForm">

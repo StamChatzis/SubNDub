@@ -2,6 +2,9 @@ import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CharacterAssign } from 'src/app/models/general/person-assign.model';
 import { FormControl, FormGroup, Validators } from "@angular/forms";
+import {DownloadFileHandlerService} from "../../../../services/download-file-handler.service";
+import {UploadFileHandlerService} from "../../../../services/upload-file-handler.service";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-person-creation-dialog',
@@ -10,13 +13,17 @@ import { FormControl, FormGroup, Validators } from "@angular/forms";
 })
 export class PersonCreationDialogComponent {
   private readonly defaultColor = '#2889e9';
+  acceptedFiles = '.json'
   characters: CharacterAssign[] = [];
   private backUpPersons: CharacterAssign[] = [];
   color: string = this.defaultColor;
   personForm: FormGroup;
   isDirty: boolean = false;
 
-  constructor(@Inject(MAT_DIALOG_DATA) private data: CharacterAssign[]) {
+  constructor(@Inject(MAT_DIALOG_DATA) private data: CharacterAssign[],
+              private downloadHandler: DownloadFileHandlerService,
+              private uploadHandler: UploadFileHandlerService,
+              private snackbar: MatSnackBar) {
     if(this.data) {
       for(let data of this.data){
         const char ={
@@ -65,11 +72,28 @@ export class PersonCreationDialogComponent {
   }
 
   exportActors(){
-
+    if(this.characters.length > 0){
+      this.downloadHandler.exportAllActors(this.characters);
+    }else {
+      this.snackbar.open('You have not created any actors yet', 'OK', {duration:3000});
+    }
   }
 
-  importActors(){
-
+  importActors(event: Event){
+    let file = (event.target as HTMLInputElement).files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const fileContent = (e.target as FileReader).result as string;
+        if(file.name.split('.')[1] === 'json'){
+          this.characters = this.uploadHandler.importActorsFromFile(fileContent);
+          this.isDirty = true
+        }else{
+          this.snackbar.open('This file is not supported', 'OK', {duration:3000});
+        }
+      };
+      reader.readAsText(file);
+    }
   }
 
   deletePerson(index: number): void {

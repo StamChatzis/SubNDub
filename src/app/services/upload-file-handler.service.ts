@@ -1,13 +1,16 @@
 import { Injectable } from '@angular/core';
 import { ImportModel } from 'src/app/models/general/import-sbv.model';
 import { GoogleTranslateService } from "./googletranslate.service";
+import {CharacterAssign} from "../models/general/person-assign.model";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Injectable({
   providedIn: 'root'
 })
 export class UploadFileHandlerService {
 
-  constructor(private googleTranslate: GoogleTranslateService) { }
+  constructor(private googleTranslate: GoogleTranslateService,
+              private snackbar: MatSnackBar) { }
 
   cleanMultilineString(input: string): ImportModel[] {
     const lines = input.trim().replace(/(\r|\r)/gm, '').split('\n');
@@ -74,6 +77,16 @@ export class UploadFileHandlerService {
     }
 
     return subtitleObjects;
+  }
+
+  importActorsFromFile(fileContent: string){
+    try {
+      const json = JSON.parse(fileContent);
+      return json.actors;
+    } catch (error) {
+      console.error('Error parsing JSON:', error);
+      this.snackbar.open('There was a problem reading the JSON file', 'OK', {duration:3500});
+    }
   }
 
   formatTimestamp(timestamp: string): string {

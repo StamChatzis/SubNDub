@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { AngularFireStorage } from "@angular/fire/compat/storage";
+import { saveAs } from "file-saver";
+import { HttpClient } from "@angular/common/http";
+import { MatSnackBar } from "@angular/material/snack-bar";
 import * as JSZip from "jszip";
-import {saveAs} from "file-saver";
-import {HttpClient} from "@angular/common/http";
-import {MatSnackBar} from "@angular/material/snack-bar";
+import {CharacterAssign} from "../models/general/person-assign.model";
 
 @Injectable({
   providedIn: 'root'
@@ -85,5 +86,11 @@ export class DownloadFileHandlerService {
         this.snackbar.open('There was a problem downloading the subtitle files', 'DISMISS', {duration: 5000});
         console.error('Error downloading files:', err);
       });
+  }
+
+  exportAllActors(actors: CharacterAssign[]){
+    const actorsJson = JSON.stringify({ actors: actors }, null, 2);
+    const blob = new Blob([actorsJson], { type: 'application/json' });
+    saveAs(blob, 'actors.json');
   }
 }
