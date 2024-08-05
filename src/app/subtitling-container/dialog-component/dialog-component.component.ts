@@ -49,7 +49,7 @@ export class DialogComponentComponent implements OnInit {
   public characters: CharacterAssign[] = [];
   public newCharacters: CharacterAssign[];
   public focusedDialogBox: number;
-  public loading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null)
+  public loading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
   protected isDirty: boolean = false;
   @Input() canOnlyView: boolean;
   @Input() initSubtitles: boolean = true;

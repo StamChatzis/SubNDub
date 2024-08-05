@@ -64,6 +64,14 @@ export class PersonCreationDialogComponent {
     this.isDirty = true
   }
 
+  exportActors(){
+
+  }
+
+  importActors(){
+
+  }
+
   deletePerson(index: number): void {
     this.characters.splice(index,1);
     this.isDirty = true

@@ -1,4 +1,11 @@
-main{
+.title-dialog-header{
+  display: flex;
+  margin-top: 15px;
+  justify-content: space-between;
+}
+
+.export-import-btn button{
+  margin-left: 10px;
 }
 
 .input-container {

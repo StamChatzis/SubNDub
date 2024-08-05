@@ -22,6 +22,7 @@ export class SubtitlingContainerComponent implements OnInit {
   languageIsoCode: string;
   _currentLanguage$: Observable<Language>
   langName$: Observable<string>
+  videoLang$: Observable<string>
   fileName: string;
   subFormat: string;
   isFormDirty: boolean = false;
@@ -98,6 +99,13 @@ export class SubtitlingContainerComponent implements OnInit {
           .pipe(map(lang => lang!.data!.languages
             .find(language => language.language === this.languageIsoCode)?.name)
           )
+        this.youtube.getAllVideoDetails(this.videoId).subscribe({
+          next: data => {
+            this.videoLang$ = this.availableLanguages$
+              .pipe(map(lang => lang!.data!.languages
+                .find(language => language.language === data[0].snippet.defaultAudioLanguage)?.name))
+          }
+        })
       });
   }
 

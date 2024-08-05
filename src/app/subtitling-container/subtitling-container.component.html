@@ -9,8 +9,13 @@
         <div class="sub-name-wrapper">
           <span>Editing Subtitle: <b>{{fileName}}</b></span>
         </div>
-        <div class="lang-wrapper">
-          <span>Language: <b>{{(langName$ | async)}}</b></span>
+        <div class="lags-info-wrapper">
+          <div class="video-lang-wrapper">
+            <span>Video Language:  <b>{{(videoLang$ | async)}}</b></span>
+          </div>
+          <div class="lang-wrapper">
+            <span>Subtitle Language: <b>{{(langName$ | async)}}</b></span>
+          </div>
         </div>
       </div>
     </div>
