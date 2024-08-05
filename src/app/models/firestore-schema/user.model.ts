@@ -4,6 +4,7 @@ export interface User {
     bio?: string;
     ethnicity?: string;
     videos?: Video[];
+    ratings?: Rating[];
 }
 
 export interface GmailUser extends User {
@@ -30,4 +31,9 @@ export interface UserRights {
     userId?: string;
     right: string;
     userEmail: string;
+}
+
+export interface Rating {
+  rating: number;
+  comment: string;
 }

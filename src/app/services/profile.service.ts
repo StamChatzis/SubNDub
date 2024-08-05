@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { AngularFirestore, AngularFirestoreDocument } from "@angular/fire/compat/firestore";
-import {GmailUser, User, Video} from "../models/firestore-schema/user.model";
+import { GmailUser, Rating } from "../models/firestore-schema/user.model";
 import { HttpClient } from "@angular/common/http";
-import { ForeignLanguage, MotherLanguage } from "../models/general/language-skills";
+import { ForeignLanguage } from "../models/general/language-skills";
 
 @Injectable({
   providedIn: 'root'
@@ -38,6 +38,10 @@ export class ProfileService {
 
   getAllLanguages(uid: string): Observable<ForeignLanguage[]> {
     return this.otherLanguages$ = this.firestore.collection<ForeignLanguage>(`users/${uid}/languages/`).valueChanges();
+  }
+
+  getUserRatings(uid: string): Observable<Rating[]> {
+    return this.firestore.collection<Rating>(`users/${uid}/ratings`).valueChanges();
   }
 
   updateProfile(user: any) {

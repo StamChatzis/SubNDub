@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
 import {BehaviorSubject, Observable, tap} from "rxjs";
-import {GmailUser} from "../../models/firestore-schema/user.model";
+import {GmailUser, Rating} from "../../models/firestore-schema/user.model";
 import {AuthService} from "../../services/auth.service";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {ProfileService} from "../../services/profile.service";
@@ -30,6 +30,7 @@ export class ProfileComponent implements OnInit{
   availableLanguages$: BehaviorSubject<SupportedLanguages> = new BehaviorSubject<SupportedLanguages>(null);
   countries?: Country[];
   skillLevels?: SkillLevel[];
+  ratings: Rating[] = [];
   foreignLanguages: ForeignLanguage[] = [];
   deletedLang: ForeignLanguage[] = [];
   userInfoForm: FormGroup;
@@ -92,6 +93,10 @@ export class ProfileComponent implements OnInit{
       next: data => {this.loadSkillLevels(data)}
     });
 
+    this.proService.getUserRatings(this.uid).subscribe({
+      next: data => {this.loadRatings(data);}
+    });
+
     this.getAvailableLanguages();
   }
 
@@ -112,6 +117,19 @@ export class ProfileComponent implements OnInit{
       this.motherLangForm.controls['motherLang'].setValue('0');
     }else{
       this.motherLangForm.controls['motherLang'].setValue(data.mother_language);
+    }
+  }
+
+  loadRatings(data: Rating[]){
+    let total = 0;
+    let sum = 0;
+
+    for(let i = 0; i < data.length; i++){
+      total++
+      sum += data[i].rating
+    }
+    if(total >0){
+      let average = sum/total;
     }
   }
 
