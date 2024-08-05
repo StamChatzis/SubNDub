@@ -174,3 +174,7 @@ mat-card-title{
 .leave-options .del-lang-icon:hover{
   color: rgb(107, 11, 11);
 }
+
+.user-rating-display mat-icon, .user-rating-display span{
+  color: #ce950c;
+}

@@ -31,6 +31,8 @@ export class ProfileComponent implements OnInit{
   countries?: Country[];
   skillLevels?: SkillLevel[];
   ratings: Rating[] = [];
+  intRate?: number = 0;
+  decimalRate: number = 0;
   foreignLanguages: ForeignLanguage[] = [];
   deletedLang: ForeignLanguage[] = [];
   userInfoForm: FormGroup;
@@ -124,13 +126,22 @@ export class ProfileComponent implements OnInit{
     let total = 0;
     let sum = 0;
 
-    for(let i = 0; i < data.length; i++){
-      total++
-      sum += data[i].rating
-    }
-    if(total >0){
-      let average = sum/total;
-    }
+    // for(let i = 0; i < data.length; i++){
+    //   total++
+    //   sum += data[i].rating
+    // }
+    //if(total > 0){
+      let average = 1.00
+
+      while(average >= 1){
+        this.intRate++
+        average--
+      }
+
+      if(average >= 0.5){
+        this.decimalRate++
+      }
+    //}
   }
 
   loadCountries(data: any): void {

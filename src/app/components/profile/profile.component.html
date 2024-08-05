@@ -17,7 +17,12 @@
         <p><span *ngIf="user.bio.length > 0"> &#x275D; {{user.bio}} &#x275E; </span></p>
       </div>
       <div class="user-rating-display">
-
+        <mat-icon *ngIf="intRate >= 1">star</mat-icon>
+        <mat-icon *ngIf="intRate >= 2">star</mat-icon>
+        <mat-icon *ngIf="intRate >= 3">star</mat-icon>
+        <mat-icon *ngIf="intRate >= 4">star</mat-icon>
+        <mat-icon *ngIf="decimalRate == 1">star_half</mat-icon>
+        <mat-icon *ngIf="intRate == 5">star</mat-icon>
       </div>
     </div>
     <div class="profile-edit">
