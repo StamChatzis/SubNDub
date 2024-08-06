@@ -59,8 +59,13 @@ export class ShareSubtitlingContainerComponent implements OnInit {
         } else {
           return of(null); // Return an empty observable if there is no user
         }
-      })).subscribe(languages => {
-      this.dataSource = languages;
+      })).subscribe({
+      next: languages => {
+        this.dataSource = languages;
+      },
+      error: err => {
+        this.snackbar.open('Could not load data due to an unexpected error: ' + err.message, 'OK', {duration: 5000});
+      }
     });
     this.getVideoDetails();
     this.getCaptionDetails();
@@ -103,8 +108,6 @@ export class ShareSubtitlingContainerComponent implements OnInit {
     });
   }
 
-
-
   editSubtitle(ISOcode:string, name:string, usersRights: string[]): void {
     const userRight = usersRights.find((right: any) => right["userEmail"] === this.user$.value.email);
     let right: string;
@@ -113,9 +116,6 @@ export class ShareSubtitlingContainerComponent implements OnInit {
     else right="";
     this.router.navigate(['edit/shared', this.videoId, ISOcode, name, right]);
   }
-
-
-
 
   shareSubtitle(language:string, ISOcode:string ,filename: string, format: string, usersRights: string[], videoTitle:string, subtitleId: string) : void {
     let owner_text = "";
@@ -140,18 +140,13 @@ export class ShareSubtitlingContainerComponent implements OnInit {
                 this.detailsViewService.updateSharedSubtitleRights(this.videoId, ISOcode, language, this.user$.value.uid, filename, format, usersRights, subtitleId);
               }
             }
-
           });
-
       })
     });
-
   }
 
   navigateToDashboard(): void {
     this.router.navigate(['dashboard']);
   }
-
-
 
 }

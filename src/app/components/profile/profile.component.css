@@ -1,5 +1,5 @@
 main{
-  height: 90vh;
+  height: 85vh;
 }
 
 .profile-wrapper{
@@ -173,6 +173,16 @@ mat-card-title{
 
 .leave-options .del-lang-icon:hover{
   color: rgb(107, 11, 11);
+}
+
+.user-rating-display{
+  margin: auto;
+  display: flex;
+  justify-content: center;
+}
+
+.user-rating-display:hover{
+  cursor: pointer;
 }
 
 .user-rating-display mat-icon, .user-rating-display span{

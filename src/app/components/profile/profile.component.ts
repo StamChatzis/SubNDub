@@ -30,9 +30,9 @@ export class ProfileComponent implements OnInit{
   availableLanguages$: BehaviorSubject<SupportedLanguages> = new BehaviorSubject<SupportedLanguages>(null);
   countries?: Country[];
   skillLevels?: SkillLevel[];
-  ratings: Rating[] = [];
-  intRate?: number = 0;
-  decimalRate: number = 0;
+  stars: number[] = [];
+  averageRate: number = 0;
+  ratingTooltip = '';
   foreignLanguages: ForeignLanguage[] = [];
   deletedLang: ForeignLanguage[] = [];
   userInfoForm: FormGroup;
@@ -125,23 +125,42 @@ export class ProfileComponent implements OnInit{
   loadRatings(data: Rating[]){
     let total = 0;
     let sum = 0;
+    let index = 5
+    this.stars = []
 
-    // for(let i = 0; i < data.length; i++){
-    //   total++
-    //   sum += data[i].rating
-    // }
-    //if(total > 0){
-      let average = 1.00
+    for(let i = 0; i < data.length; i++){
+      total++
+      sum += data[i].rating
+    }
 
-      while(average >= 1){
-        this.intRate++
-        average--
+    if(total > 0){
+      this.averageRate = sum/total;
+      if(this.averageRate > 5) {
+        this.averageRate = 5;
       }
 
-      if(average >= 0.5){
-        this.decimalRate++
+      let flagAvg = this.averageRate;
+      this.ratingTooltip = `Your rating is: ${this.averageRate}`
+
+      while(index > 0){
+        if(flagAvg >= 1){
+          this.stars.push(1)
+        }else{
+          if(flagAvg >= 0.5){
+            this.stars.push(2)
+          }else{
+            this.stars.push(3)
+          }
+        }
+        flagAvg--
+        index--
       }
-    //}
+    }else{
+      this.ratingTooltip = `You don't have been rated yet`
+      for(let i = 0; i < 5; i++){
+        this.stars.push(3)
+      }
+    }
   }
 
   loadCountries(data: any): void {
