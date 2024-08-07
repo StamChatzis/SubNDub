@@ -1,0 +1,58 @@
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+<div *ngIf="user" class="profile-details-card">
+  <div class="prof-overview-header">
+    <h3 mat-dialog-title>Profile Overview</h3>
+  </div>
+  <div class="profile-img">
+    <img alt="profile-user-img" referrerpolicy="no-referrer" [src]="user.photoURL">
+  </div>
+  <div class="profile-display-name">
+    <p>{{user.displayName}}</p>
+  </div>
+  <div class="prof-user-email">
+    <p>{{user.email}}</p>
+  </div>
+  <div class="prof-bio-display">
+    <p><span *ngIf="user.bio.length > 0"> &#x275D; {{user.bio}} &#x275E; </span></p>
+  </div>
+
+  <div class="user-rating-display" matTooltip = "{{ratingTooltip}}" *ngIf="!givingRate">
+    <div class="full-star" *ngFor="let star of stars">
+      <mat-icon *ngIf="star == 1">star</mat-icon>
+    </div>
+    <div class="half-star" *ngFor="let star of stars">
+      <mat-icon *ngIf="star == 2">star_half</mat-icon>
+    </div>
+    <div class="empty-star" *ngFor="let star of stars">
+      <span class="material-symbols-outlined" *ngIf="star == 3">star</span>
+    </div>
+  </div>
+
+  <div *ngIf="(user$ | async) as loggedUser"  class="rate-user-wrapper">
+    <div class="rate-btn" *ngIf="loggedUser.uid != user.uid && !givingRate">
+      <button mat-raised-button color="primary" (click)="rateUser()">Rate this user!</button>
+    </div>
+
+    <div class="rate-form-wrapper" *ngIf="givingRate" [formGroup]="rateForm">
+      <div class="star-form-input">
+        <mat-card-header>
+          <mat-card-title><h3>Select rating</h3></mat-card-title>
+        </mat-card-header>
+        <div class="star-input-system" matTooltip="Select 1 to 5 stars with 1 the lowest and 5 the highest" matTooltipPosition = above formControlName="stars">
+          <p>help</p>
+        </div>
+      </div>
+
+      <div class="comment-form-input">
+        <mat-card-header>
+          <mat-card-title><h3>You can also include comments</h3></mat-card-title>
+        </mat-card-header>
+        <mat-form-field matTooltip="Include your comments here" matTooltipPosition = above>
+          <textarea matInput formControlName="comment" placeholder="Your comments"></textarea>
+        </mat-form-field>
+      </div>
+
+    </div>
+  </div>
+
+</div>

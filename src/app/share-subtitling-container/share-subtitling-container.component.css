@@ -109,3 +109,7 @@
   width: 35px;
   height: 35px;
 }
+
+.profile-img-element:hover{
+  cursor: pointer;
+}

@@ -14,6 +14,9 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '../services/auth.service';
 import { ShareSubtitleDialogComponent } from '../components/dialog-modal/share-subtitle-dialog/share-subtitle-dialog.component';
 import { UserService } from "../services/user.service";
+import {
+  ProfilePreviewDialogComponent
+} from "../components/dialog-modal/profile-preview-dialog/profile-preview-dialog.component";
 
 @Component({
   selector: 'app-share-subtitling-container',
@@ -126,6 +129,13 @@ export class ShareSubtitlingContainerComponent implements OnInit {
     else if (userRight["right"] === 'Commenter') right = "Commenter";
     else right="";
     this.router.navigate(['edit/shared', this.videoId, ISOcode, name, right]);
+  }
+
+  openProfilePreviewDialog(element: any){
+    const dialogRef= this.dialog.open(ProfilePreviewDialogComponent, {width:'400px', data: element});
+    dialogRef.afterClosed().pipe(take(1)).subscribe(response => {
+
+    })
   }
 
   shareSubtitle(language:string, ISOcode:string ,filename: string, format: string, usersRights: string[], videoTitle:string, subtitleId: string) : void {

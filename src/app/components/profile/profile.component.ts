@@ -44,8 +44,7 @@ export class ProfileComponent implements OnInit{
   addLang: boolean;
   editLang: boolean;
 
-  constructor(private router: Router,
-              public auth: AuthService,
+  constructor(public auth: AuthService,
               public proService: ProfileService,
               private googleLangService: GoogleTranslateService,
               private snackbar: MatSnackBar,

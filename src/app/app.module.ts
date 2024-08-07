@@ -78,6 +78,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { DetectLanguageDialogComponent } from './components/dialog-modal/detect-language-dialog/detect-language-dialog.component';
 import { CommentDialogComponent } from './components/dialog-modal/comment-dialog/comment-dialog.component';
 import { CommunityHelpService } from './services/community-help.service';
+import { ProfilePreviewDialogComponent } from './components/dialog-modal/profile-preview-dialog/profile-preview-dialog.component';
 
 @NgModule({
   declarations: [
@@ -122,7 +123,8 @@ import { CommunityHelpService } from './services/community-help.service';
     DownloadOptionsDialogComponent,
     TranslateSubsDialogComponent,
     DetectLanguageDialogComponent,
-    CommentDialogComponent
+    CommentDialogComponent,
+    ProfilePreviewDialogComponent
   ],
     imports: [
         BrowserModule,

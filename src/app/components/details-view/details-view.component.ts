@@ -20,6 +20,7 @@ import { StorageService } from "../../services/storage.service";
 import { DownloadFileHandlerService } from "../../services/download-file-handler.service";
 import { RequestCommunityHelpComponent } from '../dialog-modal/request-community-help/request-community-help.component';
 import { UserService } from "../../services/user.service";
+import {ProfilePreviewDialogComponent} from "../dialog-modal/profile-preview-dialog/profile-preview-dialog.component";
 
 @Component({
   selector: 'details-view',
@@ -185,6 +186,13 @@ export class DetailsViewComponent implements OnInit {
     })
   }
 
+  openProfilePreviewDialog(element: any){
+    const dialogRef= this.dialog.open(ProfilePreviewDialogComponent, {width:'400px', data: element});
+    dialogRef.afterClosed().pipe(take(1)).subscribe(response => {
+
+    })
+  }
+
   shareSubtitle(language:string, ISOcode:string ,filename: string, format: string, usersRights: string[], videoTitle:string, subtitleId: string) : void {
     let owner_text = "";
     if(subtitleId === undefined)
@@ -227,4 +235,6 @@ export class DetailsViewComponent implements OnInit {
   navigateToDashboard(): void {
     this.router.navigate(['dashboard']).then(r => r);
   }
+
+  protected readonly open = open;
 }
