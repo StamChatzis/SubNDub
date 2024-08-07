@@ -131,7 +131,17 @@ export class DetailsViewComponent implements OnInit {
     this.dialog.open(SaveSubtitleDialogComponent, {width: '500px'})
       .afterClosed().pipe(take(1)).subscribe(dialog => {
         if (dialog) {
-          this.detailsViewService.addSubtitle(this.videoId, dialog.language, this.user$.value.uid, dialog.name, dialog.format, this.user$.value.email);
+          let flag = false;
+          for(let i = 0; i < this.dataSource.length; i++){
+            if(dialog.name === this.dataSource[i].fileName && dialog.language.language === this.dataSource[i].iso){
+              flag = true;
+            }
+          }
+          if(flag) {
+            this.snackbar.open('You already have a subtitle with this name and this language', 'DISMISS', {duration: 5000});
+          }else{
+              this.detailsViewService.addSubtitle(this.videoId, dialog.language, this.user$.value.uid, dialog.name, dialog.format, this.user$.value.email);
+          }
         }
     })
   }
