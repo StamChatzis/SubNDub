@@ -52,7 +52,13 @@ export class PlaceABidComponent {
         userName =email;
     });
 
-    
+    let subId;
+    this.communityService.getSharedSubID(this.requestedByID,this.videoId,this.data.requestDetails.iso,this.fileName).subscribe((subID) => {
+      if(subID==undefined)
+        subId = "";
+      else
+        subId = subID;
+    })
 
     this.firestore.collection('users', ref => {
       return ref.where('uid', '==', this.requestedByID);
@@ -69,12 +75,13 @@ export class PlaceABidComponent {
           createdAt: Date.now(),
           status: "unread",
           subtitle_name: this.fileName,
-          body:userName+" place the below bid for this subtitle.\nBid: "+userBidAmount+"\nDeadline: "+deadline,
+          body:userName+" place the below bid for this subtitle.\nBid: "+userBidAmount+"€"+"\nDeadline: "+deadline,
           videoId: this.videoId,
           iso: this.data.requestDetails.iso,
           language: this.languageRequested,
           format: this.data.requestDetails.format,
-          videoTitle: this.videoTitle
+          videoTitle: this.videoTitle,
+          subtitleId: subId
         }
   
         const messageRef: AngularFirestoreCollection = this.firestore.collection('users').doc(this.requestedByID).collection('messages');

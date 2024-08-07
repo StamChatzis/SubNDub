@@ -37,7 +37,7 @@ export class ShareService {
       map(snapshot => {
         return snapshot.docs.filter(doc => {
           const usersRights = doc.data()['usersRights'];
-          return usersRights.some(userRight => userRight.userEmail === email);
+          return usersRights.some(userRight => userRight.userEmail === email)&& usersRights.length > 1;
         }).map(doc => doc.data());
       })
     );

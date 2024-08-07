@@ -27,5 +27,20 @@ export class CommunityHelpService  {
             }), first()
         );
     }
+
+    getSharedSubID(requestedByID: string, videoId: string, ISOcode:string, fileName:string): Observable<string>{
+        return this.firestore.collection('users').doc(requestedByID).collection('videos').doc(videoId)
+        .collection('subtitleLanguages').doc(ISOcode).collection('subtitles').doc(fileName)
+        .valueChanges()
+        .pipe(
+            map(subtitle => {
+                if (subtitle) {
+                    return subtitle['subtitleSharedId']; 
+                } else {
+                    return null;
+                }
+            }), first()
+        );
+    }
     
 }

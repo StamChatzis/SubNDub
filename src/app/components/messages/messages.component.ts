@@ -130,10 +130,16 @@ export class MessagesComponent implements OnInit, OnDestroy {
     .catch(error => console.error("Error declining transfer ownership:", error));
    }
 
-   handleOffer(message: Message){ 
-    this.messagesService.checkRequestStatus(message, this.useruid).then((check) => {
+   async handleOffer(message: Message){ 
+    await this.messagesService.checkRequestStatus(message, this.useruid).then((check) => {
+      console.log(check);
       if (check == "open"){
-        this.detailsService.addUserRightOnSub(message.videoId, message.iso, message.language, this.useruid, message.subtitle_name, message.format, message.sender, "Editor", message.subtitleId);
+          this.messagesService.checkIfUserRightExists(message, this.useruid).then((result) => {
+          if(result.exists==true)
+            this.detailsService.updateSharedSubtitleRights(message.videoId, message.iso, message.language, this.useruid, message.subtitle_name, message.format, result.currentRights, message.subtitleId);
+          else
+            this.detailsService.addUserRightOnSub(message.videoId, message.iso, message.language, this.useruid, message.subtitle_name, message.format, message.sender, "Editor", message.subtitleId);
+        })
         setTimeout(() => { this.messagesService.setSubtitleIdToRequest(message, this.useruid)
           .then(() => this.messagesService.closeRequestStatus(message, this.useruid))
           .then(() => this.messagesService.sendInfoMessage(message, this.useruid))

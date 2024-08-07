@@ -234,9 +234,30 @@ export class MessagesService {
           }
       })
     });
+  }
 
-    
-
+  async checkIfUserRightExists(message: Message, userId: string): Promise<{ exists: boolean; currentRights: string[]; }> {
+    const subtitleRef = this.firestore.collection('users').doc(userId).collection('videos').doc(message.videoId)
+      .collection('subtitleLanguages').doc(message.iso).collection('subtitles').doc(message.subtitle_name);
+  
+    return subtitleRef.get().toPromise().then((docSnapshot) => {
+      const currentRights = docSnapshot.exists ? docSnapshot.data().usersRights || [] : [];
+      const existingRightIndex = currentRights.findIndex((right) => right.userEmail === message.sender);
+  
+      if (existingRightIndex !== -1) {
+        currentRights[existingRightIndex].right = "Editor";
+        return {
+          exists: true,
+          currentRights: currentRights
+        };
+  
+      } else {
+        return {
+          exists: false,
+          currentRights: currentRights
+        };
+      }
+    });
   }
 
   async setSubtitleIdToRequest(message: Message, userId: string){
@@ -321,7 +342,7 @@ async sendInfoMessageToList(message: Message, userId: string){
                     .where('language', '==', message.language)
                     .where("iso","==",message.iso)
                     .where('requestedByID', '==', userId)
-                    .where('status',"==", "open"); 
+                    .where('status',"==", "closed"); 
             })
           .get().subscribe((querySnapshot) => {
             querySnapshot.forEach((doc) => {
