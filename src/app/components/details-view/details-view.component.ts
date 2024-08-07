@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, of, switchMap, take, tap } from 'rxjs';
-import { Language, SupportedLanguages } from 'src/app/models/google/google-supported-languages';
+import { SupportedLanguages } from 'src/app/models/google/google-supported-languages';
 import { YoutubeVideoDetails } from 'src/app/models/youtube/youtube-response.model';
 import { AuthService } from 'src/app/services/auth.service';
 import { DetailsViewServiceService } from 'src/app/services/details-view-service.service';
@@ -14,11 +14,12 @@ import { GmailUser } from 'src/app/models/firestore-schema/user.model';
 import { timeSince } from '../video-card/video-card.component';
 import { ShareSubtitleDialogComponent } from '../dialog-modal/share-subtitle-dialog/share-subtitle-dialog.component';
 import { ShareService } from 'src/app/services/share.service';
-import {DialogConfirmationComponent} from "../../shared/components/dialog-confirmation/dialog-confirmation.component";
-import {NoopScrollStrategy} from "@angular/cdk/overlay";
-import {StorageService} from "../../services/storage.service";
-import {DownloadFileHandlerService} from "../../services/download-file-handler.service";
+import { DialogConfirmationComponent } from "../../shared/components/dialog-confirmation/dialog-confirmation.component";
+import { NoopScrollStrategy } from "@angular/cdk/overlay";
+import { StorageService } from "../../services/storage.service";
+import { DownloadFileHandlerService } from "../../services/download-file-handler.service";
 import { RequestCommunityHelpComponent } from '../dialog-modal/request-community-help/request-community-help.component';
+import { UserService } from "../../services/user.service";
 
 @Component({
   selector: 'details-view',
@@ -33,20 +34,20 @@ export class DetailsViewComponent implements OnInit {
   supportedLanguages$: BehaviorSubject<SupportedLanguages> = new BehaviorSubject<SupportedLanguages>(null);
   loading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
   user$: BehaviorSubject<GmailUser> = new BehaviorSubject<GmailUser>(null);
-  dataSource: any[];
+  dataSource: any[] = [];
   publishDate: BehaviorSubject<string> = new BehaviorSubject<string>('');
   readonly regionNamesInEnglish = new Intl.DisplayNames(['en'], { type: 'language' });
 
-
   @ViewChild('translateMenu') translateMenu;
 
-  displayedColumns = ['Name','Format','Language','Last Updated','Subtitles'];
+  displayedColumns = ['Name', 'Format', 'Language', 'Last Updated', 'Owner', 'Subtitles'];
   constructor(private route: ActivatedRoute,
     private router: Router,
     private youtubeService: YoutubeService,
     public dialog: MatDialog,
     private snackbar: MatSnackBar,
     private authService: AuthService,
+    private userService: UserService,
     private storageService: StorageService,
     private translateService: GoogleTranslateService,
     private detailsViewService: DetailsViewServiceService,
@@ -65,16 +66,29 @@ export class DetailsViewComponent implements OnInit {
           return of(null); // Return an empty observable if there is no user
         }
       })).subscribe({
-        next: languages => {
-          this.dataSource = languages;
-        },
+      next: response => {
+        this.loadDataSourceOwnerDetails(response);
+      },
         error: err => {
           this.snackbar.open('Could not load data due to an unexpected error: ' + err.message, 'OK', {duration: 5000});
         }
       });
+
     this.getVideoDetails();
     this.getCaptionDetails();
     this.getSupportedLanguages();
+  }
+
+  loadDataSourceOwnerDetails(response: any[]){
+    this.dataSource = response;
+    for(let i = 0; i < response.length; i++){
+      this.userService.getUserDetails(response[i].usersRights.find(user => user.right === 'Owner').userUid).pipe(take(1)).subscribe({
+        next: response => {
+          this.dataSource[i].ownerName = response.data().displayName
+          this.dataSource[i].ownerPhoto = response.data().photoURL
+        }
+      })
+    }
   }
 
   getVideoDetails(): void {

@@ -3,6 +3,7 @@ import { SharedVideo } from "../models/firestore-schema/shared-video.model";
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from '@angular/fire/compat/firestore';
 import { Observable, map } from "rxjs";
 import {Language} from "../models/google/google-supported-languages";
+import {SharedSubtitleResponse} from "../models/firestore-schema/subtitles.model";
 
 @Injectable({
   providedIn: 'root'
@@ -28,8 +29,8 @@ export class ShareService {
     return null;
   }
 
-  getSharedSubtitleLanguages(email: string, videoId: string): Observable<any[]> {
-    const sharedVideosRef = this.firestore.collection('sharedVideos', ref =>
+  getSharedSubtitleLanguages(email: string, videoId: string) {
+    const sharedVideosRef = this.firestore.collection<SharedSubtitleResponse>('sharedVideos', ref =>
       ref.where('videoId', '==', videoId));
 
     return sharedVideosRef.get().pipe(

@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from '@angular/fire/compat/firestore';
 import { Language } from '../models/google/google-supported-languages';
-import { Observable, combineLatest, map, of, switchMap, take, Subscription} from 'rxjs';
+import { Observable, combineLatest, map, of, switchMap, take } from 'rxjs';
 import { GmailUser } from '../models/firestore-schema/user.model';
 import { NotifierService } from './notifier.service';
-import { EmailService } from './email.service';
 import { MatSnackBar } from "@angular/material/snack-bar";
-import {AngularFireStorage} from "@angular/fire/compat/storage";
-import {AngularFireStorageReference} from "@angular/fire/compat/storage/ref";
+import { AngularFireStorage } from "@angular/fire/compat/storage";
+import { AngularFireStorageReference } from "@angular/fire/compat/storage/ref";
 import { CommunityHelpService } from './community-help.service';
+import { SubtitleResponse } from "../models/firestore-schema/subtitles.model";
 
 @Injectable({
   providedIn: 'root'
@@ -22,7 +22,7 @@ export class DetailsViewServiceService {
               private snackbar: MatSnackBar,
                private communityService: CommunityHelpService) {}
 
-  getSubtitleLanguages(userUid: string, videoId: string): Observable<Language[]> {
+  getSubtitleLanguages(userUid: string, videoId: string): Observable<SubtitleResponse[]> {
     const videoRef = this.firestore.collection('users').doc(userUid).collection('videos').doc(videoId);
 
     // Get all subtitle languages and then fetch subtitles for each language
@@ -134,7 +134,6 @@ export class DetailsViewServiceService {
     const emptySub = new Blob([''], {type: 'text; charset=utf8'});
 
     pathRef.put(emptySub).then(() => {
-      console.log('Success')
       const subRef: AngularFirestoreDocument = this.firestore.doc(`users/${uid}/videos/${videoId}/subtitleLanguages/${isoCode}/subtitles/${filePath.split('.')[0]}`);
       pathRef.getDownloadURL().pipe(take(1)).subscribe((url: URL) => {
         subRef.update({
@@ -182,7 +181,6 @@ export class DetailsViewServiceService {
 
     const subtitleRef = this.firestore.collection('users').doc(ownersId['userUid']).collection('videos').doc(videoId)
     .collection('subtitleLanguages').doc(ISOcode).collection('subtitles').doc(name);
-
 
     const promises = this.firestore.collection(`sharedVideos`, ref => ref.where('videoId', '==', videoId).where('iso', '==', ISOcode).where('language', '==', language)
     .where('fileName', '==', name).where("id", "==", subtitleId))
@@ -344,7 +342,7 @@ export class DetailsViewServiceService {
       iso: ISOcode,
       videoId: videoId,
       usersRights:[],
-      requestOwnerEmail: "",
+      requestOwnerEmail: ""
     };
 
     const subtitleRef = this.firestore.collection('users').doc(userUid).collection('videos').doc(videoId)

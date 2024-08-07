@@ -1,12 +1,8 @@
-import { Component, OnInit, ViewChild, inject } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, of, switchMap, take, tap } from 'rxjs';
-import { StorageService } from '../services/storage.service';
-import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { MatDialog } from '@angular/material/dialog';
-import { UnsavedChangesDialogComponent } from '../components/dialog-modal/unsaved-changes-dialog/unsaved-changes-dialog.component';
 import { ShareService } from '../services/share.service';
-import { SharedVideo } from '../models/firestore-schema/shared-video.model';
 import { GoogleTranslateService } from '../services/googletranslate.service';
 import { DetailsViewServiceService } from '../services/details-view-service.service';
 import { YoutubeVideoDetails } from '../models/youtube/youtube-response.model';
@@ -17,6 +13,7 @@ import { YoutubeService } from '../services/youtube.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '../services/auth.service';
 import { ShareSubtitleDialogComponent } from '../components/dialog-modal/share-subtitle-dialog/share-subtitle-dialog.component';
+import { UserService } from "../services/user.service";
 
 @Component({
   selector: 'app-share-subtitling-container',
@@ -31,13 +28,14 @@ export class ShareSubtitlingContainerComponent implements OnInit {
   supportedLanguages$: BehaviorSubject<SupportedLanguages> = new BehaviorSubject<SupportedLanguages>(null);
   loading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
   user$: BehaviorSubject<GmailUser> = new BehaviorSubject<GmailUser>(null);
-  dataSource: any[];
+  dataSource: any[] = [];
+  userIdS: any[] = [];
   publishDate: BehaviorSubject<string> = new BehaviorSubject<string>('');
   readonly regionNamesInEnglish = new Intl.DisplayNames(['en'], { type: 'language' });
 
   @ViewChild('translateMenu') translateMenu;
 
-  displayedColumns = ['Name','Format','Language','Last Updated','Subtitles'];
+  displayedColumns = ['Name','Format','Language','Last Updated', 'Owner', 'Subtitles'];
   constructor(private route: ActivatedRoute,
     private router: Router,
     private youtubeService: YoutubeService,
@@ -46,7 +44,8 @@ export class ShareSubtitlingContainerComponent implements OnInit {
     private authService: AuthService,
     private translateService: GoogleTranslateService,
     private detailsViewService: DetailsViewServiceService,
-    private shareService: ShareService) { }
+    private shareService: ShareService,
+    private userService: UserService) { }
 
   ngOnInit(): void {
     this.videoId = this.route.snapshot.paramMap.get('id');
@@ -60,8 +59,8 @@ export class ShareSubtitlingContainerComponent implements OnInit {
           return of(null); // Return an empty observable if there is no user
         }
       })).subscribe({
-      next: languages => {
-        this.dataSource = languages;
+      next: response => {
+        this.loadDataSourceOwnerDetails(response);
       },
       error: err => {
         this.snackbar.open('Could not load data due to an unexpected error: ' + err.message, 'OK', {duration: 5000});
@@ -70,6 +69,18 @@ export class ShareSubtitlingContainerComponent implements OnInit {
     this.getVideoDetails();
     this.getCaptionDetails();
     this.getSupportedLanguages();
+  }
+
+  loadDataSourceOwnerDetails(response: any[]){
+    this.dataSource = response;
+    for(let i = 0; i < response.length; i++){
+      this.userService.getUserDetails(response[i].usersRights.find(user => user.right === 'Owner').userUid).pipe(take(1)).subscribe({
+        next: response => {
+          this.dataSource[i].ownerName = response.data().displayName
+          this.dataSource[i].ownerPhoto = response.data().photoURL
+        }
+      })
+    }
   }
 
   getVideoDetails(): void {
@@ -149,4 +160,5 @@ export class ShareSubtitlingContainerComponent implements OnInit {
     this.router.navigate(['dashboard']);
   }
 
+  protected readonly console = console;
 }

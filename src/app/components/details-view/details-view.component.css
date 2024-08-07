@@ -86,7 +86,7 @@
   font-weight: bold;
 }
 
-.mat-column-Format, .mat-column-Language, .mat-column-Last-Updated, .mat-column-Subtitles {
+.mat-column-Format, .mat-column-Language, .mat-column-Last-Updated, .mat-column-Subtitles, .mat-column-Owner  {
   text-align: center;
 }
 
@@ -107,4 +107,10 @@
 .mat-row-data button:hover {
   scale: 108%;
   transform: rotate(4deg);
+}
+
+.profile-img-element{
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
 }
