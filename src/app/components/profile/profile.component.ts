@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
-import {BehaviorSubject, Observable, tap} from "rxjs";
+import {BehaviorSubject, Observable, take, tap} from "rxjs";
 import {GmailUser, Rating} from "../../models/firestore-schema/user.model";
 import {AuthService} from "../../services/auth.service";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
@@ -78,6 +78,7 @@ export class ProfileComponent implements OnInit{
         this.uid = data.uid;
         this.photoUrl = data.photoURL;
         this.email = data.email;
+        this.loadUserRatings(data.uid)
         this.proService.getAllLanguages(data.uid).subscribe({
           next: data => {
             this.loadForeignLanguages(data)
@@ -92,10 +93,6 @@ export class ProfileComponent implements OnInit{
 
     this.proService.getSkillLevels().subscribe({
       next: data => {this.loadSkillLevels(data)}
-    });
-
-    this.proService.getUserRatings(this.uid).subscribe({
-      next: data => {this.loadRatings(data);}
     });
 
     this.getAvailableLanguages();
@@ -119,6 +116,14 @@ export class ProfileComponent implements OnInit{
     }else{
       this.motherLangForm.controls['motherLang'].setValue(data.mother_language);
     }
+  }
+
+  loadUserRatings(data: any) {
+    this.proService.getUserRatings(data).subscribe({
+      next: data => {
+        this.loadRatings(data);
+      }
+    });
   }
 
   loadRatings(data: Rating[]){

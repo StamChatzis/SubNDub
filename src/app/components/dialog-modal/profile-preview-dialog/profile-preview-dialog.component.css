@@ -38,7 +38,6 @@
   margin-bottom: 40px;
 }
 
-
 .profile-details-header  h3, .lang-details-header h3{
   font-size: 20px
 }
@@ -73,8 +72,8 @@
   padding-bottom: 10px;
 }
 
-.save-lang-btn{
-  margin-right: 10px;
+.rate-sys-star{
+  margin-right: 15px;
 }
 
 .user-rating-display{
@@ -89,4 +88,31 @@
 
 .user-rating-display mat-icon, .user-rating-display span{
   color: #ce950c;
+}
+
+.star-rating {
+  display: flex;
+}
+
+.star {
+  font-size: 2rem;
+  color: lightgray;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.star.filled {
+  color: #ce950c;
+}
+
+mat-form-field{
+  width: 100% !important;
+}
+
+.cancel-rate-btn{
+  margin-right: 10px;
+}
+
+.give-rate-btn{
+  margin-top: 10px;
 }

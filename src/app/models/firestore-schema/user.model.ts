@@ -36,4 +36,5 @@ export interface UserRights {
 export interface Rating {
   rating: number;
   comment: string;
+  raterId: string;
 }

@@ -1,7 +1,8 @@
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@26,400,0,0" />
 <div *ngIf="user" class="profile-details-card">
   <div class="prof-overview-header">
-    <h3 mat-dialog-title>Profile Overview</h3>
+    <h3 mat-dialog-title *ngIf="!givingRate">Profile Overview</h3>
+    <h3 mat-dialog-title *ngIf="givingRate">Rate this User:</h3>
   </div>
   <div class="profile-img">
     <img alt="profile-user-img" referrerpolicy="no-referrer" [src]="user.photoURL">
@@ -12,7 +13,7 @@
   <div class="prof-user-email">
     <p>{{user.email}}</p>
   </div>
-  <div class="prof-bio-display">
+  <div class="prof-bio-display" *ngIf="!givingRate">
     <p><span *ngIf="user.bio.length > 0"> &#x275D; {{user.bio}} &#x275E; </span></p>
   </div>
 
@@ -29,30 +30,37 @@
   </div>
 
   <div *ngIf="(user$ | async) as loggedUser"  class="rate-user-wrapper">
-    <div class="rate-btn" *ngIf="loggedUser.uid != user.uid && !givingRate">
-      <button mat-raised-button color="primary" (click)="rateUser()">Rate this user!</button>
+    <div class="give-rate-btn" *ngIf="loggedUser.uid != user.uid && !givingRate">
+      <button mat-raised-button color="primary" (click)="onClickToRateUser()">Rate this user!</button>
     </div>
 
     <div class="rate-form-wrapper" *ngIf="givingRate" [formGroup]="rateForm">
-      <div class="star-form-input">
-        <mat-card-header>
-          <mat-card-title><h3>Select rating</h3></mat-card-title>
-        </mat-card-header>
-        <div class="star-input-system" matTooltip="Select 1 to 5 stars with 1 the lowest and 5 the highest" matTooltipPosition = above formControlName="stars">
-          <p>help</p>
-        </div>
+      <mat-card-header>
+        <mat-card-title>
+          <h2>Select 1 to 5 stars</h2>
+        </mat-card-title>
+      </mat-card-header>
+      <div class="radio-star-system" matTooltip="Select a star (1 = lowest, 5 = highest)">
+        <i *ngFor="let star of ratedStars; let i = index"
+          class="star"
+          [class.filled]="i < hoverIndex || i < selectedRating"
+          (click)="rate(i + 1)"
+          (mouseover)="setHover(i + 1)"
+          (mouseleave)="resetHover()">
+          <span class="material-symbols-outlined rate-sys-star">star</span>
+        </i>
       </div>
 
-      <div class="comment-form-input">
-        <mat-card-header>
-          <mat-card-title><h3>You can also include comments</h3></mat-card-title>
-        </mat-card-header>
-        <mat-form-field matTooltip="Include your comments here" matTooltipPosition = above>
-          <textarea matInput formControlName="comment" placeholder="Your comments"></textarea>
-        </mat-form-field>
-      </div>
-
+      <mat-card-header>
+        <mat-card-title><h2>You can also include comments</h2></mat-card-title>
+      </mat-card-header>
+      <mat-form-field matTooltip="Include your comments here" matTooltipPosition = above>
+        <textarea matInput formControlName="comment" placeholder="Your comments"></textarea>
+      </mat-form-field>
+    </div>
+    <div class="btn-rate-options" *ngIf="givingRate">
+      <button class="cancel-rate-btn" mat-raised-button color="warn" (click)="resetPreview()">Cancel</button>
+      <button class="save-rate-btn" mat-raised-button color="primary" [disabled]="selectedRating == 0 || selectedRating == null" (click)="saveRating()">Rate!</button>
     </div>
   </div>
-
 </div>

@@ -40,8 +40,8 @@ export class ProfileService {
     return this.otherLanguages$ = this.firestore.collection<ForeignLanguage>(`users/${uid}/languages/`).valueChanges();
   }
 
-  getUserRatings(uid: string): Observable<Rating[]> {
-    return this.firestore.collection<Rating>(`users/${uid}/ratings`).valueChanges();
+  getUserRatings(uid: string) {
+    return this.firestore.collection<Rating>(`users/${uid}/ratings`).valueChanges()
   }
 
   updateProfile(user: any) {
@@ -52,6 +52,11 @@ export class ProfileService {
   deleteForeignLang(uid:any, language:any){
     const userRef: AngularFirestoreDocument<ForeignLanguage> = this.firestore.doc(`users/${uid}/languages/${language}`)
     return userRef.delete();
+  }
+
+  setRating(uid: any, rateData: Rating){
+    const ratePath = this.firestore.doc<Rating>(`users/${uid}/ratings/${rateData.raterId}`);
+    return ratePath.set(rateData, {merge: true})
   }
 
 }
