@@ -17,8 +17,8 @@ import { GoogleTranslateService } from "../services/googletranslate.service";
   providers: [StorageService]
 })
 export class SubtitlingContainerComponent implements OnInit {
-
   videoId: string;
+  ownerId: string;
   languageIsoCode: string;
   _currentLanguage$: Observable<Language>
   langName$: Observable<string>
@@ -43,11 +43,12 @@ export class SubtitlingContainerComponent implements OnInit {
     protected youtube: YoutubeService) {}
 
   ngOnInit(): void {
+    this.ownerId = this.route.snapshot.paramMap?.get('ownerId');
     this.videoId = this.route.snapshot.paramMap.get('id');
     this.languageIsoCode = this.route.snapshot.paramMap.get('languageCode');
     this.fileName = this.route.snapshot.paramMap.get('name');
     this.subFormat = this.route.snapshot.paramMap.get('format')
-    this.right = this.route.snapshot.paramMap.get('right');
+    this.right = this.route.snapshot.paramMap?.get('right');
     this.canOnlyView = !!this.right;
 
     this.youtube.getAllVideoDetails(this.videoId).pipe(take(1),tap(() => {
@@ -89,6 +90,7 @@ export class SubtitlingContainerComponent implements OnInit {
         this.loading$.next(true)
       }))
       .subscribe((response: SupportedLanguages) => {
+        console.log(this.languageIsoCode)
         this.availableLanguages$.next(response);
         this.loading$.next(false)
         this._currentLanguage$ = this.availableLanguages$

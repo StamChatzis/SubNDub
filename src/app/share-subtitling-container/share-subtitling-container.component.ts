@@ -17,6 +17,7 @@ import { UserService } from "../services/user.service";
 import {
   ProfilePreviewDialogComponent
 } from "../components/dialog-modal/profile-preview-dialog/profile-preview-dialog.component";
+import {UserRights} from "../models/firestore-schema/subtitles.model";
 
 @Component({
   selector: 'app-share-subtitling-container',
@@ -122,13 +123,15 @@ export class ShareSubtitlingContainerComponent implements OnInit {
     });
   }
 
-  editSubtitle(ISOcode:string, name:string, usersRights: string[]): void {
+  editSubtitle(ISOcode:string, name:string, usersRights: UserRights[]): void {
+    const ownerId = usersRights.find(user => user.right === 'Owner').userUid
     const userRight = usersRights.find((right: any) => right["userEmail"] === this.user$.value.email);
     let right: string;
     if (userRight["right"] === 'Viewer') right = "Viewer";
     else if (userRight["right"] === 'Commenter') right = "Commenter";
+    else if (userRight["right"] === 'Editor') right = "Editor";
     else right="";
-    this.router.navigate(['edit/shared', this.videoId, ISOcode, name, right]);
+    this.router.navigate(['edit/shared', this.videoId, ownerId, ISOcode, name, right]);
   }
 
   openProfilePreviewDialog(element: any){

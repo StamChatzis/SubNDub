@@ -24,7 +24,7 @@ const routes: Routes = [
   {path: 'community/edit/:id/:languageCode/:requestId', component: CommunitySubtitlingContainerComponent, canActivate: [AngularFireAuthGuard], data:{ authGuardPipe: redirectUnauthorizedToLogin }},
   {path: 'generate-tts/:id/:languageCode', component: GenerateTTSComponent, canActivate: [AngularFireAuthGuard], data:{ authGuardPipe: redirectUnauthorizedToLogin }},
   {path: 'shared/:id', component: ShareSubtitlingContainerComponent, canActivate: [AngularFireAuthGuard], data:{ authGuardPipe: redirectUnauthorizedToLogin }},
-  {path: 'edit/shared/:id/:languageCode/:name/:right', component: SubtitlingContainerComponent, canActivate: [AngularFireAuthGuard], data:{ authGuardPipe: redirectUnauthorizedToLogin }}
+  {path: 'edit/shared/:id/:ownerId/:languageCode/:name/:right', component: SubtitlingContainerComponent, canActivate: [AngularFireAuthGuard], data:{ authGuardPipe: redirectUnauthorizedToLogin }}
 ]
 
 @NgModule({
