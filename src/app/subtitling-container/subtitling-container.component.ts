@@ -51,6 +51,10 @@ export class SubtitlingContainerComponent implements OnInit {
     this.right = this.route.snapshot.paramMap?.get('right');
     this.canOnlyView = !!this.right;
 
+    if(this.ownerId == null){
+      this.ownerId = ''
+    }
+
     this.youtube.getAllVideoDetails(this.videoId).pipe(take(1),tap(() => {
       this.loading$.next(true);
     })).subscribe((res) => {
@@ -77,7 +81,11 @@ export class SubtitlingContainerComponent implements OnInit {
 
   uploadToFirestorage(subtitle: Blob): void {
     this.isFormDirty = false;
-    this.storageService.createFirestorageRef(this.storage, this.languageIsoCode, subtitle, this.videoId, this.fileName);
+    if(this.ownerId.length <= 0){
+      this.storageService.createFirestorageRef(this.storage, this.languageIsoCode, subtitle, this.videoId, this.fileName);
+    }else{
+      this.storageService.saveToFireStorageShared(this.ownerId, this.storage, this.languageIsoCode, subtitle, this.videoId, this.fileName);
+    }
   }
 
   navigateTTS(): void {
@@ -90,7 +98,6 @@ export class SubtitlingContainerComponent implements OnInit {
         this.loading$.next(true)
       }))
       .subscribe((response: SupportedLanguages) => {
-        console.log(this.languageIsoCode)
         this.availableLanguages$.next(response);
         this.loading$.next(false)
         this._currentLanguage$ = this.availableLanguages$

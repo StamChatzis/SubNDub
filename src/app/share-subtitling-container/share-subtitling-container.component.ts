@@ -32,9 +32,8 @@ export class ShareSubtitlingContainerComponent implements OnInit {
   supportedLanguages$: BehaviorSubject<SupportedLanguages> = new BehaviorSubject<SupportedLanguages>(null);
   loading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
   user$: BehaviorSubject<GmailUser> = new BehaviorSubject<GmailUser>(null);
-  dataSource: any[] = [];
-  userIdS: any[] = [];
   publishDate: BehaviorSubject<string> = new BehaviorSubject<string>('');
+  dataSource: any[] = [];
   readonly regionNamesInEnglish = new Intl.DisplayNames(['en'], { type: 'language' });
 
   @ViewChild('translateMenu') translateMenu;

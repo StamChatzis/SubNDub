@@ -58,6 +58,7 @@ export class DialogComponentComponent implements OnInit {
   @Input() isoCode: string;
   @Input() videoDuration: any;
   @Input() currentLanguage$: Observable<Language>
+  @Input() ownerId: string;
   @Output() loading$: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() subtitleUploadEmitter: EventEmitter<Blob> = new EventEmitter<Blob>();
   @Output() formStatusChange: EventEmitter<boolean> = new EventEmitter<boolean>();
@@ -115,14 +116,25 @@ export class DialogComponentComponent implements OnInit {
     })
 
     if (this.initSubtitles) {
-      this.storage.getSubtitleURL(this.videoId, this.isoCode, this.subtitleName).pipe(take(1)).subscribe(url => {
-        if (url) {
-          this.storage.fetchSubtitleFile(url).subscribe((res: string) => {
-            this.subtitles$.next(res);
-            this.handleFileUpload({data: this.subtitles$, format: this.subtitleName.split(".")[1]});
-          })
-        }
-      });
+      if(this.ownerId.length <= 0){
+        this.storage.getSubtitleURL(this.videoId, this.isoCode, this.subtitleName).pipe(take(1)).subscribe(url => {
+          if (url) {
+            this.storage.fetchSubtitleFile(url).subscribe((res: string) => {
+              this.subtitles$.next(res);
+              this.handleFileUpload({data: this.subtitles$, format: this.subtitleName.split(".")[1]});
+            })
+          }
+        });
+      }else{
+        this.storage.getSubtitleURLForShared(this.ownerId, this.videoId, this.isoCode, this.subtitleName).pipe(take(1)).subscribe(url => {
+          if(url){
+            this.storage.fetchSubtitleFile(url).subscribe((res: string) => {
+              this.subtitles$.next(res);
+              this.handleFileUpload({data: this.subtitles$, format: this.subtitleName.split(".")[1]});
+            })
+          }
+        })
+      }
     }
 
     this.form = this.fb.group({

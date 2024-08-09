@@ -23,14 +23,22 @@ export class StorageService {
         private snackbar: MatSnackBar) { }
 
     createFirestorageRef(storage: AngularFireStorage, language: string, subtitle: Blob, videoId: string, filePath: string): void {
-        //sets up the Firestorage required references and receives required parameters to complete the upload process
-        this.storageRef = storage;
-        let pathRef: AngularFireStorageReference;
-        this.authService.user.pipe(take(1)).subscribe(user => {
-            const pathString = `subtitles/${user.uid}/${videoId}/${language}/${filePath}`;
-            pathRef = this.storageRef.ref(pathString);
-            this.uploadToFirestorage(pathRef, subtitle, user.uid, videoId , language, filePath);
-        })
+      //sets up the Firestorage required references and receives required parameters to complete the upload process
+      this.storageRef = storage;
+      let pathRef: AngularFireStorageReference;
+      this.authService.user.pipe(take(1)).subscribe(user => {
+        const pathString = `subtitles/${user.uid}/${videoId}/${language}/${filePath}`;
+        pathRef = this.storageRef.ref(pathString);
+        this.uploadToFirestorage(pathRef, subtitle, user.uid, videoId , language, filePath);
+      })
+    }
+
+    saveToFireStorageShared(ownerId:string, storage: AngularFireStorage, language: string, subtitle: Blob, videoId: string, filePath: string){
+      this.storageRef = storage;
+      let pathRef: AngularFireStorageReference;
+      const pathString = `subtitles/${ownerId}/${videoId}/${language}/${filePath}`;
+      pathRef = this.storageRef.ref(pathString);
+      this.uploadToFirestorage(pathRef, subtitle, ownerId, videoId , language, filePath);
     }
 
     uploadToFirestorage(pathRef: AngularFireStorageReference, subtitle: Blob, userUid: string, videoId: string, language: string, filePath:string): void {
@@ -89,6 +97,15 @@ export class StorageService {
                 return doc.get('storageUrl');
             })
         );
+    }
+
+    getSubtitleURLForShared(ownerId:string, videoId: string, isoCode: string, subtitleName:string){
+      const subRef: AngularFirestoreDocument = this.firestore.doc(`users/${ownerId}/videos/${videoId}/subtitleLanguages/${isoCode}/subtitles/${subtitleName.split('.')[0]}`);
+      return subRef.get()
+        .pipe(take(1),
+          map(doc => {
+        return doc.get('storageUrl');
+      }))
     }
 
     fetchSubtitleFile(url: string): Observable<string> {
