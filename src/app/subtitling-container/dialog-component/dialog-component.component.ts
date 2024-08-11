@@ -52,6 +52,7 @@ export class DialogComponentComponent implements OnInit {
   public loading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
   protected isDirty: boolean = false;
   @Input() canOnlyView: boolean;
+  @Input() canComment: boolean;
   @Input() initSubtitles: boolean = true;
   @Input() subtitleName: string;
   @Input() videoId: string;

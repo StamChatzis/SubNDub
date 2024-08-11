@@ -24,6 +24,7 @@ export class DialogContentComponent implements OnChanges {
   @Input() supportedLanguages: Language[];
   @Input() hasFocus: boolean;
   @Input() canOnlyView: boolean;
+  @Input() canComment: boolean;
   @Input() currentLanguage$: Observable<Language>
   @Output() loading$: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() deleteDialogBoxEvent: EventEmitter<number> = new EventEmitter();

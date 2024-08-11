@@ -132,7 +132,6 @@ export class MessagesComponent implements OnInit, OnDestroy {
 
    async handleOffer(message: Message){ 
     await this.messagesService.checkRequestStatus(message, this.useruid).then((check) => {
-      console.log(check);
       if (check == "open"){
           this.messagesService.checkIfUserRightExists(message, this.useruid).then((result) => {
           if(result.exists==true)

@@ -36,7 +36,8 @@
           (subtitleUploadEmitter)="uploadToFirestorage($event)"
           (navigateTTS)="navigateTTS()"
           (formStatusChange)="setFormDirtyStatus($event)"
-          [canOnlyView]="canOnlyView">
+          [canOnlyView]="canOnlyView"
+          [canComment] = "canComment">
         </dialog-component>
     </div>
 <!-- <sub-timeline [videoDurationISO]="videoDuration"></sub-timeline>-->

@@ -28,6 +28,7 @@ export class SubtitlingContainerComponent implements OnInit {
   isFormDirty: boolean = false;
   right: string;
   canOnlyView: boolean;
+  canComment: boolean;
   availableLanguages$: BehaviorSubject<SupportedLanguages> = new BehaviorSubject<SupportedLanguages>(null);
   videoDetails$: BehaviorSubject<YoutubeVideoDetails[]> = new BehaviorSubject<YoutubeVideoDetails[]>(null);
   videoDuration: BehaviorSubject<string> = new BehaviorSubject<string>('');
@@ -49,8 +50,9 @@ export class SubtitlingContainerComponent implements OnInit {
     this.fileName = this.route.snapshot.paramMap.get('name');
     this.subFormat = this.route.snapshot.paramMap.get('format')
     this.right = this.route.snapshot.paramMap?.get('right');
-    this.canOnlyView = !!this.right;
-
+    this.canOnlyView = !this.right || this.right == "Editor" ? false : true ;
+    this.canComment = this.right == "Viewer" ? false : true;
+    
     if(this.ownerId == null){
       this.ownerId = ''
     }
