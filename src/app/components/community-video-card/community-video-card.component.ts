@@ -4,6 +4,7 @@ import { PlaceABidComponent } from '../dialog-modal/place-a-bid/place-a-bid.comp
 import { MatDialog } from '@angular/material/dialog';
 import { NotifierService } from 'src/app/services/notifier.service';
 import { take } from 'rxjs';
+import { EditRequestDialogComponent } from '../dialog-modal/edit-request-dialog/edit-request-dialog.component';
 
 @Component({
   selector: 'community-video-card',
@@ -38,6 +39,21 @@ export class CommunityVideoCardComponent implements OnInit {
         this.dialog.closeAll();
       }else if (dialog && dialog.yourBidAmount>0) {
         this.notifier.showNotification("Offer has been successfully sent to the requestor.","OK");
+      }
+      
+    });
+  }
+
+  editCommunityRequest(requestDetails: any, videoTitle: string, filename: string): void {
+    this.dialog.open(EditRequestDialogComponent,{width:'550px', height: '470px', data: { language:requestDetails.language, videoTitle, videoId: this.videoId, requestedByID: requestDetails.requestedByID, filename, requestDetails, userEmail:this.userEmail}}).afterClosed().pipe(take(1)).subscribe(dialog => {
+      if (dialog === (null || undefined )){ 
+        this.dialog.closeAll();
+      }else if (dialog ) {
+        if(dialog.isChecked == true)
+          this.notifier.showNotification("Request has been successfully closed.","OK");
+        if(dialog.newDeadline !== null){
+          this.notifier.showNotification("Dealine for this request has been updated.","OK");
+        }
       }
       
     });

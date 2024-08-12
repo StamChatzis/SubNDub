@@ -25,6 +25,7 @@
 	</div>
 	<div class="actions">
 		<mat-icon [class.faded]="communityRequestDetails.requestedByID=== userId" [style.pointer-events]="(communityRequestDetails.requestedByID=== userId ? 'none' : 'auto')" (click)="openPlaceABid(communityRequestDetails, videoDetails?.snippet?.title, communityRequestDetails.filename)" matTooltip="Place a BID">group</mat-icon>
+		<mat-icon *ngIf="communityRequestDetails.requestedByID=== userId" (click)="editCommunityRequest(communityRequestDetails, videoDetails?.snippet?.title, communityRequestDetails.filename)" matTooltip="Edit request">edit</mat-icon>
 	</div>
 </div>
 

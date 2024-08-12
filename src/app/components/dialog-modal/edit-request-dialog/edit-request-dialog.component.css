@@ -1,0 +1,58 @@
+button {
+    margin-right: 8px;
+  }
+  
+  h4 {
+    font-weight: 600;
+  }
+  
+  
+  p {
+    font-weight: 500;
+  }
+  
+  mat-dialog-actions {
+    justify-content: flex-end;
+    margin-top: 16px; 
+  }
+  
+  .input-container {
+    width: 100%;
+  }
+  
+  .button-container {
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  input[type="date"] {
+    width: 95%;
+    padding: 10px;
+    margin-bottom: 10px;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    background-color: #f0f0f0;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  input[type="date"]:focus {
+    border-color: #2196f3;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  }
+  
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    color: #2196f3;
+    opacity: 1;
+  }
+
+  .request-check {
+    display: inline-block;
+  }
+  
+  .request-check p {
+    display: inline;
+    margin: 0; 
+  }
+  
+  

@@ -79,6 +79,7 @@ import { DetectLanguageDialogComponent } from './components/dialog-modal/detect-
 import { CommentDialogComponent } from './components/dialog-modal/comment-dialog/comment-dialog.component';
 import { CommunityHelpService } from './services/community-help.service';
 import { ProfilePreviewDialogComponent } from './components/dialog-modal/profile-preview-dialog/profile-preview-dialog.component';
+import { EditRequestDialogComponent } from './components/dialog-modal/edit-request-dialog/edit-request-dialog.component';
 
 @NgModule({
   declarations: [
@@ -124,7 +125,8 @@ import { ProfilePreviewDialogComponent } from './components/dialog-modal/profile
     TranslateSubsDialogComponent,
     DetectLanguageDialogComponent,
     CommentDialogComponent,
-    ProfilePreviewDialogComponent
+    ProfilePreviewDialogComponent,
+    EditRequestDialogComponent
   ],
     imports: [
         BrowserModule,
