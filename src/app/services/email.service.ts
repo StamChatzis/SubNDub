@@ -8,27 +8,35 @@ import  emailjs  from 'emailjs-com';
 })
 export class EmailService {
 
-  from_email: string;
-  to_email: string;
-  filename: string;
-
-
   constructor(private notifier: NotifierService) { }
 
-  /*
-  sendEmail(email: string, to_email: string, filename: string) {
-    emailjs.send(EmailJS_IDs.email_service, EmailJS_IDs.email_template, {
+  sendEmail(email: string, to_email: string) {
+    emailjs.send('service_trizanq', 'template_kbddrwk', {
       from_email: email,
-      to_email: to_email,
-      filename: filename
-    }, EmailJS_IDs.user_key)
+      to_email: to_email
+    }, "mzL-kaIaqUfwXy_py")
       .then(() => {
         this.notifier.showNotification("Invitation has been sent to "+ to_email +" successfully!", "OK");
       })
       .catch(error => {
         this.notifier.showNotification(error, "DISMISS");
       });
-  }*/
+  }
+
+  sendShareSubEmail(email: string, to_email: string, filename:string, videoId: string) {
+    emailjs.send('service_trizanq', 'template_x0t27ro', {
+      from_email: email,
+      to_email: to_email,
+      filename: filename,
+      videoId: videoId
+    }, "mzL-kaIaqUfwXy_py")
+      .then(() => {
+        this.notifier.showNotification("Notification has been sent to "+ to_email +" successfully!", "OK");
+      })
+      .catch(error => {
+        this.notifier.showNotification(error, "DISMISS");
+      });
+  }
 
 
 

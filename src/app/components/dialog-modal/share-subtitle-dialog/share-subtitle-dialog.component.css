@@ -91,3 +91,7 @@
 .line-through {
   text-decoration: line-through;
 }
+
+input[type="checkbox"] {
+  margin-left: 10px;
+}

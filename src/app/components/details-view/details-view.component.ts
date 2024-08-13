@@ -205,11 +205,10 @@ export class DetailsViewComponent implements OnInit {
         }
           this.dialog.open(ShareSubtitleDialogComponent,{width:'600px', id: 'shared-dialog',data: {filename, usersRights, videoId:this.videoId, ISOcode, language, owner_text, format, videoTitle, subtitleId, userEmail:this.user$.value.email}}).afterClosed().pipe(take(1)).subscribe(dialog => {
             if (dialog === (null || undefined )){
-              //this.snackbar.open('No changes have been made', 'DISMISS', {duration:1000});
               this.dialog.closeAll();
             }else if(dialog){
               if (dialog.email && dialog.right) {
-                this.detailsViewService.shareSubtitle(this.videoId, ISOcode, language, this.user$.value.uid, filename, format, dialog.email, dialog.right, subtitleId);
+                this.detailsViewService.shareSubtitle(this.videoId, ISOcode, language, this.user$.value.uid, filename, format, dialog.email, dialog.right, subtitleId, dialog.sendNotification);
               }else if((dialog.email == "" && dialog.right) || (dialog.email && dialog.right == undefined)){
                 this.snackbar.open('Both email and right have to be filled', 'DISMISS', {duration:3000});
               }else {

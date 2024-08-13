@@ -137,7 +137,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
           if(result.exists==true)
             this.detailsService.updateSharedSubtitleRights(message.videoId, message.iso, message.language, this.useruid, message.subtitle_name, message.format, result.currentRights, message.subtitleId);
           else
-            this.detailsService.addUserRightOnSub(message.videoId, message.iso, message.language, this.useruid, message.subtitle_name, message.format, message.sender, "Editor", message.subtitleId);
+            this.detailsService.addUserRightOnSub(message.videoId, message.iso, message.language, this.useruid, message.subtitle_name, message.format, message.sender, "Editor", message.subtitleId, false);
         })
         setTimeout(() => { this.messagesService.setSubtitleIdToRequest(message, this.useruid)
           .then(() => this.messagesService.closeRequestStatus(message, this.useruid))

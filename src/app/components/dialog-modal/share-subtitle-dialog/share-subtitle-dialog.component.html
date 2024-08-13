@@ -25,6 +25,7 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
+      <h3 *ngIf="email.value && right.value"><input type="checkbox" [(ngModel)]="sendNotificationValue" (ngModelChange)="sendNotification = sendNotificationValue ? true : false">Send notification email</h3>
   </div>
 
     <div class="accessGridList">
@@ -53,7 +54,7 @@
   <div class="buttons-div-container">
     <mat-dialog-actions class="dialog-buttons" >
         <button mat-button [mat-dialog-close]="null">Cancel</button>
-        <button mat-raised-button [mat-dialog-close]="{email: email.value , right: right.value, usersRights: data.usersRights }" color="primary">Save</button>
+        <button mat-raised-button [mat-dialog-close]="{email: email.value , right: right.value, usersRights: data.usersRights, sendNotification }" color="primary">Save</button>
     </mat-dialog-actions>
   </div>
 </ng-template>

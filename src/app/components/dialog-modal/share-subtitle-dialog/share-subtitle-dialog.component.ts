@@ -27,7 +27,8 @@ export class ShareSubtitleDialogComponent implements OnInit {
   videoTitle: string;
   subtitleId: any;
   canEdit: boolean = false;
-
+  sendNotificationValue: boolean = false;
+  sendNotification: boolean = false;
 
   constructor(public dialogRef: MatDialogRef<ShareSubtitleDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: { filename: string, usersRights: string[], videoId: string, ISOcode, language, owner_text, format, videoTitle, subtitleId, userEmail},  
   private fb: FormBuilder, 

@@ -9,6 +9,7 @@ import { AngularFireStorage } from "@angular/fire/compat/storage";
 import { AngularFireStorageReference } from "@angular/fire/compat/storage/ref";
 import { CommunityHelpService } from './community-help.service';
 import { SubtitleResponse } from "../models/firestore-schema/subtitles.model";
+import { EmailService } from './email.service';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +21,8 @@ export class DetailsViewServiceService {
               private notifier: NotifierService,
               private storage: AngularFireStorage,
               private snackbar: MatSnackBar,
-               private communityService: CommunityHelpService) {}
+               private communityService: CommunityHelpService,
+              private emailService: EmailService) {}
 
   getSubtitleLanguages(userUid: string, videoId: string): Observable<SubtitleResponse[]> {
     const videoRef = this.firestore.collection('users').doc(userUid).collection('videos').doc(videoId);
@@ -157,8 +159,8 @@ export class DetailsViewServiceService {
     return subRef.delete()
   }
 
-  shareSubtitle(videoId: string, ISOcode: string, language: string, userUid: string, name: string, format: string, email: string, right: string, subtitleId: any): void{
-    this.addUserRightOnSub(videoId, ISOcode, language, userUid, name, format, email, right, subtitleId);
+  shareSubtitle(videoId: string, ISOcode: string, language: string, userUid: string, name: string, format: string, email: string, right: string, subtitleId: any, sendNotification: boolean): void{
+    this.addUserRightOnSub(videoId, ISOcode, language, userUid, name, format, email, right, subtitleId, sendNotification);
   }
 
   getUserIdByEmail(email: string ):Observable<string>{
@@ -243,7 +245,8 @@ export class DetailsViewServiceService {
   }
 
   transferOwnership(from_email: string, to_email: string, filename: string, videoId:string, ISOcode:string, language:string, format: string, videoTitle: string, subtitleId: any): void {
-    //this.emailService.sendEmail(from_email, to_email);
+    this.emailService.sendEmail(from_email, to_email);
+
     let userName;
       this.communityService.getUserNameFromEmail(from_email).subscribe((email) => {
           userName =email;
@@ -328,7 +331,7 @@ export class DetailsViewServiceService {
     }
   }
 
-  addUserRightOnSub(videoId: string, ISOcode: string, language: string, userUid: string, name: string, format: string, email: string, right: string, subtitleId: any): void {
+  addUserRightOnSub(videoId: string, ISOcode: string, language: string, userUid: string, name: string, format: string, email: string, right: string, subtitleId: any, sendNotification: boolean): void {
     const sharedVideoRef: AngularFirestoreCollection = this.firestore.collection('sharedVideos');
     const id = this.firestore.createId();
 
@@ -353,6 +356,7 @@ export class DetailsViewServiceService {
       const currentRights = docSnapshot.exists ? docSnapshot.data().usersRights || [] : [];
       const existingRight = currentRights.find((right) => right.userEmail === email);
       const substitleSharedId = docSnapshot.data().subtitleSharedId;
+      const ownerEmail = currentRights.find((right) => right.right === "Owner");
 
       if (!existingRight) {
         currentRights.push({
@@ -393,6 +397,8 @@ export class DetailsViewServiceService {
                 this.notifier.showNotification("User rights have been added.","OK");
               }
             });
+            if(sendNotification == true)
+              this.emailService.sendShareSubEmail(ownerEmail.userEmail,email, name+"."+format, videoId);
       }
       } else {
         this.notifier.showNotification("User already exist with a right.","DIMISS");
