@@ -20,6 +20,7 @@ export class EditRequestDialogComponent {
   deadline: any;
   requestorEmail: string;
   newDeadline: any;
+  noDeadline: any;
   today: string;
   isChecked: boolean = false;
 
@@ -46,6 +47,28 @@ export class EditRequestDialogComponent {
         this.deadline = doc.get('deadline');
       });
     });
+  }
+
+  onNoDeadlineChange() {
+    if (this.noDeadline) {
+      this.newDeadline = 'No';
+      this.isChecked = false;
+    } else {
+      this.newDeadline = false;
+    }
+  }
+
+  onDateInput() {
+    this.noDeadline = false;
+    this.isChecked = false;
+    this.newDeadline = this.newDeadline;
+  }
+  
+  onIsCheckedChange() {
+    if (this.isChecked) {
+      this.newDeadline = null;
+      this.noDeadline = false;
+    } 
   }
 
   changeDeadline(requestCheck: any, newDeadline: any){

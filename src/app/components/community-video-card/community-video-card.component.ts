@@ -45,7 +45,7 @@ export class CommunityVideoCardComponent implements OnInit {
   }
 
   editCommunityRequest(requestDetails: any, videoTitle: string, filename: string): void {
-    this.dialog.open(EditRequestDialogComponent,{width:'550px', height: '470px', data: { language:requestDetails.language, videoTitle, videoId: this.videoId, requestedByID: requestDetails.requestedByID, filename, requestDetails, userEmail:this.userEmail}}).afterClosed().pipe(take(1)).subscribe(dialog => {
+    this.dialog.open(EditRequestDialogComponent,{width:'550px', height: '480px', data: { language:requestDetails.language, videoTitle, videoId: this.videoId, requestedByID: requestDetails.requestedByID, filename, requestDetails, userEmail:this.userEmail}}).afterClosed().pipe(take(1)).subscribe(dialog => {
       if (dialog === (null || undefined )){ 
         this.dialog.closeAll();
       }else if (dialog ) {
