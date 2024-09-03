@@ -61,10 +61,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "SubAndDub:build:production"
+              "browserTarget": "SubAndDub:build:production"
             },
             "development": {
-              "buildTarget": "SubAndDub:build:development"
+              "browserTarget": "SubAndDub:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -72,7 +72,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "buildTarget": "SubAndDub:build"
+            "browserTarget": "SubAndDub:build"
           }
         },
         "test": {
