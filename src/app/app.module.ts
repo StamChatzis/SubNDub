@@ -17,7 +17,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatCardModule } from '@angular/material/card';
 import { DialogContentComponent } from './subtitling-container/dialog-component/dialog-content/dialog-content.component';
 import { ImportButtonComponent } from './shared/components/import-button/import-button.component';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { LoaderComponent } from './shared/components/loader/loader.component';
@@ -81,55 +81,53 @@ import { CommunityHelpService } from './services/community-help.service';
 import { ProfilePreviewDialogComponent } from './components/dialog-modal/profile-preview-dialog/profile-preview-dialog.component';
 import { EditRequestDialogComponent } from './components/dialog-modal/edit-request-dialog/edit-request-dialog.component';
 
-@NgModule({
-  declarations: [
-    AppComponent,
-    VideoPlayerComponent,
-    SubtitlingContainerComponent,
-    DialogComponentComponent,
-    DialogContentComponent,
-    ImportButtonComponent,
-    LoaderComponent,
-    MenuComponent,
-    LoginButtonComponent,
-    VideoInitFormComponent,
-    HomeCardsComponent,
-    DashboardComponent,
-    SignInComponent,
-    VideoCardComponent,
-    FullscreenLoaderComponent,
-    DialogConfirmationComponent,
-    SubTimelineComponent,
-    SubtitleTileComponent,
-    CommunityVideoCardComponent,
-    DetailsViewComponent,
-    UnsavedChangesDialogComponent,
-    PersonCreationDialogComponent,
-    GenerateVoiceDialogComponent,
-    GenerateTTSComponent,
-    FilterPipe,
-    SaveSubtitleDialogComponent,
-    CommunitySubtitlingContainerComponent,
-    ConfirmationModalComponent,
-    BatchDialogModalComponent,
-    ProfileDropdownComponent,
-    ProfileComponent,
-    ShareSubtitleDialogComponent,
-    TransferOwnershipDialogComponent,
-    MessagesComponent,
-    ShareSubtitlingContainerComponent,
-    SharedVideoCardComponent,
-    RequestCommunityHelpComponent,
-    PlaceABidComponent,
-    DownloadOptionsDialogComponent,
-    TranslateSubsDialogComponent,
-    DetectLanguageDialogComponent,
-    CommentDialogComponent,
-    ProfilePreviewDialogComponent,
-    EditRequestDialogComponent
-  ],
-    imports: [
-        BrowserModule,
+@NgModule({ declarations: [
+        AppComponent,
+        VideoPlayerComponent,
+        SubtitlingContainerComponent,
+        DialogComponentComponent,
+        DialogContentComponent,
+        ImportButtonComponent,
+        LoaderComponent,
+        MenuComponent,
+        LoginButtonComponent,
+        VideoInitFormComponent,
+        HomeCardsComponent,
+        DashboardComponent,
+        SignInComponent,
+        VideoCardComponent,
+        FullscreenLoaderComponent,
+        DialogConfirmationComponent,
+        SubTimelineComponent,
+        SubtitleTileComponent,
+        CommunityVideoCardComponent,
+        DetailsViewComponent,
+        UnsavedChangesDialogComponent,
+        PersonCreationDialogComponent,
+        GenerateVoiceDialogComponent,
+        GenerateTTSComponent,
+        FilterPipe,
+        SaveSubtitleDialogComponent,
+        CommunitySubtitlingContainerComponent,
+        ConfirmationModalComponent,
+        BatchDialogModalComponent,
+        ProfileDropdownComponent,
+        ProfileComponent,
+        ShareSubtitleDialogComponent,
+        TransferOwnershipDialogComponent,
+        MessagesComponent,
+        ShareSubtitlingContainerComponent,
+        SharedVideoCardComponent,
+        RequestCommunityHelpComponent,
+        PlaceABidComponent,
+        DownloadOptionsDialogComponent,
+        TranslateSubsDialogComponent,
+        DetectLanguageDialogComponent,
+        CommentDialogComponent,
+        ProfilePreviewDialogComponent,
+        EditRequestDialogComponent
+    ],
+    bootstrap: [AppComponent], imports: [BrowserModule,
         AppRoutingModule,
         BrowserAnimationsModule,
         MatFormFieldModule,
@@ -142,7 +140,6 @@ import { EditRequestDialogComponent } from './components/dialog-modal/edit-reque
         MatTooltipModule,
         FlexLayoutModule,
         MatCardModule,
-        HttpClientModule,
         MatMenuModule,
         MatProgressSpinnerModule,
         AngularFireModule.initializeApp(firebaseConfig),
@@ -164,9 +161,5 @@ import { EditRequestDialogComponent } from './components/dialog-modal/edit-reque
         MatGridListModule,
         MatSortModule,
         MatCheckboxModule,
-        MatRadioModule
-    ],
-  providers: [DetailsViewServiceService, CommunityHelpService],
-  bootstrap: [AppComponent]
-})
+        MatRadioModule], providers: [DetailsViewServiceService, CommunityHelpService, provideHttpClient(withInterceptorsFromDi())] })
 export class AppModule { }

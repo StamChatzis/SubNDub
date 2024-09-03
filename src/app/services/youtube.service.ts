@@ -1,4 +1,4 @@
-import {HttpClient} from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import {Injectable, OnDestroy} from '@angular/core';
 import {GOOGLE_API_KEY} from 'src/environments/environment';
 import {YoutubeResponse, YoutubeVideoDetails} from '../models/youtube/youtube-response.model';
