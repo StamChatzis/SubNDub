@@ -22,7 +22,7 @@
     "@angular/platform-browser": "^18.2.2",
     "@angular/platform-browser-dynamic": "^18.2.2",
     "@angular/router": "^18.2.2",
-    "@angular/youtube-player": "^15.2.9",
+    "@angular/youtube-player": "^16.2.14",
     "emailjs-com": "^3.2.0",
     "file-saver": "^2.0.5",
     "firebase": "^10.13.1",
