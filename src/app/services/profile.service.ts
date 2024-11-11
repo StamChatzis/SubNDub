@@ -15,12 +15,12 @@ export class ProfileService {
   constructor(private firestore: AngularFirestore, private http: HttpClient) {}
 
   getCountries(){
-    const countryUrl = "../../assets/data/google-countries.json";
+    const countryUrl = "assets/data/google-countries.json";
     return this.http.get(countryUrl);
   }
 
   getSkillLevels(){
-    const skillsUrl = "../../assets/data/lang-skill-levels.json";
+    const skillsUrl = "assets/data/lang-skill-levels.json";
     return this.http.get(skillsUrl);
   }
 
