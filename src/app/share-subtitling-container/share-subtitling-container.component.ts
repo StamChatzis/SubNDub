@@ -18,6 +18,7 @@ import {
   ProfilePreviewDialogComponent
 } from "../components/dialog-modal/profile-preview-dialog/profile-preview-dialog.component";
 import {UserRights} from "../models/firestore-schema/subtitles.model";
+import { ViewonlyModeDialogComponent } from '../components/dialog-modal/viewonly-mode-dialog/viewonly-mode-dialog.component';
 
 @Component({
   selector: 'app-share-subtitling-container',
@@ -122,7 +123,7 @@ export class ShareSubtitlingContainerComponent implements OnInit {
     });
   }
 
-  editSubtitle(ISOcode:string, name:string, usersRights: UserRights[]): void {
+  editSubtitle(ISOcode:string, name:string, usersRights: UserRights[], subtitleId:string, language:string): void {
     const ownerId = usersRights.find(user => user.right === 'Owner').userUid
     const userRight = usersRights.find((right: any) => right["userEmail"] === this.user$.value.email);
     let right: string;
@@ -130,7 +131,19 @@ export class ShareSubtitlingContainerComponent implements OnInit {
     else if (userRight["right"] === 'Commenter') right = "Commenter";
     else if (userRight["right"] === 'Editor') right = "Editor";
     else right="";
-    this.router.navigate(['edit/shared', this.videoId, ownerId, ISOcode, name, right]);
+  
+    this.shareService.getSubtitleIsUsed(this.videoId, ISOcode, language, name, subtitleId).then((subtitleIsUsed) => {
+      if (!subtitleIsUsed.isUsed || subtitleIsUsed.isUsedBy == this.user$.value.uid){
+        this.router.navigate(['edit/shared', this.videoId, ownerId, ISOcode, name, language, right, subtitleId]);
+      }else  {
+        this.dialog.open(ViewonlyModeDialogComponent,{width:'400px'}).afterClosed().pipe(take(1)).subscribe(dialog => {
+          if (dialog == null || dialog == (undefined)){
+            this.dialog.closeAll();
+          }else if (dialog){
+            this.router.navigate(['edit/shared', this.videoId, this.user$.value.uid, ISOcode, name, language, "Viewer", subtitleId]);
+          }});
+      }
+    })
   }
 
   openProfilePreviewDialog(element: any){
@@ -151,7 +164,7 @@ export class ShareSubtitlingContainerComponent implements OnInit {
            owner_text = requestOwnerEmail;
         }
           this.dialog.open(ShareSubtitleDialogComponent,{width:'600px', id: 'shared-dialog',data: {filename, usersRights, videoId:this.videoId, ISOcode, language, owner_text, format, videoTitle, subtitleId, userEmail:this.user$.value.email}}).afterClosed().pipe(take(1)).subscribe(dialog => {
-            if (dialog === (null || undefined )){
+            if (dialog === null || dialog === undefined ){
               this.dialog.closeAll();
             }else if(dialog){
               if (dialog.email && dialog.right) {

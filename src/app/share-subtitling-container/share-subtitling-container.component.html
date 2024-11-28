@@ -62,12 +62,12 @@
         <ng-container matColumnDef="Subtitles">
           <th mat-header-cell *matHeaderCellDef> Options </th>
           <td mat-cell *matCellDef="let element">
-            <button (click)="editSubtitle(element.iso, element.fullFilename, element.usersRights)" matTooltip="Edit subtitles" mat-icon-button color="primary" ><mat-icon>edit</mat-icon></button>
+            <button (click)="editSubtitle(element.iso, element.fullFilename, element.usersRights, element.id, element.language)" matTooltip="Edit subtitles" mat-icon-button color="primary" ><mat-icon>edit</mat-icon></button>
             <button (click)="shareSubtitle(element.language, element.iso, element.fileName, element.format, element.usersRights, videoDetails$?.value[0]?.snippet?.title, element.id)" style="margin-left:10px;" matTooltip="Share subtitles with someone" mat-icon-button color="primary"><mat-icon>share</mat-icon></button>
           </td>
         </ng-container>
         <tr mat-header-row *matHeaderRowDef="displayedColumns" ></tr>
-        <tr class="mat-row-data" mat-row *matRowDef="let element; columns: displayedColumns;" (dblclick)="editSubtitle(element.iso, element.fullFilename, element.usersRights)"></tr>
+        <tr class="mat-row-data" mat-row *matRowDef="let element; columns: displayedColumns;" (dblclick)="editSubtitle(element.iso, element.fullFilename, element.usersRights, element.id, element.language)"></tr>
       </table>
     </div>
 </div>

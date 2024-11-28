@@ -8,7 +8,9 @@ export interface SubtitleResponse {
   storageUrl: string,
   ownerName: string,
   ownerPhoto: string,
-  usersRights: UserRights[]
+  usersRights: UserRights[],
+  isUsed: boolean,
+  isUsedBy: string;
 }
 
 export interface SharedSubtitleResponse {
@@ -22,7 +24,9 @@ export interface SharedSubtitleResponse {
   requestOwnerEmail: string,
   ownerName: string,
   ownerPhoto: string,
-  usersRights: UserRights[]
+  usersRights: UserRights[],
+  isUsed: boolean,
+  isUsedBy: string;
 }
 
 export interface UserRights{

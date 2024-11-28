@@ -21,6 +21,7 @@ import { DownloadFileHandlerService } from "../../services/download-file-handler
 import { RequestCommunityHelpComponent } from '../dialog-modal/request-community-help/request-community-help.component';
 import { UserService } from "../../services/user.service";
 import {ProfilePreviewDialogComponent} from "../dialog-modal/profile-preview-dialog/profile-preview-dialog.component";
+import { ViewonlyModeDialogComponent } from '../dialog-modal/viewonly-mode-dialog/viewonly-mode-dialog.component';
 
 @Component({
   selector: 'details-view',
@@ -147,13 +148,26 @@ export class DetailsViewComponent implements OnInit {
     })
   }
 
-  editSubtitle(ISOcode:string, name:string): void {
-    this.router.navigate(['edit', this.videoId, ISOcode, name])
+  editSubtitle(ISOcode:string, name:string, isUsed:boolean, subtitleId: string, language:any): void {
+    this.shareService.getSubtitleIsUsed(this.videoId, ISOcode, language, name, subtitleId).then((subtitleIsUsed) => {
+      if (subtitleIsUsed.isUsed == undefined || subtitleIsUsed.isUsed == null || subtitleIsUsed.isUsedBy == this.user$.value.uid)
+        this.router.navigate(['edit', this.videoId, ISOcode, name, language ,subtitleId])
+      else if (!isUsed)
+        this.router.navigate(['edit', this.videoId, ISOcode, name, language, subtitleId])
+      else {
+        this.dialog.open(ViewonlyModeDialogComponent,{width:'400px'}).afterClosed().pipe(take(1)).subscribe(dialog => {
+          if (dialog == null || dialog == (undefined)){
+            this.dialog.closeAll();
+          }else if (dialog){
+            this.router.navigate(['edit/shared', this.videoId, this.user$.value.uid, ISOcode, name, language, "Viewer", subtitleId]);
+          }});
+      }
+    });
   }
 
   requestCommunityHelp(language:string ,iso: string, filename: string, format: string, videoTitle: string, subtitleId: string): void {
     this.dialog.open(RequestCommunityHelpComponent,{width:'400px', data: { videoTitle, subtitleTitle:filename+"."+format, language}}).afterClosed().pipe(take(1)).subscribe(dialog => {
-      if (dialog === (null || undefined )){
+      if (dialog === null || dialog === undefined ){
         this.dialog.closeAll();
       }else if (dialog){
         this.detailsViewService.requestCommunityHelp(this.user$.value, this.videoId,language, iso, filename, format, dialog, subtitleId);
@@ -204,7 +218,7 @@ export class DetailsViewComponent implements OnInit {
            owner_text = requestOwnerEmail;
         }
           this.dialog.open(ShareSubtitleDialogComponent,{width:'600px', id: 'shared-dialog',data: {filename, usersRights, videoId:this.videoId, ISOcode, language, owner_text, format, videoTitle, subtitleId, userEmail:this.user$.value.email}}).afterClosed().pipe(take(1)).subscribe(dialog => {
-            if (dialog === (null || undefined )){
+            if (dialog === null || dialog === undefined ){
               this.dialog.closeAll();
             }else if(dialog){
               if (dialog.email && dialog.right) {

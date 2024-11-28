@@ -120,7 +120,10 @@ export class DetailsViewServiceService {
         format: format,
         language: language.name,
         iso: language.language,
-        usersRights: [{userUid: userUid, right: "Owner", userEmail: userEmail}]
+        usersRights: [{userUid: userUid, right: "Owner", userEmail: userEmail}],
+        isUsed: false,
+        isUsedBy: "",
+        subtitleSharedId: ""
       }
 
       subtitleRef.set(data);
@@ -194,6 +197,8 @@ export class DetailsViewServiceService {
             // usersRights arrays are not equal, proceed with the update
             subtitleRef.update({usersRights: usersRights}); //update Owners subtitle rights
             const sharedVideoRef = querySnapshot.docs[0].ref;
+            if(subtitleDoc.data().isUsed == undefined)
+              subtitleDoc.ref.update({isUsed: false});
             sharedVideoRef.update({
               usersRights: usersRights
             }).then(() => {
@@ -285,7 +290,7 @@ export class DetailsViewServiceService {
 
         //Add message to user's messages
         this.getUserIdByEmail(to_email).subscribe((userid) => {
-          if (userid != ("" || null || undefined)){
+          if (userid != "" || userid != null || userid != undefined){
             const messageRef: AngularFirestoreCollection = this.firestore.collection('users').doc(userid).collection('messages');
 
 
@@ -357,6 +362,7 @@ export class DetailsViewServiceService {
       const existingRight = currentRights.find((right) => right.userEmail === email);
       const substitleSharedId = docSnapshot.data().subtitleSharedId;
       const ownerEmail = currentRights.find((right) => right.right === "Owner");
+      const isUsed = docSnapshot.data().isUsed;
 
       if (!existingRight) {
         currentRights.push({
@@ -365,6 +371,8 @@ export class DetailsViewServiceService {
         });
         if(docSnapshot.exists) {
           subtitleRef.update({usersRights: currentRights});
+          if (isUsed == undefined || isUsed==null)
+            docSnapshot.ref.update({ isUsed: false });
           data.usersRights = currentRights;
           var sharedQuery;
 
@@ -393,7 +401,9 @@ export class DetailsViewServiceService {
                 });
               } else {
                 sharedVideoRef.add(data);
-                  subtitleRef.update({subtitleSharedId: data.id});
+                subtitleRef.update({subtitleSharedId: data.id});
+                if (isUsed != undefined)
+                  subtitleRef.update({isUsed: isUsed});
                 this.notifier.showNotification("User rights have been added.","OK");
               }
             });

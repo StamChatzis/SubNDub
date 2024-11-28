@@ -80,6 +80,7 @@ import { CommentDialogComponent } from './components/dialog-modal/comment-dialog
 import { CommunityHelpService } from './services/community-help.service';
 import { ProfilePreviewDialogComponent } from './components/dialog-modal/profile-preview-dialog/profile-preview-dialog.component';
 import { EditRequestDialogComponent } from './components/dialog-modal/edit-request-dialog/edit-request-dialog.component';
+import { ViewonlyModeDialogComponent } from './components/dialog-modal/viewonly-mode-dialog/viewonly-mode-dialog.component';
 
 @NgModule({
   declarations: [
@@ -126,7 +127,8 @@ import { EditRequestDialogComponent } from './components/dialog-modal/edit-reque
     DetectLanguageDialogComponent,
     CommentDialogComponent,
     ProfilePreviewDialogComponent,
-    EditRequestDialogComponent
+    EditRequestDialogComponent,
+    ViewonlyModeDialogComponent
   ],
     imports: [
         BrowserModule,

@@ -75,7 +75,7 @@ export class DialogContentComponent implements OnChanges {
   
     dialogRef.afterClosed().subscribe(comment => {
       if (comment) {
-        const newComment = `#${comment}#`;
+        const newComment = `//${comment}//`;
         const control = this.getDialogControl('subtitles');
         control.setValue(`${newComment}\n${control.value}`);
       }
