@@ -133,7 +133,7 @@ export class ShareSubtitlingContainerComponent implements OnInit {
     else right="";
   
     this.shareService.getSubtitleIsUsed(this.videoId, ISOcode, language, name, subtitleId).then((subtitleIsUsed) => {
-      if (!subtitleIsUsed.isUsed || subtitleIsUsed.isUsedBy == this.user$.value.uid){
+      if (subtitleIsUsed == null || !subtitleIsUsed.isUsed || subtitleIsUsed.isUsedBy == this.user$.value.uid){
         this.router.navigate(['edit/shared', this.videoId, ownerId, ISOcode, name, language, right, subtitleId]);
       }else  {
         this.dialog.open(ViewonlyModeDialogComponent,{width:'400px'}).afterClosed().pipe(take(1)).subscribe(dialog => {

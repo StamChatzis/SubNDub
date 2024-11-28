@@ -149,20 +149,25 @@ export class DetailsViewComponent implements OnInit {
   }
 
   editSubtitle(ISOcode:string, name:string, isUsed:boolean, subtitleId: string, language:any): void {
-    this.shareService.getSubtitleIsUsed(this.videoId, ISOcode, language, name, subtitleId).then((subtitleIsUsed) => {
-      if (subtitleIsUsed.isUsed == undefined || subtitleIsUsed.isUsed == null || subtitleIsUsed.isUsedBy == this.user$.value.uid)
-        this.router.navigate(['edit', this.videoId, ISOcode, name, language ,subtitleId])
-      else if (!isUsed)
-        this.router.navigate(['edit', this.videoId, ISOcode, name, language, subtitleId])
-      else {
-        this.dialog.open(ViewonlyModeDialogComponent,{width:'400px'}).afterClosed().pipe(take(1)).subscribe(dialog => {
-          if (dialog == null || dialog == (undefined)){
-            this.dialog.closeAll();
-          }else if (dialog){
-            this.router.navigate(['edit/shared', this.videoId, this.user$.value.uid, ISOcode, name, language, "Viewer", subtitleId]);
-          }});
-      }
-    });
+    if (isUsed == null || isUsed == undefined){
+      this.router.navigate(['edit', this.videoId, ISOcode, name, language, subtitleId])
+    }else {
+      this.shareService.getSubtitleIsUsed(this.videoId, ISOcode, language, name, subtitleId).then((subtitleIsUsed) => {
+        if (subtitleIsUsed == null || subtitleIsUsed.isUsed == undefined || subtitleIsUsed.isUsed == null || subtitleIsUsed.isUsedBy == this.user$.value.uid)
+          this.router.navigate(['edit', this.videoId, ISOcode, name, language ,subtitleId])
+        else if (!isUsed)
+          this.router.navigate(['edit', this.videoId, ISOcode, name, language, subtitleId])
+        else {
+          this.dialog.open(ViewonlyModeDialogComponent,{width:'400px'}).afterClosed().pipe(take(1)).subscribe(dialog => {
+            if (dialog == null || dialog == (undefined)){
+              this.dialog.closeAll();
+            }else if (dialog){
+              this.router.navigate(['edit/shared', this.videoId, this.user$.value.uid, ISOcode, name, language, "Viewer", subtitleId]);
+            }});
+        }
+      });
+    }
+    
   }
 
   requestCommunityHelp(language:string ,iso: string, filename: string, format: string, videoTitle: string, subtitleId: string): void {
