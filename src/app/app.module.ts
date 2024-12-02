@@ -81,6 +81,8 @@ import { CommunityHelpService } from './services/community-help.service';
 import { ProfilePreviewDialogComponent } from './components/dialog-modal/profile-preview-dialog/profile-preview-dialog.component';
 import { EditRequestDialogComponent } from './components/dialog-modal/edit-request-dialog/edit-request-dialog.component';
 import { ViewonlyModeDialogComponent } from './components/dialog-modal/viewonly-mode-dialog/viewonly-mode-dialog.component';
+import { SearchSharedfilterPipe } from './shared/pipes/search-sharedfilter.pipe';
+import { SearchCommunityfilterPipe } from './shared/pipes/search-communityfilter.pipe';
 
 @NgModule({
   declarations: [
@@ -128,7 +130,9 @@ import { ViewonlyModeDialogComponent } from './components/dialog-modal/viewonly-
     CommentDialogComponent,
     ProfilePreviewDialogComponent,
     EditRequestDialogComponent,
-    ViewonlyModeDialogComponent
+    ViewonlyModeDialogComponent,
+    SearchSharedfilterPipe,
+    SearchCommunityfilterPipe
   ],
     imports: [
         BrowserModule,

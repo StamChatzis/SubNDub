@@ -6,7 +6,7 @@
         </button>
         <mat-form-field>
             <mat-label>Search By Title</mat-label>
-            <input matInput #searchInput>
+            <input matInput [(ngModel)]="searchTerm">
         </mat-form-field>
         <div class="view-switch">
             <button mat-icon-button matTooltip="List View" (click)="changeToListView()"><mat-icon>dehaze</mat-icon></button>
@@ -20,7 +20,7 @@
                 <h3>No videos found, click on the + button to get started!</h3>
             </div>
             <ng-template #videos>
-                <div class="video" *ngFor="let video of userVideos$ | async | filter: searchInput.value">
+                <div class="video" *ngFor="let video of userVideos$ | async | filter: searchTerm : null">
                   <video-card *ngIf="allYouTubeVideoDetails" [videoId]="video.videoId"
                     (editVideoEmitter)="navigateToDetailsView($event)"
                     (deleteVideoEmitter)="deleteVideoPrompt($event)"
@@ -48,9 +48,13 @@
     <mat-divider></mat-divider>
     <div class="myshared-videos-header">
         <h1>My Shared Videos ({{(userSharedVideos$ | async)?.length}})</h1>
+        <mat-form-field class="search-field">
+            <mat-label>Search By Title</mat-label>
+            <input matInput [(ngModel)]="searchSharedTerm">
+        </mat-form-field>
     </div>
     <div class="video-container">
-        <div class="" *ngFor="let sharedVideo of userSharedVideos$ | async">
+        <div class="" *ngFor="let sharedVideo of userSharedVideos$ | async | sharedfilter: searchSharedTerm : null">
             <app-shared-video-card *ngIf="allYouTubeVideoDetails" [videoId]="sharedVideo.videoId"
                                    (editVideoEmitter)="navigateToSharedEdit($event)"
                                    [sharedVideoDetails] = "sharedVideo"
@@ -63,9 +67,31 @@
     <mat-divider></mat-divider>
     <div class="community-videos-header">
         <h1>Request for BID:<span><h2> someone needs your help!</h2></span></h1>
+        <mat-form-field class="search-community-field">
+            <mat-label>Filter By</mat-label>
+            <mat-select [(ngModel)]="selectedFilter">
+                <mat-option value="title">Title</mat-option>
+                <mat-option value="language">Language</mat-option>
+                <mat-option value="requestedBy">Requested By</mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field class="search-community-field">
+            <mat-label>Enter value</mat-label>
+            <input matInput [(ngModel)]="filterValue">
+        </mat-form-field>
     </div>
+    <div>
+        <mat-checkbox [(ngModel)]="sortByDate">Sort by Creation Date</mat-checkbox>
+        <mat-form-field style="margin-left: 10px;"  *ngIf="sortByDate">
+            <mat-label>Sort Order</mat-label>
+            <mat-select [(ngModel)]="sortOrder">
+                <mat-option value="asc">Ascending</mat-option>
+                <mat-option value="desc">Descending</mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>   
     <div class="video-container">
-            <div class="" *ngFor="let video of communityVideos$ | async">
+            <div class="" *ngFor="let video of communityVideos$ | async | communityfilter: filterValue : selectedFilter : sortByDate : sortOrder">
                 <community-video-card *ngIf="allYouTubeVideoDetails" [videoId]="video.videoId"
                                       (editVideoEmitter)="navigateToCommunityEdit($event)"
                                       [communityRequestDetails] = "video"

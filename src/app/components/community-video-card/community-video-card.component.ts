@@ -21,12 +21,21 @@ export class CommunityVideoCardComponent implements OnInit {
   @Output() deleteVideoEmitter: EventEmitter<string> = new EventEmitter<string>;
   @Output() requestCommunityHelpEmitter: EventEmitter<string> = new EventEmitter<string>;
 
+  requestCreationDate: any;
   publishDate: string;
 
   constructor(public dialog: MatDialog, private notifier: NotifierService) { }
 
   ngOnInit(): void {
     this.publishDate = this.timeSince(new Date(this.videoDetails?.snippet?.publishedAt));
+    this.convertTimestamp();
+  }
+
+  convertTimestamp(){
+    let timestamp_ms = this.communityRequestDetails.timestamp;
+    let date = new Date(timestamp_ms);
+    let dateOnly = date.toISOString().split('T')[0];  
+    this.requestCreationDate = dateOnly;
   }
 
   editVideo(requestDetails: any): void {
@@ -35,7 +44,7 @@ export class CommunityVideoCardComponent implements OnInit {
 
   openPlaceABid(requestDetails: any, videoTitle: string, filename: string): void {
     this.dialog.open(PlaceABidComponent,{width:'550px', height: '470px', data: { language:requestDetails.language, videoTitle, videoId: this.videoId, requestedByID: requestDetails.requestedByID, filename, requestDetails, userEmail:this.userEmail}}).afterClosed().pipe(take(1)).subscribe(dialog => {
-      if (dialog === (null || undefined )){ 
+      if (dialog === null || dialog ==undefined ){ 
         this.dialog.closeAll();
       }else if (dialog && dialog.yourBidAmount>0) {
         this.notifier.showNotification("Offer has been successfully sent to the requestor.","OK");
@@ -46,7 +55,7 @@ export class CommunityVideoCardComponent implements OnInit {
 
   editCommunityRequest(requestDetails: any, videoTitle: string, filename: string): void {
     this.dialog.open(EditRequestDialogComponent,{width:'550px', height: '480px', data: { language:requestDetails.language, videoTitle, videoId: this.videoId, requestedByID: requestDetails.requestedByID, filename, requestDetails, userEmail:this.userEmail}}).afterClosed().pipe(take(1)).subscribe(dialog => {
-      if (dialog === (null || undefined )){ 
+      if (dialog === null || dialog === undefined ){ 
         this.dialog.closeAll();
       }else if (dialog ) {
         if(dialog.isChecked == true)

@@ -10,7 +10,7 @@ import {Router} from '@angular/router';
 import {DialogConfirmationComponent} from 'src/app/shared/components/dialog-confirmation/dialog-confirmation.component';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {NoopScrollStrategy} from '@angular/cdk/overlay';
-import {BehaviorSubject, combineLatest, distinctUntilChanged, Observable, of, switchMap} from 'rxjs';
+import {BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, of, switchMap} from 'rxjs';
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 import {CommunityHelpService} from 'src/app/services/community-help.service';
 import {CommunityHelpRequest} from 'src/app/models/firestore-schema/help-request.model';
@@ -38,7 +38,14 @@ export class DashboardComponent implements OnInit {
   apiLoaded = false;
   userEmail: string;
   userId: string;
+  searchTerm = '';
+  searchSharedTerm: '';
+  selectedFilter: string = 'Title';
+  filterValue: string = "";
+  sortByDate: boolean = false;
+  sortOrder: 'asc' | 'desc' = 'asc';
   @ViewChild('userVideosContainer') userVideosContainer: ElementRef
+  
 
   constructor(private auth: AuthService,
     private dashboardService: DashboardService,
@@ -88,6 +95,9 @@ export class DashboardComponent implements OnInit {
     ).subscribe((res: YoutubeVideoDetails[]) => {
       if (res) {
         this.allYouTubeVideoDetails = res;
+        this.setUserVideos(res);
+        this.setSharedUserVideos(res);
+        this.setCommunityVideos(res);
         this.loading$.next(false);
       }
     });
@@ -100,6 +110,50 @@ export class DashboardComponent implements OnInit {
       document.body.appendChild(tag);
       this.apiLoaded = true;
     }
+  }
+
+  setUserVideos(res: any){
+    this.userVideos$ = this.userVideos$.pipe(
+      map(userVideos => {
+        return userVideos.map(video => {
+          const videoDetail = res.find(detail => detail.id === video.videoId);
+          return {
+            ...video,
+            title: videoDetail ? videoDetail.snippet.title : '' 
+
+          };
+        });
+      })
+    );
+  }
+
+  setSharedUserVideos(res: any){
+    this.userSharedVideos$ = this.userSharedVideos$.pipe(
+      map(userSharedVideos => {
+        return userSharedVideos.map(video => {
+          const videoDetail = res.find(detail => detail.id === video.videoId);
+          return {
+            ...video,
+            title: videoDetail ? videoDetail.snippet.title : '' 
+
+          };
+        });
+      })
+    );
+  }
+
+  setCommunityVideos(res: any){
+    this.communityVideos$ = this.communityVideos$.pipe(
+      map(communityVideos => {
+        return communityVideos.map(video => {
+          const videoDetail = res.find(detail => detail.id === video.videoId);
+          return {
+            ...video,
+            title: videoDetail ? videoDetail.snippet.title : '' 
+          };
+        });
+      })
+    );
   }
 
   navigateToDetailsView(videoId: string): void {

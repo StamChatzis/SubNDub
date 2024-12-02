@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-viewonly-mode-dialog',
@@ -6,5 +7,5 @@ import { Component } from '@angular/core';
   styleUrls: ['./viewonly-mode-dialog.component.css']
 })
 export class ViewonlyModeDialogComponent {
-
+  constructor(@Inject(MAT_DIALOG_DATA) public data: { displayName: string}, public dialogRef: MatDialogRef<ViewonlyModeDialogComponent>){ }
 }

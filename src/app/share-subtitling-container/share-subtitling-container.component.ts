@@ -19,6 +19,7 @@ import {
 } from "../components/dialog-modal/profile-preview-dialog/profile-preview-dialog.component";
 import {UserRights} from "../models/firestore-schema/subtitles.model";
 import { ViewonlyModeDialogComponent } from '../components/dialog-modal/viewonly-mode-dialog/viewonly-mode-dialog.component';
+import { CommunityHelpService } from '../services/community-help.service';
 
 @Component({
   selector: 'app-share-subtitling-container',
@@ -49,6 +50,7 @@ export class ShareSubtitlingContainerComponent implements OnInit {
     private translateService: GoogleTranslateService,
     private detailsViewService: DetailsViewServiceService,
     private shareService: ShareService,
+    private communityService: CommunityHelpService,
     private userService: UserService) { }
 
   ngOnInit(): void {
@@ -136,12 +138,14 @@ export class ShareSubtitlingContainerComponent implements OnInit {
       if (subtitleIsUsed == null || !subtitleIsUsed.isUsed || subtitleIsUsed.isUsedBy == this.user$.value.uid){
         this.router.navigate(['edit/shared', this.videoId, ownerId, ISOcode, name, language, right, subtitleId]);
       }else  {
-        this.dialog.open(ViewonlyModeDialogComponent,{width:'400px'}).afterClosed().pipe(take(1)).subscribe(dialog => {
-          if (dialog == null || dialog == (undefined)){
-            this.dialog.closeAll();
-          }else if (dialog){
-            this.router.navigate(['edit/shared', this.videoId, this.user$.value.uid, ISOcode, name, language, "Viewer", subtitleId]);
-          }});
+        this.communityService.getEmailFromUserID(subtitleIsUsed.isUsedBy).subscribe(isUsedEmail => {
+          this.dialog.open(ViewonlyModeDialogComponent,{width:'400px', data: {displayName:isUsedEmail}}).afterClosed().pipe(take(1)).subscribe(dialog => {
+            if (dialog == null || dialog == (undefined)){
+              this.dialog.closeAll();
+            }else if (dialog){
+              this.router.navigate(['edit/shared', this.videoId, this.user$.value.uid, ISOcode, name, language, "Viewer", subtitleId]);
+            }});
+        })
       }
     })
   }

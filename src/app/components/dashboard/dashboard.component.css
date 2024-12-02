@@ -97,3 +97,17 @@
     font-size:32px;
 }
 
+.myshared-videos-header {
+    display: flex; 
+    align-items: center; 
+}
+
+.search-field {
+    margin-left: 10px; 
+    margin-top: 30px;
+}
+
+.search-community-field {
+    margin-left: 10px; 
+}
+

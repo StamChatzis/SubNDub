@@ -82,6 +82,11 @@ export class DialogContentComponent implements OnChanges {
     });
   }  
 
+  deleteComment(): void{
+    const control = this.getDialogControl('subtitles');
+    control.setValue(control.value.replace(/\/\/.*?\/\//gs, '').trim());
+  }
+
   getDialogControl(control: string): FormControl {
     return this.dialogGroup.get(control) as FormControl
   }

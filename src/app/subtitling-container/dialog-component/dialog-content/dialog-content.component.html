@@ -54,6 +54,9 @@
           <button matTooltip="Add comment" subscriptSizing="dynamic" mat-icon-button (click)="openCommentDialog()">
             <mat-icon>comment</mat-icon>
           </button>
+          <button matTooltip="Delete comment" subscriptSizing="dynamic" mat-icon-button (click)="deleteComment()">
+            <mat-icon>delete</mat-icon>
+          </button>
         </div>
         <mat-form-field subscriptSizing="dynamic">
           <textarea #textarea class="sub-text-area" [readonly]="canOnlyView" matInput (input)="wordCounter(); characterCounter(); subtitlingTimingEstimation();"

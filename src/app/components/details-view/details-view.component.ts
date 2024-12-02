@@ -22,6 +22,7 @@ import { RequestCommunityHelpComponent } from '../dialog-modal/request-community
 import { UserService } from "../../services/user.service";
 import {ProfilePreviewDialogComponent} from "../dialog-modal/profile-preview-dialog/profile-preview-dialog.component";
 import { ViewonlyModeDialogComponent } from '../dialog-modal/viewonly-mode-dialog/viewonly-mode-dialog.component';
+import { CommunityHelpService } from 'src/app/services/community-help.service';
 
 @Component({
   selector: 'details-view',
@@ -54,6 +55,7 @@ export class DetailsViewComponent implements OnInit {
     private translateService: GoogleTranslateService,
     private detailsViewService: DetailsViewServiceService,
     private downloadFileService: DownloadFileHandlerService,
+    private communityService: CommunityHelpService,
     private shareService: ShareService) { }
 
   ngOnInit(): void {
@@ -158,12 +160,14 @@ export class DetailsViewComponent implements OnInit {
         else if (!isUsed)
           this.router.navigate(['edit', this.videoId, ISOcode, name, language, subtitleId])
         else {
-          this.dialog.open(ViewonlyModeDialogComponent,{width:'400px'}).afterClosed().pipe(take(1)).subscribe(dialog => {
-            if (dialog == null || dialog == (undefined)){
-              this.dialog.closeAll();
-            }else if (dialog){
-              this.router.navigate(['edit/shared', this.videoId, this.user$.value.uid, ISOcode, name, language, "Viewer", subtitleId]);
-            }});
+          this.communityService.getEmailFromUserID(subtitleIsUsed.isUsedBy).subscribe(isUsedEmail => {
+            this.dialog.open(ViewonlyModeDialogComponent,{width:'400px', data: {displayName:isUsedEmail}}).afterClosed().pipe(take(1)).subscribe(dialog => {
+              if (dialog == null || dialog == (undefined)){
+                this.dialog.closeAll();
+              }else if (dialog){
+                this.router.navigate(['edit/shared', this.videoId, this.user$.value.uid, ISOcode, name, language, "Viewer", subtitleId]);
+              }});
+          })
         }
       });
     }
