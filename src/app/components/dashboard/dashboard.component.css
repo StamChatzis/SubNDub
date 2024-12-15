@@ -109,5 +109,12 @@
 
 .search-community-field {
     margin-left: 10px; 
+    margin-top: 0;
+    display: inline-block; 
+    vertical-align: top; 
+}
+
+.filter-languages {
+    margin-top: 0;
 }
 

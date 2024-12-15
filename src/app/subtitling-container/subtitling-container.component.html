@@ -16,6 +16,9 @@
           <div class="lang-wrapper">
             <span>Subtitle Language: <b>{{(langName$ | async)}}</b></span>
           </div>
+          <div class="lock-wrapper" *ngIf="isUsed">
+            <span><mat-icon matTooltip={{lockTooltipText}}>lock</mat-icon></span>
+          </div>
         </div>
       </div>
     </div>

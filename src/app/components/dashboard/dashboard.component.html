@@ -69,15 +69,19 @@
         <h1>Request for BID:<span><h2> someone needs your help!</h2></span></h1>
         <mat-form-field class="search-community-field">
             <mat-label>Filter By</mat-label>
-            <mat-select [(ngModel)]="selectedFilter">
+            <mat-select [(ngModel)]="selectedFilter" (selectionChange)="onFilterChange()">
                 <mat-option value="title">Title</mat-option>
                 <mat-option value="language">Language</mat-option>
                 <mat-option value="requestedBy">Requested By</mat-option>
             </mat-select>
         </mat-form-field>
+    
         <mat-form-field class="search-community-field">
-            <mat-label>Enter value</mat-label>
-            <input matInput [(ngModel)]="filterValue">
+            <mat-label *ngIf="selectedFilter !== 'language'">Enter value</mat-label>
+            <mat-select class="filter-languages" *ngIf="selectedFilter === 'language'" [(ngModel)]="filterValue">
+                <mat-option *ngFor="let lang of (supportedLanguages$ | async)?.data?.languages" value="{{lang.name}}">{{ lang.name }}</mat-option>
+            </mat-select>
+            <input *ngIf="selectedFilter === 'title' || selectedFilter === 'requestedBy'" matInput [(ngModel)]="filterValue">
         </mat-form-field>
     </div>
     <div>

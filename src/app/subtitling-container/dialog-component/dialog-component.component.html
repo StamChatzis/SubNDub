@@ -1,23 +1,24 @@
 <div class="dialog-wrapper">
     <div class="button-wrapper">
-        <button mat-icon-button color="primary"
+        <button [disabled]="canOnlyView" mat-icon-button color="primary"
             (click)="addDialogBox(null,true)"
             matTooltip="Add Dialog Box"><mat-icon>add</mat-icon>
         </button>
 
-        <button mat-icon-button color="primary"
+        <button [disabled]="canOnlyView" mat-icon-button color="primary"
         (click)="openDialogForBatchDialogCreation()"
         matTooltip="Batch Add Dialog Boxes"><mat-icon>library_add</mat-icon>
         </button>
 
-        <button mat-icon-button color="primary" matTooltip="Translate all subtitles" (click)="openDialogToTranslateSubtitles()">
+        <button [disabled]="canOnlyView" mat-icon-button color="primary" matTooltip="Translate all subtitles" (click)="openDialogToTranslateSubtitles()">
             <mat-icon>g_translate</mat-icon>
         </button>
 
         <import-button
           (fileContentEmit)="handleFileUpload($event)"
           (isFormDirty)="setIsFormDirty($event)"
-          [acceptedFiles]="'.sbv, .srt, .txt'">
+          [acceptedFiles]="'.sbv, .srt, .txt'"
+          [canOnlyView]="canOnlyView">
         </import-button>
 
         <button (click)="openDownloadDialog()" mat-icon-button color="primary" matTooltip="Download Subtitles">
@@ -32,7 +33,7 @@
           <mat-icon>record_voice_over</mat-icon>
         </button>
 
-        <button (click)="uploadSubtitle()" mat-icon-button color="primary" matTooltip="Save">
+        <button [disabled]="canOnlyView" (click)="uploadSubtitle()" mat-icon-button color="primary" matTooltip="Save">
           <mat-icon>save</mat-icon>
         </button>
     </div>

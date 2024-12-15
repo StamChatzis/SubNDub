@@ -32,6 +32,7 @@ export class SubtitlingContainerComponent implements OnInit {
   canOnlyView: boolean;
   canComment: boolean;
   isUsed: boolean;
+  lockTooltipText: string;
   languageName:string;
   subtitleId: string;
   availableLanguages$: BehaviorSubject<SupportedLanguages> = new BehaviorSubject<SupportedLanguages>(null);
@@ -83,6 +84,7 @@ export class SubtitlingContainerComponent implements OnInit {
         next: user => {
           if (user) {
             this.setIsUsedSubtitle(true, user.uid);
+            this.updateLockTooltip();
           }
         }
       });     
@@ -112,6 +114,14 @@ export class SubtitlingContainerComponent implements OnInit {
 
   navigateTTS(): void {
     this.router.navigate(['generate-tts', this.videoId, this.languageIsoCode]);
+  }
+
+  updateLockTooltip(){
+    if (this.isUsed && this.right!="Viewer") {
+      this.lockTooltipText = 'To unlock the subtitle click on the back arrow';
+    } else {
+      this.lockTooltipText = '';
+    }  
   }
 
   setIsUsedSubtitle(isUsedValue:boolean, isUsedByValue: string) {

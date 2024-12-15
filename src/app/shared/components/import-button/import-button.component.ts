@@ -10,6 +10,7 @@ export class ImportButtonComponent {
 
   public fileContent$ = new BehaviorSubject<string>(null);
   @Input() acceptedFiles: string;
+  @Input() canOnlyView: boolean;
   @Output() isFormDirty: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() fileContentEmit: EventEmitter<any> = new EventEmitter<any>();
 

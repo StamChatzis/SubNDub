@@ -10,11 +10,13 @@ import {Router} from '@angular/router';
 import {DialogConfirmationComponent} from 'src/app/shared/components/dialog-confirmation/dialog-confirmation.component';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {NoopScrollStrategy} from '@angular/cdk/overlay';
-import {BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, of, switchMap} from 'rxjs';
+import {BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, of, switchMap, tap} from 'rxjs';
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 import {CommunityHelpService} from 'src/app/services/community-help.service';
 import {CommunityHelpRequest} from 'src/app/models/firestore-schema/help-request.model';
 import {SharedVideo} from 'src/app/models/firestore-schema/shared-video.model';
+import { SupportedLanguages } from 'src/app/models/google/google-supported-languages';
+import { GoogleTranslateService } from 'src/app/services/googletranslate.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -40,10 +42,11 @@ export class DashboardComponent implements OnInit {
   userId: string;
   searchTerm = '';
   searchSharedTerm: '';
-  selectedFilter: string = 'Title';
+  selectedFilter: string = 'title';
   filterValue: string = "";
   sortByDate: boolean = false;
   sortOrder: 'asc' | 'desc' = 'asc';
+  supportedLanguages$: BehaviorSubject<SupportedLanguages> = new BehaviorSubject<SupportedLanguages>(null);
   @ViewChild('userVideosContainer') userVideosContainer: ElementRef
   
 
@@ -54,12 +57,14 @@ export class DashboardComponent implements OnInit {
     public dialog: MatDialog,
     private snackbar: MatSnackBar,
     private sanitizer: DomSanitizer,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private translateService: GoogleTranslateService
     ) { }
 
   ngOnInit(): void {
     this.user$ = this.auth.user;
     this.loading$.next(true);
+    this.getSupportedLanguages();
     combineLatest([
       this.user$,
       this.user$.pipe(
@@ -110,6 +115,21 @@ export class DashboardComponent implements OnInit {
       document.body.appendChild(tag);
       this.apiLoaded = true;
     }
+  }
+
+  onFilterChange() {
+    this.filterValue = '';
+  }
+
+  getSupportedLanguages(): void {
+    this.translateService.getSupportedLanguages()
+      .pipe(tap(() => {
+        this.loading$.next(true)
+      }))
+      .subscribe((response: SupportedLanguages) => {
+        this.supportedLanguages$.next(response);
+        this.loading$.next(false)
+      });
   }
 
   setUserVideos(res: any){

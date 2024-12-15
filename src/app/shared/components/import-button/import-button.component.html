@@ -1,4 +1,4 @@
-<button mat-icon-button color="primary"
+<button [disabled]="canOnlyView" mat-icon-button color="primary"
   (click)="uploadFile.click()"
   matTooltip="Import Subtitles"><mat-icon>file_upload</mat-icon>
 </button>
