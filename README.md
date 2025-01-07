@@ -17,3 +17,8 @@ Run `ng generate component component-name` to generate a new component. You can 
 ## Build
 
 Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+
+## EmailJS Configuration
+
+To send email notifications you will have to create 2 templates on EmailJS. 
+You can find the html files for both templates on `email_template.html` and `email_SharedTemplate.html`

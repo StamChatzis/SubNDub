@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { NotifierService } from './notifier.service';
 import  emailjs  from 'emailjs-com';
-//import {EmailJS_IDs} from 'src/environments/environment';
+import {EmailJS_IDs} from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -11,10 +11,10 @@ export class EmailService {
   constructor(private notifier: NotifierService) { }
 
   sendEmail(email: string, to_email: string) {
-    emailjs.send('service_trizanq', 'template_kbddrwk', {
+    emailjs.send(EmailJS_IDs.email_service, EmailJS_IDs.email_template, {
       from_email: email,
       to_email: to_email
-    }, "mzL-kaIaqUfwXy_py")
+    }, EmailJS_IDs.user_key)
       .then(() => {
         this.notifier.showNotification("Invitation has been sent to "+ to_email +" successfully!", "OK");
       })
@@ -24,12 +24,12 @@ export class EmailService {
   }
 
   sendShareSubEmail(email: string, to_email: string, filename:string, videoId: string) {
-    emailjs.send('service_trizanq', 'template_x0t27ro', {
+    emailjs.send(EmailJS_IDs.email_service, EmailJS_IDs.email_sharedTemplate, {
       from_email: email,
       to_email: to_email,
       filename: filename,
       videoId: videoId
-    }, "mzL-kaIaqUfwXy_py")
+    }, EmailJS_IDs.user_key)
       .then(() => {
         this.notifier.showNotification("Notification has been sent to "+ to_email +" successfully!", "OK");
       })
