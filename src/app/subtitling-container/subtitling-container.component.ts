@@ -11,6 +11,7 @@ import {Language, SupportedLanguages} from "../models/google/google-supported-la
 import { GoogleTranslateService } from "../services/googletranslate.service";
 import { AuthService } from '../services/auth.service';
 import { ShareService } from '../services/share.service';
+import {ImportModel} from "../models/general/import-sbv.model";
 
 @Component({
   selector: 'subtitling-container',
@@ -63,7 +64,7 @@ export class SubtitlingContainerComponent implements OnInit {
     this.canOnlyView = !this.right || this.right == "Editor" ? false : true ;
     this.canComment = this.right == "Viewer" ? false : true;
     this.isUsed = true;
-    
+
     if(this.ownerId == null){
       this.ownerId = ''
     }
@@ -87,7 +88,7 @@ export class SubtitlingContainerComponent implements OnInit {
             this.updateLockTooltip();
           }
         }
-      });     
+      });
     }
   }
 
@@ -121,11 +122,11 @@ export class SubtitlingContainerComponent implements OnInit {
       this.lockTooltipText = 'To unlock the subtitle click on the back arrow';
     } else {
       this.lockTooltipText = '';
-    }  
+    }
   }
 
   setIsUsedSubtitle(isUsedValue:boolean, isUsedByValue: string) {
-    this.shareService.setIsUsedSubtitle(this.videoId, this.languageIsoCode, this.languageName, this.fileName, this.subtitleId, isUsedValue, this.ownerId, isUsedByValue);   
+    this.shareService.setIsUsedSubtitle(this.videoId, this.languageIsoCode, this.languageName, this.fileName, this.subtitleId, isUsedValue, this.ownerId, isUsedByValue);
   }
 
   getAvailableLanguages(): void {

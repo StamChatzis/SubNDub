@@ -1,8 +1,9 @@
 <div class="container">
+  <div class="left-subtitle-container">
     <div class="dashboard-navigation">
       <div class="back-button-wrapper">
         <button class="back-button" (click)="navigateToDetails()" mat-mini-fab color="primary"
-          matTooltip="Back to Details"><mat-icon>arrow_back</mat-icon>
+                matTooltip="Back to Details"><mat-icon>arrow_back</mat-icon>
         </button>
       </div>
       <div class="sub-details-wrapper">
@@ -22,27 +23,31 @@
         </div>
       </div>
     </div>
-    <div class="wrapper">
-        <video-player
-          [videoId]="videoId"
-          [captionsPreview]="(youtube.getCurrentCaption() | async)">
-        </video-player>
-
-        <dialog-component
-          [isoCode]="languageIsoCode"
-          [videoId]="videoId"
-          [subtitleName]="fileName"
-          [videoDuration]="videoDuration | async"
-          [currentLanguage$]="currentLanguage$"
-          [ownerId]="ownerId"
-          (loading$)="setLoading($event)"
-          (subtitleUploadEmitter)="uploadToFirestorage($event)"
-          (navigateTTS)="navigateTTS()"
-          (formStatusChange)="setFormDirtyStatus($event)"
-          [canOnlyView]="canOnlyView"
-          [canComment] = "canComment">
-        </dialog-component>
+    <div class="video-card-wrapper">
+      <video-player
+        [videoId]="videoId"
+        [captionsPreview]="(youtube.getCurrentCaption() | async)">
+      </video-player>
     </div>
+  </div>
+  <div class="right-subtitle-container">
+    <div class="subtitle-dialog-wrapper">
+      <dialog-component
+        [isoCode]="languageIsoCode"
+        [videoId]="videoId"
+        [subtitleName]="fileName"
+        [videoDuration]="videoDuration | async"
+        [currentLanguage$]="currentLanguage$"
+        [ownerId]="ownerId"
+        (loading$)="setLoading($event)"
+        (subtitleUploadEmitter)="uploadToFirestorage($event)"
+        (navigateTTS)="navigateTTS()"
+        (formStatusChange)="setFormDirtyStatus($event)"
+        [canOnlyView]="canOnlyView"
+        [canComment] = "canComment">
+      </dialog-component>
+    </div>
+  </div>
 <!-- <sub-timeline [videoDurationISO]="videoDuration"></sub-timeline>-->
 </div>
 <fullscreen-loader *ngIf="(loading$ | async)"></fullscreen-loader>

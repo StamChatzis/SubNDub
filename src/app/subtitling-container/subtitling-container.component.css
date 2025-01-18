@@ -7,6 +7,31 @@
     padding-top: 35px;
 }
 
+.container{
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+
+.left-subtitle-container {
+  width: 45%;
+}
+
+@media only screen and (max-width: 1206px) {
+  .left-subtitle-container {
+    width: auto;
+  }
+}
+
+.right-subtitle-container{
+  width: auto;
+}
+
+.video-card-wrapper{
+  width: 100%;
+  padding-top: 35px;
+}
+
 .dashboard-navigation {
   display: flex;
   padding-top: 20px;
@@ -17,7 +42,7 @@
 }
 
 .sub-details-wrapper{
-  margin-left: 100px;
+  margin-left: 50px;
   margin-top: 10px;
 }
 

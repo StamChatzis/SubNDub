@@ -1,24 +1,30 @@
 .dialog-wrapper {
-    display:flex;
-    flex-direction: column;
+  display:flex;
+  flex-direction: column;
+  margin-top: 40px;
 }
 
 .main-content_wrapper {
-    overflow-y: auto;
-    height: 65vh;
-    overflow-x: visible;
+  margin-top: 40px;
+  overflow-y: auto;
+  height: 70vh;
+  overflow-x: visible;
 }
 
 .button-wrapper  {
-    display: flex;
-    flex-direction: row;
-    gap:20px;
-    padding-bottom:20px;
-    justify-content: center;
+  display: flex;
+  flex-direction: row;
+  gap:20px;
+  padding-bottom:20px;
+  justify-content: center;
 }
 
 .button-wrapper > input {
-    display: none;
+  display: none;
+}
+
+.button-wrapper button{
+  scale: 118%;
 }
 
 .button-wrapper button{
@@ -26,5 +32,5 @@
 }
 
 .button-wrapper button:hover{
-  scale: 118%;
+  scale: 128%;
 }
