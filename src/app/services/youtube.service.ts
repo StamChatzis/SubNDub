@@ -2,7 +2,7 @@ import {HttpClient} from '@angular/common/http';
 import {Injectable, OnDestroy} from '@angular/core';
 import {GOOGLE_API_KEY} from 'src/environments/environment';
 import {YoutubeResponse, YoutubeVideoDetails} from '../models/youtube/youtube-response.model';
-import {BehaviorSubject, map, Observable} from 'rxjs';
+import {BehaviorSubject, forkJoin, map, Observable} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -20,14 +20,23 @@ export class YoutubeService implements OnDestroy {
   }
 
   getAllVideoDetails(videoIdsPayload: string): Observable<YoutubeVideoDetails[]> {
-    const url = `https://www.googleapis.com/youtube/v3/videos?part=snippet&part=statistics&part=contentDetails&id=${videoIdsPayload}&key=${GOOGLE_API_KEY}`
-    return this.http.get<YoutubeResponse>(url).pipe(
-      map((res) => {
-        if (res)
-          return res.items;
-        return;
-      }
-    ));
+    const videoIds = videoIdsPayload.split(',');
+    const batchSize = 50; 
+    const requests: Observable<YoutubeVideoDetails[]>[] = [];
+
+    // Split video IDs into batches
+    for (let i = 0; i < videoIds.length; i += batchSize) {
+      const batch = videoIds.slice(i, i + batchSize).join(',');
+      const url = `https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics,contentDetails&id=${batch}&key=${GOOGLE_API_KEY}`;
+      requests.push(this.http.get<YoutubeResponse>(url).pipe(
+        map(res => res.items)
+      ));
+    }
+
+    // Combine all requests into a single observable
+    return forkJoin(requests).pipe(
+      map(results => results.flat()) 
+    );
   }
 
   getVideoDetails(videoId: any): Observable<YoutubeVideoDetails> {
