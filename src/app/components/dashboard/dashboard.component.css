@@ -118,3 +118,11 @@
     margin-top: 0;
 }
 
+.rotate-180 {
+    transform: rotate(180deg);
+    transition: transform 0.3s ease; 
+}
+
+#sharedExpandBtn{
+    margin-top: 10px;
+}

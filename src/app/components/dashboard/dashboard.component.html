@@ -1,6 +1,17 @@
 <div *ngIf="(user$ | async)" class="dashboard-wrapper">
     <div class="dashboard-header">
-        <span class="my-videos">My Videos ({{(userVideos$ | async)?.length}})</span>
+        
+        <span class="my-videos flex items-center space-x-2">
+            <span>My Videos ({{(userVideos$ | async)?.length}})</span>
+            <button
+                mat-icon-button
+                (click)="toggleExpand()"
+                class="transition-transform transform"
+                matTooltip="{{isExpanded ? 'Collapse' : 'Expand'}}"
+                >
+                <mat-icon [class.rotate-180]="isExpanded">expand_more</mat-icon>
+            </button>
+          </span>
         <button mat-fab class="add-video-btn" color="primary" matTooltip="Add New video" (click)="openDialog()">
           <mat-icon>add</mat-icon>
         </button>
@@ -14,7 +25,7 @@
         </div>
     </div>
 
-    <div class="view-wrapper">
+    <div class="view-wrapper" *ngIf="isExpanded">
         <div #userVideosContainer class="video-container">
             <div class="no-video" *ngIf="!(userVideos$ | async); else videos">
                 <h3>No videos found, click on the + button to get started!</h3>
@@ -48,12 +59,21 @@
     <mat-divider></mat-divider>
     <div class="myshared-videos-header">
         <h1>My Shared Videos ({{(userSharedVideos$ | async)?.length}})</h1>
+        <button
+                id="sharedExpandBtn"
+                mat-icon-button
+                (click)="toggleSharedExpand()"
+                class="transition-transform transform"
+                matTooltip="{{isSharedExpanded ? 'Collapse' : 'Expand'}}"
+                >
+                <mat-icon [class.rotate-180]="isSharedExpanded">expand_more</mat-icon>
+            </button>
         <mat-form-field class="search-field">
             <mat-label>Search By Title</mat-label>
             <input matInput [(ngModel)]="searchSharedTerm">
         </mat-form-field>
     </div>
-    <div class="video-container">
+    <div class="video-container" *ngIf="isSharedExpanded">
         <div class="" *ngFor="let sharedVideo of userSharedVideos$ | async | sharedfilter: searchSharedTerm : null">
             <app-shared-video-card *ngIf="allYouTubeVideoDetails" [videoId]="sharedVideo.videoId"
                                    (editVideoEmitter)="navigateToSharedEdit($event)"

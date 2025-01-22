@@ -48,6 +48,8 @@ export class DashboardComponent implements OnInit {
   sortOrder: 'asc' | 'desc' = 'asc';
   supportedLanguages$: BehaviorSubject<SupportedLanguages> = new BehaviorSubject<SupportedLanguages>(null);
   @ViewChild('userVideosContainer') userVideosContainer: ElementRef
+  isExpanded = true;
+  isSharedExpanded = true;
   
 
   constructor(private auth: AuthService,
@@ -119,6 +121,14 @@ export class DashboardComponent implements OnInit {
 
   onFilterChange() {
     this.filterValue = '';
+  }
+
+  toggleExpand() {
+    this.isExpanded = !this.isExpanded; 
+  }
+
+  toggleSharedExpand() {
+    this.isSharedExpanded = !this.isSharedExpanded; 
   }
 
   getSupportedLanguages(): void {
