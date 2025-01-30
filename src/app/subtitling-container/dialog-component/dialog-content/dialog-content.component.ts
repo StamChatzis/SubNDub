@@ -26,6 +26,7 @@ export class DialogContentComponent implements OnChanges {
   @Input() canOnlyView: boolean;
   @Input() canComment: boolean;
   @Input() currentLanguage$: Observable<Language>
+  @Input() activeBox: boolean;
   @Output() loading$: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() deleteDialogBoxEvent: EventEmitter<number> = new EventEmitter();
   @Output() dialogEmitter: EventEmitter<TimeEmitterObject> = new EventEmitter();
@@ -37,6 +38,7 @@ export class DialogContentComponent implements OnChanges {
   @ViewChild('assingPersonMenu') assignPersonMenu;
   @ViewChild('openAIMenu') openAIMenu;
   @ViewChild('textarea') textarea: ElementRef;
+  @ViewChild('boxDialog') boxDialog: ElementRef;
 
   assignedPerson: CharacterAssign;
   wordCount: number = 0;
@@ -44,7 +46,7 @@ export class DialogContentComponent implements OnChanges {
   timingEstimation: number = 0;
   estimationTooltip: string;
   estimationIcon: string;
-
+  focusedBox: number | null = null;
 
   readonly openAIMenuMap = new Map([
     ['translate','Translate this sentence'],
@@ -72,7 +74,7 @@ export class DialogContentComponent implements OnChanges {
     const dialogRef = this.dialog.open(CommentDialogComponent, {
       width: '440px', height:'250px'
     });
-  
+
     dialogRef.afterClosed().subscribe(comment => {
       if (comment) {
         const newComment = `//${comment}//`;
@@ -80,7 +82,7 @@ export class DialogContentComponent implements OnChanges {
         control.setValue(`${newComment}\n${control.value}`);
       }
     });
-  }  
+  }
 
   deleteComment(): void{
     const control = this.getDialogControl('subtitles');

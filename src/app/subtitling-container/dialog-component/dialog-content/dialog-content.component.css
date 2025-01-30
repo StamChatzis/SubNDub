@@ -2,6 +2,20 @@
   flex-grow:1;
   padding-right:15px;
 }
+.mat-card-subtitle-container{
+  transition: background-color 0.2s ease, border-radius 0.2s ease;
+}
+
+.mat-card-subtitle-container:hover{
+  background-color: #dbdbfa;
+  border-radius: 5px;
+}
+
+.mat-card-subtitle-container.active-content{
+  background-color: #dbdbfa;
+  border: 1px solid rgba(0, 31, 220, 0.51);
+  border-radius: 5px;
+}
 
 .mat-mdc-card-content {
   display: flex;
@@ -160,3 +174,4 @@
   cursor: help;
   color: green;
 }
+
